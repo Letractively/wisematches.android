@@ -5,14 +5,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import wisematches.client.android.R;
-import wisematches.client.android.app.WiseMatchesActivity;
-import wisematches.client.android.http.ClientResponse;
-import wisematches.client.android.http.CommunicationException;
-import wisematches.client.android.http.CooperationException;
+import wisematches.client.android.WiseMatchesActivity;
 import wisematches.client.android.os.ProgressTask;
 
 /**
@@ -41,8 +35,9 @@ public class ActiveGamesActivity extends WiseMatchesActivity {
 		ProgressTask<Void, Void, ScribbleGameInfo[]> a = new ProgressTask<Void, Void, ScribbleGameInfo[]>("Loading active games. Please wait...", this) {
 			@Override
 			protected ScribbleGameInfo[] doInBackground(Void... voids) {
+/*
 				try {
-					final ClientResponse r = getWiseMatchesClient().post("/playground/scribble/active.ajax");
+					final WiseMatchesServer.Response r = getWiseMatchesClient().execute("/playground/scribble/active.ajax");
 					if (r.isSuccess()) {
 						final JSONObject data = r.getData();
 
@@ -58,6 +53,7 @@ public class ActiveGamesActivity extends WiseMatchesActivity {
 				} catch (JSONException | CooperationException | CommunicationException ex) {
 					ex.printStackTrace();
 				}
+*/
 				return null;
 			}
 

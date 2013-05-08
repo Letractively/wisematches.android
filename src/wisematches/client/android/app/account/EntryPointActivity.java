@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 import wisematches.client.android.R;
-import wisematches.client.android.app.WiseMatchesActivity;
+import wisematches.client.android.WiseMatchesActivity;
 import wisematches.client.android.app.account.auth.Authenticator;
 
 public class EntryPointActivity extends WiseMatchesActivity {
@@ -94,6 +94,8 @@ public class EntryPointActivity extends WiseMatchesActivity {
 
 //		doAuth();
 	}
+
+
 
 /*
 	private class OnTokenAcquired implements AccountManagerCallback<Bundle> {

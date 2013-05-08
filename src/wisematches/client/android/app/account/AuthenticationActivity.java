@@ -11,8 +11,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import wisematches.client.android.R;
-import wisematches.client.android.app.WiseMatchesActivity;
+import wisematches.client.android.WiseMatchesActivity;
 import wisematches.client.android.app.account.auth.Authenticator;
+import wisematches.client.android.data.service.AuthenticationOperation;
 import wisematches.client.android.os.ProgressTask;
 
 /**
@@ -74,6 +75,8 @@ public class AuthenticationActivity extends WiseMatchesActivity {
 							final String username = strings[0];
 							final String password = strings[1];
 
+							AuthenticationOperation.auth(getRe);
+
 							final Account account = new Account(username, Authenticator.ACCOUNT_TYPE);
 
 							AccountManager accountManager = AccountManager.get(AuthenticationActivity.this);
@@ -112,7 +115,7 @@ public class AuthenticationActivity extends WiseMatchesActivity {
 		registerButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				getWiseMatchesClient().open("/account/create", AuthenticationActivity.this);
+//				getWiseMatchesClient().browser("/account/create", AuthenticationActivity.this);
 //				final Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
 //				intent.putExtra("username", usernameField.getText().toString());
 //				startActivity(intent);
@@ -122,7 +125,7 @@ public class AuthenticationActivity extends WiseMatchesActivity {
 		restorePwdButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				getWiseMatchesClient().open("/account/recovery/request", AuthenticationActivity.this);
+//				getWiseMatchesClient().browser("/account/recovery/request", AuthenticationActivity.this);
 //				final Intent intent = new Intent(LoginActivity.this, RestoreActivity.class);
 //				intent.putExtra("username", usernameField.getText().toString());
 //				startActivity(intent);

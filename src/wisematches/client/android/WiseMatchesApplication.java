@@ -1,18 +1,11 @@
-package wisematches.client.android.app;
+package wisematches.client.android;
 
 import android.app.Application;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.util.Base64;
-import org.apache.http.message.BasicHeader;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.foxykeep.datadroid.requestmanager.RequestManager;
 import wisematches.client.android.app.account.model.Player;
+import wisematches.client.android.data.service.http.HttpRequestService;
 import wisematches.client.android.graphics.BitmapFactory;
-import wisematches.client.android.http.ClientResponse;
-import wisematches.client.android.http.CommunicationException;
-import wisematches.client.android.http.CooperationException;
-import wisematches.client.android.http.WiseMatchesClient;
 
 import java.util.TimeZone;
 
@@ -22,11 +15,38 @@ import java.util.TimeZone;
 public class WiseMatchesApplication extends Application {
 	private Principal principal;
 	private BitmapFactory bitmapFactory;
-	private WiseMatchesClient wiseMatchesServer;
+
+	private RequestManager requestManager;
 
 	public WiseMatchesApplication() {
 	}
 
+
+	@Override
+	public void onCreate() {
+		super.onCreate();
+
+		this.bitmapFactory = new BitmapFactory(getResources());
+		this.requestManager = new WMRequestManager(this.getApplicationContext());
+	}
+
+	@Override
+	public void onTerminate() {
+		super.onTerminate();
+
+		this.principal = null;
+		this.requestManager = null;
+
+		bitmapFactory.terminate();
+//		wiseMatchesServer.release();
+	}
+
+
+	public RequestManager getRequestManager() {
+		return requestManager;
+	}
+
+	@Deprecated
 	public Principal getPrincipal() {
 		return principal;
 	}
@@ -35,11 +55,8 @@ public class WiseMatchesApplication extends Application {
 		return bitmapFactory;
 	}
 
-	public WiseMatchesClient getWiseMatchesClient() {
-		return wiseMatchesServer;
-	}
-
-
+/*
+	@Deprecated
 	public Principal authenticate() throws CommunicationException, CooperationException {
 		final SharedPreferences preferences = getSharedPreferences("principal", Context.MODE_PRIVATE);
 		final String credentials = preferences.getString("credentials", null);
@@ -50,6 +67,7 @@ public class WiseMatchesApplication extends Application {
 		return null;
 	}
 
+	@Deprecated
 	public Principal authenticate(String username, String password) throws CommunicationException, CooperationException {
 		final String credentials = Base64.encodeToString((username + ":" + password).getBytes(), Base64.NO_WRAP);
 		this.principal = authImpl(credentials);
@@ -57,25 +75,10 @@ public class WiseMatchesApplication extends Application {
 	}
 
 
-	@Override
-	public void onCreate() {
-		super.onCreate();
-		bitmapFactory = new BitmapFactory(getResources());
-		wiseMatchesServer = new WiseMatchesClient();
-	}
-
-	@Override
-	public void onTerminate() {
-		super.onTerminate();
-		principal = null;
-		bitmapFactory.terminate();
-		wiseMatchesServer.terminate();
-	}
-
-
+	@Deprecated
 	private Principal authImpl(String credentials) throws CommunicationException, CooperationException {
 		final BasicHeader basicHeader = new BasicHeader("Authorization", "Basic " + credentials);
-		final ClientResponse r = wiseMatchesServer.post("/account/login.ajax", basicHeader);
+		final NetworkConnection.Response r = wiseMatchesServer.execute("/account/login.ajax", basicHeader);
 
 		try {
 			final JSONObject data = r.getData();
@@ -99,9 +102,12 @@ public class WiseMatchesApplication extends Application {
 		}
 	}
 
+	*/
+
 	/**
 	 * @author Sergey Klimenko (smklimenko@gmail.com)
 	 */
+	@Deprecated
 	public static final class Principal implements Player {
 		private final long id;
 		private final String nickname;
@@ -168,6 +174,12 @@ public class WiseMatchesApplication extends Application {
 			sb.append(", online=").append(online);
 			sb.append('}');
 			return sb.toString();
+		}
+	}
+
+	private static class WMRequestManager extends RequestManager {
+		private WMRequestManager(Context context) {
+			super(context, HttpRequestService.class);
 		}
 	}
 }

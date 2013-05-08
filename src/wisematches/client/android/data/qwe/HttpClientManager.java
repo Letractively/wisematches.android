@@ -1,8 +1,10 @@
-package wisematches.client.android.http;
+package wisematches.client.android.data.qwe;
 
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import com.foxykeep.datadroid.exception.ConnectionException;
+import com.foxykeep.datadroid.exception.DataException;
 import org.apache.http.*;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.HttpClient;
@@ -29,17 +31,16 @@ import java.io.InputStreamReader;
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
  */
-public class WiseMatchesClient {
+class HttpClientManager {
 	private final HttpClient client;
 	private final CookieStore cookieStore = new BasicCookieStore();
 	private final HttpContext localContext = new BasicHttpContext();
 
 	private static final int DEFAULT_TIMEOUT = 3000;
-	private static final HttpHost HOST = new HttpHost("10.139.202.145", 8080);
-//	private static final HttpHost HOST = new HttpHost("www.wisematches.net");
 
+	private static final HttpHost WISEMATCHES_HOST = new HttpHost("www.wisematches.net", 80);
 
-	public WiseMatchesClient() {
+	public HttpClientManager() {
 		final HttpParams params = new BasicHttpParams();
 		params.setParameter(CoreProtocolPNames.USER_AGENT, "Wisematches/1.0");
 		HttpClientParams.setRedirecting(params, false);
@@ -50,28 +51,32 @@ public class WiseMatchesClient {
 		localContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
 	}
 
-	public String getServerHost() {
-		return HOST.getHostName() + (HOST.getPort() == -1 ? "" : ":" + HOST.getPort());
+	public void release() {
+		cookieStore.clear();
 	}
 
-	public void open(String uri, Context context) {
+	/**
+	 * @deprecated move to other place.
+	 */
+	@Deprecated
+	public static void browse(Context context, String uri) {
 		Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://" + getServerHost() + uri));
 		context.startActivity(Intent.createChooser(intent, "Chose browser"));
 	}
 
-	public ClientResponse post(String url, Header... headers) throws CommunicationException, CooperationException {
-		return post(url, null, null, headers);
+	public Response execute(String url, Header... headers) throws ConnectionException, DataException {
+		return execute(url, null, null, headers);
 	}
 
-	public ClientResponse post(String url, JSONObject data, Header... headers) throws CommunicationException, CooperationException {
-		return post(url, null, data, headers);
+	public Response execute(String url, JSONObject data, Header... headers) throws ConnectionException, DataException {
+		return execute(url, null, data, headers);
 	}
 
-	public ClientResponse post(String url, HttpParams params, Header... headers) throws CommunicationException, CooperationException {
-		return post(url, params, null, headers);
+	public Response execute(String url, HttpParams params, Header... headers) throws ConnectionException, DataException {
+		return execute(url, params, null, headers);
 	}
 
-	public ClientResponse post(String url, HttpParams params, JSONObject data, Header... headers) throws CommunicationException, CooperationException {
+	public Response execute(String url, HttpParams params, JSONObject data, Header... headers) throws ConnectionException, DataException {
 		try {
 			final HttpPost request = new HttpPost(url);
 
@@ -90,10 +95,10 @@ public class WiseMatchesClient {
 			HttpConnectionParams.setSoTimeout(request.getParams(), DEFAULT_TIMEOUT);
 			HttpConnectionParams.setConnectionTimeout(request.getParams(), DEFAULT_TIMEOUT);
 
-			final HttpResponse response = client.execute(HOST, request, localContext);
+			final HttpResponse response = client.execute(WISEMATCHES_HOST, request, localContext);
 			final StatusLine status = response.getStatusLine();
 			if (status.getStatusCode() != 200) {
-				throw new CommunicationException(status.getStatusCode(), status.getReasonPhrase());
+				throw new ConnectionException(status.getReasonPhrase(), status.getStatusCode());
 			}
 
 			final HttpEntity entity = response.getEntity();
@@ -111,15 +116,37 @@ public class WiseMatchesClient {
 			}
 
 			final JSONObject r = new JSONObject(builder.toString());
-			return new ClientResponse(r.getBoolean("success"), r.optJSONObject("data"));
+			return new Response(r.getBoolean("success"), r.optJSONObject("data"));
 		} catch (JSONException ex) {
-			throw new CooperationException(ex.getMessage(), ex);
+			throw new DataException(ex.getMessage(), ex);
 		} catch (IOException ex) {
-			throw new CommunicationException(503, ex.getMessage());
+			throw new ConnectionException(ex.getMessage(), 503);
 		}
 	}
 
-	public void terminate() {
-		cookieStore.clear();
+
+	private static String getServerHost() {
+		return WISEMATCHES_HOST.getHostName() + (WISEMATCHES_HOST.getPort() == -1 ? "" : ":" + WISEMATCHES_HOST.getPort());
+	}
+
+	/**
+	 * @author Sergey Klimenko (smklimenko@gmail.com)
+	 */
+	public static final class Response {
+		private final boolean success;
+		private final JSONObject data;
+
+		public Response(boolean success, JSONObject data) {
+			this.data = data;
+			this.success = success;
+		}
+
+		public boolean isSuccess() {
+			return success;
+		}
+
+		public JSONObject getData() {
+			return data;
+		}
 	}
 }
