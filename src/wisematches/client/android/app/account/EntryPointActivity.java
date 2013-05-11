@@ -6,17 +6,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 import wisematches.client.android.R;
-import wisematches.client.android.WiseMatchesActivity;
+import wisematches.client.android.WiseMatchesFragmentActivity;
 import wisematches.client.android.app.account.auth.Authenticator;
 
-public class EntryPointActivity extends WiseMatchesActivity {
-	private TextView status;
-//	private AsyncTask<Void, Void, WiseMatchesApplication.Principal> authTask;
-
-	//	private Thread mAuthThread;
+public class EntryPointActivity extends WiseMatchesFragmentActivity {
+    private TextView status;
+    //	private AsyncTask<Void, Void, WiseMatchesApplication.Principal> authTask;
+    //	private Thread mAuthThread;
 //	private String mAuthtoken;
 //	private String mAuthtokenType;
-	private AccountManager mAccountManager;
+    private AccountManager mAccountManager;
 
 //	private String mUsername;
 //	private String mPassword;
@@ -29,30 +28,36 @@ public class EntryPointActivity extends WiseMatchesActivity {
 
 //	private final Handler mHandler = new Handler();
 
-	/**
-	 * Called when the activity is first created.
-	 */
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.splash);
+    /**
+     * Called when the activity is first created.
+     */
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.splash);
 
-		status = (TextView) findViewById(R.id.splashFldStatus);
-		status.setText("Preparing resources...");
+        status = (TextView) findViewById(R.id.splashFldStatus);
+        status.setText("Preparing resources...");
 
-		mAccountManager = AccountManager.get(this);
+        mAccountManager = AccountManager.get(this);
 
-		final Account[] accountsByType = mAccountManager.getAccountsByType(Authenticator.ACCOUNT_TYPE);
-		status.setText("Found accounts: " + accountsByType.length);
+        final Account[] accounts = mAccountManager.getAccountsByType(Authenticator.ACCOUNT_TYPE);
+        status.setText("Found accounts: " + accounts.length);
 
-		if (accountsByType.length == 0) {
-			startActivity(new Intent(EntryPointActivity.this, AuthenticationActivity.class));
-		} else if (accountsByType.length == 1) {
-			final String password = mAccountManager.getPassword(accountsByType[0]);
+        if (accounts.length == 0) {
+            startActivity(new Intent(EntryPointActivity.this, AuthenticationActivity.class));
+        } else if (accounts.length == 1) {
+            final String password = mAccountManager.getPassword(accounts[0]);
 
-		} else {
-			status.setText("I have to do something here? Hm, not implemented");
-		}
+        } else {
+            final AccountSelectorDialog dialog = AccountSelectorDialog.newInstance(accounts, 0, new AccountSelectorDialog.OnDialogSelectorListener() {
+                @Override
+                public void onSelectedOption(int dialogId) {
+                    status.setText("Вход под именем " + accounts[dialogId].name);
+                }
+            });
+            dialog.show(getFragmentManager(), "WM");
+        }
 
 /*
 
@@ -67,7 +72,7 @@ public class EntryPointActivity extends WiseMatchesActivity {
 //		showDialog(1);
 
 /*
-		requestWindowFeature(Window.FEATURE_LEFT_ICON);
+        requestWindowFeature(Window.FEATURE_LEFT_ICON);
 		setContentView(R.layout.login_activity);
 		getWindow().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, android.R.drawable.ic_dialog_alert);
 
@@ -80,7 +85,7 @@ public class EntryPointActivity extends WiseMatchesActivity {
 */
 
 /*
-		final AccountManager am = AccountManager.get(this);
+        final AccountManager am = AccountManager.get(this);
 
 		final Account[] accounts = am.getAccountsByType("net.wisematches.android.auth");
 		status.setText("Fount accounts: " + accounts.length);
@@ -93,12 +98,12 @@ public class EntryPointActivity extends WiseMatchesActivity {
 */
 
 //		doAuth();
-	}
+    }
 
 
 
 /*
-	private class OnTokenAcquired implements AccountManagerCallback<Bundle> {
+    private class OnTokenAcquired implements AccountManagerCallback<Bundle> {
 		@Override
 		public void run(AccountManagerFuture<Bundle> future) {
 			status.setText("RESULT: success");

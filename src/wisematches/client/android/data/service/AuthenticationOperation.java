@@ -13,12 +13,11 @@ import wisematches.client.android.data.qwe.RequestType;
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
  */
-public abstract class AuthenticationOperation extends AbstractOperation {
+public abstract class AuthenticationOperation { //extends AbstractOperation {
 	protected AuthenticationOperation() {
-		super(RequestType.AUTHENTICATION);
+//		super(RequestType.AUTHENTICATION);
 	}
 
-	@Override
 	public final Bundle execute(Context context, Request request) throws ConnectionException, DataException, CustomRequestException {
 		final Personality execute = execute(context, request.getString("username"), request.getString("password"));
 

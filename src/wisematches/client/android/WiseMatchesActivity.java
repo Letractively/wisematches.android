@@ -13,7 +13,6 @@ public abstract class WiseMatchesActivity extends SherlockActivity {
 	public WiseMatchesActivity() {
 	}
 
-
 	protected final void execute(Request request, RequestManager.RequestListener listener) {
 		getApp().getRequestManager().execute(request, listener);
 	}

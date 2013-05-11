@@ -75,7 +75,7 @@ public class AuthenticationActivity extends WiseMatchesActivity {
 							final String username = strings[0];
 							final String password = strings[1];
 
-							AuthenticationOperation.auth(getRe);
+//							AuthenticationOperation.auth(getRe);
 
 							final Account account = new Account(username, Authenticator.ACCOUNT_TYPE);
 
