@@ -2,9 +2,7 @@
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:id="@+id/scrollView"
-            android:background="#EAF4FC">
+            android:layout_height="fill_parent">
 
     <LinearLayout
             android:orientation="vertical"
@@ -18,11 +16,12 @@
                 android:background="#A6C9E2">
 
 
-            <ImageView
+            <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/ic_logo"
-                    android:layout_gravity="left|center_vertical"/>
+                    android:text="Вход с помощью Аккаунта WiseMatches"
+                    style="@style/TextAppearance.WM.Label"
+                    android:padding="5dp"/>
         </LinearLayout>
 
         <LinearLayout
@@ -34,10 +33,11 @@
             <TextView
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/login.pwd.label"/>
+                    style="@style/TextAppearance.WM.Label"
+                    android:text="Логин"/>
 
             <EditText
-                    android:id="@+id/loginFldLogin"
+                    android:id="@id/accountFldEmail"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dip"
@@ -49,10 +49,11 @@
             <TextView
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/login.login.label"/>
+                    style="@style/TextAppearance.WM.Label"
+                    android:text="@string/login.pwd.label"/>
 
             <EditText
-                    android:id="@+id/loginFldPwd"
+                    android:id="@id/accountFldPwd"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dip"
@@ -69,7 +70,7 @@
                 android:padding="10dp">
 
             <TextView
-                    android:id="@+id/loginFldError"
+                    android:id="@id/accountFldError"
                     style="@style/TextAppearance.WM.Error"
                     android:visibility="visible"
                     android:layout_width="fill_parent"
@@ -78,28 +79,42 @@
                     />
 
             <Button
-                    android:id="@+id/loginBtnSignIn"
+                    android:id="@id/accountBtnSignIn"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dip"
-                    android:text="@string/login.signin"/>
+                    android:text="Войти как игрок"
+                    style="@style/Widget.WM.Button"
+                    android:padding="10dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:padding="10dp">
 
             <Button
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/login.register.label"
-                    android:id="@+id/loginBtnRegister"
-                    android:hint="@string/login.register.desc"/>
-
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/login.restore.label"
-                    android:layout_gravity="center"
-                    android:id="@+id/loginLinkForgot"
-                    style="@style/TextAppearance.WM.Link"
-                    android:singleLine="true"
+                    android:text="Зарегистрироваться"
+                    android:id="@id/accountBtnRegister"
+                    style="@style/Widget.WM.Button"
+                    android:layout_marginTop="5dp"
+                    android:padding="10dp"
+                    android:singleLine="false"
                     />
+
+            <Button
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Войти как гость"
+                    android:id="@id/accountBtnVisitor"
+                    android:layout_marginTop="10dip"
+                    style="@style/Widget.WM.Button"
+                    android:padding="10dp"/>
+
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

@@ -31,7 +31,7 @@
             android:screenOrientation="landscape">
 
         <service
-                android:name=".app.account.auth.AuthenticationService"
+                android:name=".security.auth.AuthenticationService"
                 android:exported="true">
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator"/>
@@ -44,7 +44,7 @@
         </service>
 
         <service
-                android:name=".data.service.http.HttpRequestService"
+                android:name=".data.service.JSONRequestService"
                 android:exported="false"/>
 
         <!-- Entry point -->
@@ -58,14 +58,14 @@
             </intent-filter>
         </activity>
 
-        <!-- Main screens -->
-        <activity android:name=".app.account.AuthenticationActivity"/>
+        <!-- Account activities -->
+        <activity android:name=".app.account.LoginActivity"/>
 
-        <activity android:name=".app.playground.ActiveGamesActivity"/>
-
+        <activity android:name=".app.account.RegisterActivity"/>
 
         <!-- Playground activities -->
-        <activity android:name=".app.playground.ScribbleBoardActivity"/>
+        <activity android:name=".app.playground.scribble.ActiveGamesActivity"/>
 
+        <activity android:name=".app.playground.scribble.board.ScribbleBoardActivity"/>
     </application>
 </manifest> 

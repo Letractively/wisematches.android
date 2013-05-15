@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="accountFldEmail" type="id"/>
+    <item name="accountFldNickname" type="id"/>
+    <item name="accountFldError" type="id"/>
+    <item name="accountFldPwd" type="id"/>
+    <item name="accountFldPwdCnf" type="id"/>
+    <item name="accountBtnSignIn" type="id"/>
+    <item name="accountBtnRegister" type="id"/>
+    <item name="accountBtnVisitor" type="id"/>
+    <item name="accountFldLanguage" type="id"/>
+</resources>

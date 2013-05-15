@@ -19,7 +19,7 @@
             <view
                     android:layout_width="356px"
                     android:layout_height="370px"
-                    class="wisematches.client.android.app.playground.scribble.view.BoardView"
+                    class="wisematches.client.android.app.playground.scribble.board.view.BoardView"
                     android:id="@+id/scribbleBoardView"
                     android:layout_gravity="left|top"
                     android:background="@android:color/transparent"
@@ -103,7 +103,7 @@
                         <view
                                 android:layout_width="fill_parent"
                                 android:layout_height="16dp"
-                                class="wisematches.client.android.app.playground.scribble.view.ProgressView"
+                                class="wisematches.client.android.app.playground.scribble.board.view.ProgressView"
                                 android:id="@+id/scribbleBoardProgressView"
                                 android:text="dsfasfdasdf asdf"
                                 android:layout_gravity="center"

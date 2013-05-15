@@ -16,4 +16,9 @@
     <string name="board_surface_bonus_W2">2С</string>
     <string name="board_surface_bonus_W3">3С</string>
     <string name="board_surface_captions">АБВГДЕЖЗИКЛМНОП</string>
+
+    <string-array name="languages_array_values">
+        <item>Русский</item>
+        <item>Английский</item>
+    </string-array>
 </resources>

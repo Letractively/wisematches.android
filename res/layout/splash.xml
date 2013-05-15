@@ -14,29 +14,4 @@
             android:layout_weight="1">
     </ImageView>
 
-    <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical|center_horizontal|bottom"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="15dp">
-
-        <ProgressBar
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_gravity="center_horizontal|bottom"
-                android:layout_marginRight="10dp"/>
-
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/splashFldStatus"
-                android:autoText="false"
-                android:gravity="center"
-                android:textStyle="bold"
-                android:text="Загрузка приложения..."
-                android:layout_gravity="center"/>
-
-    </LinearLayout>
 </LinearLayout>

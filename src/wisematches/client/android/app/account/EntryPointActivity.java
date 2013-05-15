@@ -1,174 +1,32 @@
 package wisematches.client.android.app.account;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
-import android.content.Intent;
 import android.os.Bundle;
-import android.widget.TextView;
 import wisematches.client.android.R;
-import wisematches.client.android.WiseMatchesFragmentActivity;
-import wisematches.client.android.app.account.auth.Authenticator;
+import wisematches.client.android.WiseMatchesActivity;
+import wisematches.client.android.app.playground.scribble.ActiveGamesActivity;
+import wisematches.client.android.data.model.person.Personality;
+import wisematches.client.android.security.SecurityContext;
 
-public class EntryPointActivity extends WiseMatchesFragmentActivity {
-    private TextView status;
-    //	private AsyncTask<Void, Void, WiseMatchesApplication.Principal> authTask;
-    //	private Thread mAuthThread;
-//	private String mAuthtoken;
-//	private String mAuthtokenType;
-    private AccountManager mAccountManager;
+public class EntryPointActivity extends WiseMatchesActivity {
+	/**
+	 * Called when the activity is first created.
+	 */
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.splash);
 
-//	private String mUsername;
-//	private String mPassword;
-//
-//	private EditText mUsernameEdit;
-//	private EditText mPasswordEdit;
-
-//	private Boolean mConfirmCredentials = Boolean.FALSE;
-//	protected boolean mRequestNewAccount = false;
-
-//	private final Handler mHandler = new Handler();
-
-    /**
-     * Called when the activity is first created.
-     */
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.splash);
-
-        status = (TextView) findViewById(R.id.splashFldStatus);
-        status.setText("Preparing resources...");
-
-        mAccountManager = AccountManager.get(this);
-
-        final Account[] accounts = mAccountManager.getAccountsByType(Authenticator.ACCOUNT_TYPE);
-        status.setText("Found accounts: " + accounts.length);
-
-        if (accounts.length == 0) {
-            startActivity(new Intent(EntryPointActivity.this, AuthenticationActivity.class));
-        } else if (accounts.length == 1) {
-            final String password = mAccountManager.getPassword(accounts[0]);
-
-        } else {
-            final AccountSelectorDialog dialog = AccountSelectorDialog.newInstance(accounts, 0, new AccountSelectorDialog.OnDialogSelectorListener() {
-                @Override
-                public void onSelectedOption(int dialogId) {
-                    status.setText("Вход под именем " + accounts[dialogId].name);
-                }
-            });
-            dialog.show(getFragmentManager(), "WM");
-        }
-
-/*
-
-		final Intent intent = getIntent();
-		mUsername = intent.getStringExtra(Authenticator.PARAM_USERNAME);
-		mAuthtokenType = intent.getStringExtra(Authenticator.PARAM_AUTHTOKEN_TYPE);
-
-		mRequestNewAccount = mUsername == null;
-		mConfirmCredentials = intent.getBooleanExtra(Authenticator.PARAM_CONFIRMCREDENTIALS, false);
-*/
-
-//		showDialog(1);
-
-/*
-        requestWindowFeature(Window.FEATURE_LEFT_ICON);
-		setContentView(R.layout.login_activity);
-		getWindow().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, android.R.drawable.ic_dialog_alert);
-
-		mMessage = (TextView) findViewById(R.id.message);
-		mUsernameEdit = (EditText) findViewById(R.id.username_edit);
-		mPasswordEdit = (EditText) findViewById(R.id.password_edit);
-
-		mUsernameEdit.setText(mUsername);
-		mMessage.setText(getMessage());
-*/
-
-/*
-        final AccountManager am = AccountManager.get(this);
-
-		final Account[] accounts = am.getAccountsByType("net.wisematches.android.auth");
-		status.setText("Fount accounts: " + accounts.length);
-
-		final Bundle options = new Bundle();
-
-		final Account account = new Account("test@test.ri", "net.wisematches.android.auth");
-
-		AccountManagerFuture<Bundle> authToken = am.getAuthToken(account, "net.wisematches.android.auth", options, this, new OnTokenAcquired(), new Handler(new OnError()));
-*/
-
-//		doAuth();
-    }
-
-
-
-/*
-    private class OnTokenAcquired implements AccountManagerCallback<Bundle> {
-		@Override
-		public void run(AccountManagerFuture<Bundle> future) {
-			status.setText("RESULT: success");
-		}
-	}
-
-	private class OnError implements Handler.Callback {
-		@Override
-		public boolean handleMessage(Message msg) {
-			status.setText("ERROR: " + msg.toString());
-			return true;
-		}
-	}
-*/
-
-/*
-	private void doAuth() {
-		authTask = new AsyncTask<Void, Void, WiseMatchesApplication.Principal>() {
+		final SecurityContext.AuthorizationListener authorizationListener = new SecurityContext.AuthorizationListener() {
 			@Override
-			protected WiseMatchesApplication.Principal doInBackground(Void... voids) {
-				WiseMatchesApplication.Principal player = null;
-				try {
-					player = getWMApplication().authenticate();
-					if (player != null) {
-						startActivity(new Intent(EntryPointActivity.this, ActiveGamesActivity.class));
-					} else {
-						startActivity(new Intent(EntryPointActivity.this, LoginActivity.class));
-					}
-				} catch (CommunicationException ex) {
-					authTask = null;
-					if (ex.getStatusCode() == 401) {
-						final Intent intent = new Intent(EntryPointActivity.this, LoginActivity.class);
-						intent.putExtra("ErrorCode", ex.getStatusReason());
-						startActivity(intent);
-					} else {
-						status.setText("Illegal return code received: " + ex.getStatusReason() + " [" + ex.getStatusCode() + "]. Tap to try again.");
-					}
-				} catch (CooperationException ex) {
-					authTask = null;
-					status.setText("Server communication error: " + ex.getMessage() + ". Tap to try again.");
+			public void authorized(Personality personality) {
+				final EntryPointActivity activity = EntryPointActivity.this;
+				if (personality == null) {
+					getSecurityContext().authenticate(activity, this);
+				} else {
+					activity.startActivity(ActiveGamesActivity.createIntent(activity, personality.getId()));
 				}
-				return player;
-			}
-
-			@Override
-			protected void onCancelled() {
-				startActivity(new Intent(EntryPointActivity.this, LoginActivity.class));
 			}
 		};
-
-		status.setText("Authenticating. Please wait...");
-		authTask.execute();
+		getSecurityContext().authenticate(this, authorizationListener);
 	}
-
-	@Override
-	public boolean onTouchEvent(MotionEvent event) {
-		if (event.getAction() == MotionEvent.ACTION_DOWN) {
-			if (authTask != null) {
-				authTask.cancel(true);
-				authTask = null;
-			} else {
-				doAuth();
-			}
-		}
-		return true;
-	}
-*/
 }

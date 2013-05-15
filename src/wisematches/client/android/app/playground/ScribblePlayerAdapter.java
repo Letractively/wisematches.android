@@ -7,7 +7,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import wisematches.client.android.R;
 import wisematches.client.android.app.account.view.PlayerView;
-import wisematches.client.android.app.playground.scribble.model.ScribblePlayer;
+import wisematches.client.android.app.playground.scribble.board.model.ScribblePlayer;
 
 import java.util.List;
 

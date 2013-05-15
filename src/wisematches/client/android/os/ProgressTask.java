@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
  */
+@Deprecated
 public abstract class ProgressTask<Params, Progress, Result> extends AsyncTask<Params, Progress, Result> {
 	private String title;
 	private Context context;
