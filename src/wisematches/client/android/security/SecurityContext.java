@@ -5,8 +5,8 @@ import android.accounts.AccountManager;
 import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import wisematches.client.android.data.model.person.Personality;
 import wisematches.client.android.security.auth.AccountSelectorDialog;
 import wisematches.client.android.security.auth.Authenticator;
@@ -21,29 +21,27 @@ public class SecurityContext {
 	public SecurityContext() {
 	}
 
-	public void authenticate(final FragmentActivity activity, final AuthorizationListener authorizationListener) {
-		final AccountManager accountManager = AccountManager.get(activity);
-
-		final Account[] accounts = accountManager.getAccountsByType(Authenticator.ACCOUNT_TYPE);
+	public void authenticate(final Activity activity, final AuthorizationListener authorizationListener) {
+		final Account[] accounts = Authenticator.getAccounts(activity);
 		if (account != null) {
 			Account res = searchAccount(account.name, accounts);
 			if (res != null) {
-				authenticate(activity, accountManager, res, authorizationListener);
+				authenticate(activity, res, authorizationListener);
 				return;
 			}
 		}
 
 		if (accounts.length == 0) {
-			authenticate(activity, accountManager, null, authorizationListener);
+			authenticate(activity, null, authorizationListener);
 		} else if (accounts.length == 1) {
-			authenticate(activity, accountManager, accounts[0], authorizationListener);
+			authenticate(activity, accounts[0], authorizationListener);
 		} else {
-			AccountSelectorDialog.newInstance(accounts, 0, new AccountSelectorDialog.OnDialogSelectorListener() {
+			AccountSelectorDialog.chooseAccount(activity, accounts, new DialogInterface.OnClickListener() {
 				@Override
-				public void onSelectedOption(int dialogId) {
-					authenticate(activity, accountManager, accounts[dialogId], authorizationListener);
+				public void onClick(DialogInterface dialog, int which) {
+					authenticate(activity, accounts[which], authorizationListener);
 				}
-			}).show(activity.getFragmentManager(), "WM");
+			}).show();
 		}
 	}
 
@@ -57,16 +55,14 @@ public class SecurityContext {
 		return personality;
 	}
 
-	private void authenticate(Activity activity, AccountManager accountManager, Account account, AuthorizationListener authorizationListener) {
+	private void authenticate(Activity activity, Account account, AuthorizationListener authorizationListener) {
 		clear();
 
 		final TheAccountManagerCallback callback = new TheAccountManagerCallback(account, authorizationListener);
 		if (account == null) {
-			accountManager.addAccount(Authenticator.ACCOUNT_TYPE, Authenticator.AUTH_TOKEN_TYPE, null, null, activity, callback, null);
+			Authenticator.createAccount(activity, callback);
 		} else {
-			final Bundle ops = new Bundle();
-			ops.putString(AccountManager.KEY_PASSWORD, accountManager.getPassword(account));
-			accountManager.confirmCredentials(account, ops, activity, callback, null);
+			Authenticator.confirmAccount(activity, account, callback);
 		}
 	}
 

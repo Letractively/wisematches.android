@@ -21,8 +21,12 @@ public final class JSONRequestFactory {
 	public static Request getAuthRequest(String username, String password) {
 		final Request request = new Request(REQUEST_TYPE_AUTH);
 		request.setMemoryCacheEnabled(false);
-		request.put(SignInPlayerOperation.PARAM_USERNAME, username);
-		request.put(SignInPlayerOperation.PARAM_PASSWORD, password);
+		if (username == null && password == null) {
+			request.put(SignInPlayerOperation.PARAM_VISITOR, true);
+		} else {
+			request.put(SignInPlayerOperation.PARAM_USERNAME, username);
+			request.put(SignInPlayerOperation.PARAM_PASSWORD, password);
+		}
 		return request;
 	}
 

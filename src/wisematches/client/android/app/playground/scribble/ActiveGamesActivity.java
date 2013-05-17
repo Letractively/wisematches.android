@@ -10,11 +10,11 @@ import wisematches.client.android.R;
 import wisematches.client.android.WiseMatchesActivity;
 import wisematches.client.android.app.playground.ScribbleGameInfo;
 import wisematches.client.android.app.playground.scribble.board.ScribbleBoardActivity;
-import wisematches.client.android.os.ProgressTask;
 
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
  */
+@Deprecated
 public class ActiveGamesActivity extends WiseMatchesActivity {
 	private static final String INTENT_EXTRA_PID = "PLAYER_ID";
 
@@ -37,40 +37,8 @@ public class ActiveGamesActivity extends WiseMatchesActivity {
 			}
 		});
 
-		ProgressTask<Void, Void, ScribbleGameInfo[]> a = new ProgressTask<Void, Void, ScribbleGameInfo[]>("Loading active games. Please wait...", this) {
-			@Override
-			protected ScribbleGameInfo[] doInBackground(Void... voids) {
-/*
-				try {
-					final WiseMatchesServer.Response r = getWiseMatchesClient().execute("/playground/scribble/active.ajax");
-					if (r.isSuccess()) {
-						final JSONObject data = r.getData();
-
-
-						final JSONArray games = data.getJSONArray("games");
-						ScribbleGameInfo[] infos = new ScribbleGameInfo[games.length()];
-						for (int i = 0; i < games.length(); i++) {
-							final JSONObject obj = games.getJSONObject(i);
-							infos[i] = new ScribbleGameInfo(obj);
-						}
-						return infos;
-					}
-				} catch (JSONException | CooperationException | CommunicationException ex) {
-					ex.printStackTrace();
-				}
-*/
-				return null;
-			}
-
-			@Override
-			protected void onPostExecute(ScribbleGameInfo[] games) {
-				super.onPostExecute(games);
-
-				ActiveGamesAdapter adapter = new ActiveGamesAdapter(ActiveGamesActivity.this, games);
-				listView.setAdapter(adapter);
-			}
-		};
-		a.execute();
+//		ActiveGamesAdapter adapter = new ActiveGamesAdapter(ActiveGamesActivity.this, games);
+//		listView.setAdapter(adapter);
 	}
 
 	private void openBoard(final long boardId) {

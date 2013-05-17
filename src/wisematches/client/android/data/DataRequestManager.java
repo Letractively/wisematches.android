@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public interface DataRequestManager {
 	void authenticate(String username, String password, DataResponse<Personality> response);
 
-	void register(String username, String email, String password, String confirm, String language, String timezone, DataResponse<Personality> response);
+	void register(String nickname, String email, String password, String confirm, String language, String timezone, DataResponse<Personality> response);
 
 
 	void getPersonality(long pid, DataResponse<Personality> response);

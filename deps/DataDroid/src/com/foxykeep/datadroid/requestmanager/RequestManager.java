@@ -8,9 +8,6 @@
 
 package com.foxykeep.datadroid.requestmanager;
 
-import com.foxykeep.datadroid.service.RequestService;
-import com.foxykeep.datadroid.util.DataDroidLog;
-
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
@@ -20,15 +17,11 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.ResultReceiver;
 import android.support.util.LruCache;
-
+import com.foxykeep.datadroid.service.RequestService;
+import com.foxykeep.datadroid.util.DataDroidLog;
 import org.apache.http.HttpStatus;
 
-import java.lang.ref.WeakReference;
-import java.util.Collections;
-import java.util.EventListener;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * This class allows to send requests through a {@link RequestService}.
@@ -299,18 +292,18 @@ public abstract class RequestManager {
 
     private final class ListenerHolder {
 
-        private final WeakReference<RequestListener> mListenerRef;
+        private final RequestListener mListenerRef;
         private final int mHashCode;
 
         /* package */ ListenerHolder(RequestListener listener) {
-            mListenerRef = new WeakReference<RequestListener>(listener);
+            mListenerRef = listener;
             mHashCode = 31 + listener.hashCode();
         }
 
         /* package */ void onRequestFinished(Request request, int resultCode, Bundle resultData) {
             mRequestReceiverMap.remove(request);
 
-            RequestListener listener = mListenerRef.get();
+            RequestListener listener = mListenerRef;
             if (listener != null) {
                 if (resultCode == RequestService.ERROR_CODE) {
                     switch (resultData.getInt(RECEIVER_EXTRA_ERROR_TYPE)) {

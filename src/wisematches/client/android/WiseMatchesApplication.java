@@ -16,8 +16,7 @@ public class WiseMatchesApplication extends Application {
 	private SecurityContext securityContext;
 	private DataRequestManager requestManager;
 
-	//	public static final HttpHost WEB_HOST = new HttpHost("www.wisematches.net", 80, "http");
-	public static final HttpHost WEB_HOST = new HttpHost("10.139.202.145", 8080, "http");
+	public static final HttpHost WEB_HOST = new HttpHost("www.wisematches.net", 80, "http");
 
 	public WiseMatchesApplication() {
 	}

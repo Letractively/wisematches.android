@@ -2,6 +2,7 @@ package wisematches.client.android.data.service;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import com.foxykeep.datadroid.requestmanager.Request;
 import com.foxykeep.datadroid.requestmanager.RequestManager;
 import wisematches.client.android.data.DataRequestManager;
@@ -25,8 +26,8 @@ public class JSONRequestManager extends RequestManager implements DataRequestMan
 	}
 
 	@Override
-	public void register(String username, String email, String password, String confirm, String language, String timezone, DataResponse<Personality> response) {
-		Request request = JSONRequestFactory.getRegisterRequest(username, email, password, confirm, language, timezone);
+	public void register(String nickname, String email, String password, String confirm, String language, String timezone, DataResponse<Personality> response) {
+		Request request = JSONRequestFactory.getRegisterRequest(nickname, email, password, confirm, language, timezone);
 		execute(request, new TheRequestListener<>(response));
 	}
 
@@ -51,8 +52,10 @@ public class JSONRequestManager extends RequestManager implements DataRequestMan
 		@SuppressWarnings("unchecked")
 		public void onRequestFinished(Request request, Bundle resultData) {
 			if (resultData == null) {
+				Log.d("WM", "Finished: empty");
 				response.onSuccess(null);
 			} else {
+				Log.d("WM", "Finished: not empty");
 				final String type = resultData.getString(JSONRequestFactory.BUNDLE_EXTRA_RESPONSE_TYPE);
 				if (type.equals(JSONRequestFactory.BUNDLE_EXTRA_RESPONSE_TYPE_LIST)) {
 					response.onSuccess((T) resultData.getParcelableArrayList(JSONRequestFactory.BUNDLE_EXTRA_RESPONSE_TYPE_LIST));
@@ -64,16 +67,19 @@ public class JSONRequestManager extends RequestManager implements DataRequestMan
 
 		@Override
 		public void onRequestDataError(Request request) {
+			Log.d("WM", "Finished: onDataError");
 			response.onDataError();
 		}
 
 		@Override
 		public void onRequestConnectionError(Request request, int statusCode) {
+			Log.d("WM", "Finished: onConnectionError " + statusCode);
 			response.onConnectionError(statusCode);
 		}
 
 		@Override
 		public void onRequestCustomError(Request request, Bundle resultData) {
+			Log.d("WM", "Finished: onFailure");
 			response.onFailure(resultData.getString("code"), resultData.getString("message"));
 		}
 	}

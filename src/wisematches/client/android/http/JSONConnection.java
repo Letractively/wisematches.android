@@ -2,13 +2,16 @@ package wisematches.client.android.http;
 
 import com.foxykeep.datadroid.exception.ConnectionException;
 import com.foxykeep.datadroid.exception.DataException;
-import org.apache.http.*;
+import org.apache.http.Header;
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpResponse;
+import org.apache.http.StatusLine;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.params.ClientPNames;
 import org.apache.http.client.params.HttpClientParams;
 import org.apache.http.client.protocol.ClientContext;
-import org.apache.http.conn.params.ConnRoutePNames;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -18,11 +21,13 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import wisematches.client.android.WiseMatchesApplication;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
@@ -32,43 +37,19 @@ public class JSONConnection {
 	private final CookieStore cookieStore = new BasicCookieStore();
 	private final HttpContext localContext = new BasicHttpContext();
 
-	private static final int DEFAULT_TIMEOUT = 60000;
+	private static final int DEFAULT_TIMEOUT = 10000;
 
 	public JSONConnection() {
 		final HttpParams params = new BasicHttpParams();
+		params.setParameter(ClientPNames.ALLOW_CIRCULAR_REDIRECTS, true);
 		params.setParameter(CoreProtocolPNames.USER_AGENT, "Wisematches/1.0");
 
-		HttpClientParams.setRedirecting(params, false);
+		HttpClientParams.setRedirecting(params, true);
 		HttpConnectionParams.setSoTimeout(params, DEFAULT_TIMEOUT);
 		HttpConnectionParams.setConnectionTimeout(params, DEFAULT_TIMEOUT);
 
 		client = new DefaultHttpClient(params);
 		localContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
-	}
-
-
-	public Response execute(String url, Header[] headers) throws ConnectionException, DataException {
-		return execute(url, headers, null, null);
-	}
-
-	public Response execute(String url, JSONObject data) throws ConnectionException, DataException {
-		return execute(url, null, null, data);
-	}
-
-	public Response execute(String url, Header[] headers, JSONObject data) throws ConnectionException, DataException {
-		return execute(url, headers, null, data);
-	}
-
-	public Response execute(String url, HttpParams params) throws ConnectionException, DataException {
-		return execute(url, null, params, null);
-	}
-
-	public Response execute(String url, Header[] headers, HttpParams params) throws ConnectionException, DataException {
-		return execute(url, headers, params, null);
-	}
-
-	public Response execute(String url, HttpParams params, JSONObject data) throws ConnectionException, DataException {
-		return execute(url, null, params, data);
 	}
 
 	public Response execute(String url, Header[] headers, HttpParams params, JSONObject data) throws ConnectionException, DataException {
@@ -97,6 +78,7 @@ public class JSONConnection {
 		try {
 			request.setHeader("Accept", "application/json");
 			request.setHeader("Content-type", "application/json");
+			request.setHeader("Accept-Language", "ru");
 
 			HttpConnectionParams.setSoTimeout(request.getParams(), DEFAULT_TIMEOUT);
 			HttpConnectionParams.setConnectionTimeout(request.getParams(), DEFAULT_TIMEOUT);
@@ -107,21 +89,12 @@ public class JSONConnection {
 				throw new ConnectionException(status.getReasonPhrase(), status.getStatusCode());
 			}
 
-			final HttpEntity entity = response.getEntity();
-			final InputStream content = entity.getContent();
-
-			String line;
-			final StringBuilder builder = new StringBuilder();
-			final BufferedReader reader = new BufferedReader(new InputStreamReader(content));
-			while ((line = reader.readLine()) != null) {
-				builder.append(line);
-			}
-
-			if (builder.length() == 0) {
+			final String content = EntityUtils.toString(response.getEntity());
+			if (content == null || content.length() == 0) {
 				return null;
 			}
 
-			final JSONObject r = new JSONObject(builder.toString());
+			final JSONObject r = new JSONObject(content);
 			return new Response(r.getBoolean("success"), r.optJSONObject("data"), r.optString("code"), r.optString("message"));
 		} catch (JSONException ex) {
 			throw new DataException(ex.getMessage(), ex);

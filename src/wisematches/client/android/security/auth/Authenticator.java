@@ -1,9 +1,7 @@
 package wisematches.client.android.security.auth;
 
-import android.accounts.AbstractAccountAuthenticator;
-import android.accounts.Account;
-import android.accounts.AccountAuthenticatorResponse;
-import android.accounts.AccountManager;
+import android.accounts.*;
+import android.app.Activity;
 import android.os.Bundle;
 import wisematches.client.android.WiseMatchesApplication;
 import wisematches.client.android.app.account.LoginActivity;
@@ -16,8 +14,10 @@ import wisematches.client.android.data.model.person.Personality;
 public class Authenticator extends AbstractAccountAuthenticator {
 	private final WiseMatchesApplication application;
 
-	public static final String ACCOUNT_TYPE = "net.wisematches.android.auth";
-	public static final String AUTH_TOKEN_TYPE = "net.wisematches.android.auth";
+	private static final String ACCOUNT_TYPE = "net.wisematches.android.auth";
+	private static final String AUTH_TOKEN_TYPE = "net.wisematches.android.auth";
+
+	private static final String INTERNAL_AUTH_FLAG = "INTERNAL_AUTH_FLAG";
 
 	public Authenticator(WiseMatchesApplication application) {
 		super(application);
@@ -29,7 +29,7 @@ public class Authenticator extends AbstractAccountAuthenticator {
 							 String accountType, String authTokenType,
 							 String[] requiredFeatures, Bundle options) {
 		final Bundle bundle = new Bundle();
-		bundle.putParcelable(AccountManager.KEY_INTENT, LoginActivity.createIntent(application, response));
+		bundle.putParcelable(AccountManager.KEY_INTENT, LoginActivity.createIntent(application, null, getInternalAuthFlag(options), response));
 		return bundle;
 	}
 
@@ -44,7 +44,7 @@ public class Authenticator extends AbstractAccountAuthenticator {
 						response.onResult(bundle);
 					} else {
 						final Bundle res = new Bundle();
-						res.putParcelable(AccountManager.KEY_INTENT, LoginActivity.createIntent(application, account.name, bundle, response));
+						res.putParcelable(AccountManager.KEY_INTENT, LoginActivity.createIntent(application, account.name, getInternalAuthFlag(options), response));
 						response.onResult(res);
 					}
 				}
@@ -52,9 +52,18 @@ public class Authenticator extends AbstractAccountAuthenticator {
 			return null;
 		} else {
 			final Bundle res = new Bundle();
-			res.putParcelable(AccountManager.KEY_INTENT, LoginActivity.createIntent(application, account.name, null, response));
+			res.putParcelable(AccountManager.KEY_INTENT, LoginActivity.createIntent(application, account.name, getInternalAuthFlag(options), response));
 			return res;
 		}
+	}
+
+
+	@Override
+	public Bundle updateCredentials(AccountAuthenticatorResponse response,
+									Account account, String authTokenType, Bundle options) {
+		final Bundle bundle = new Bundle();
+		bundle.putParcelable(AccountManager.KEY_INTENT, LoginActivity.createIntent(application, account.name, getInternalAuthFlag(options), response));
+		return bundle;
 	}
 
 	@Override
@@ -86,12 +95,42 @@ public class Authenticator extends AbstractAccountAuthenticator {
 		return result;
 	}
 
-	@Override
-	public Bundle updateCredentials(AccountAuthenticatorResponse response,
-									Account account, String authTokenType, Bundle loginOptions) {
-		final Bundle bundle = new Bundle();
-		bundle.putParcelable(AccountManager.KEY_INTENT, LoginActivity.createIntent(application, account.name, null, response));
-		return bundle;
+	public static Account[] getAccounts(Activity activity) {
+		return AccountManager.get(activity).getAccountsByType(Authenticator.ACCOUNT_TYPE);
+	}
+
+	public static void createAccount(Activity activity, AccountManagerCallback<Bundle> callback) {
+		final Bundle b = new Bundle();
+		setInternalAuthFlag(b, true);
+		AccountManager.get(activity).addAccount(Authenticator.ACCOUNT_TYPE, Authenticator.AUTH_TOKEN_TYPE, null, b, activity, callback, null);
+	}
+
+	public static void confirmAccount(Activity activity, Account account, AccountManagerCallback<Bundle> callback) {
+		final AccountManager accountManager = AccountManager.get(activity);
+
+		final Bundle ops = new Bundle();
+		setInternalAuthFlag(ops, true);
+		ops.putString(AccountManager.KEY_PASSWORD, accountManager.getPassword(account));
+		accountManager.confirmCredentials(account, ops, activity, callback, null);
+	}
+
+	public static void updateAccountExplicitly(Activity activity, String login, String password) {
+		final AccountManager manager = AccountManager.get(activity);
+
+		Account account = null;
+		Account[] accountsByType = manager.getAccountsByType(ACCOUNT_TYPE);
+		for (int i = 0; i < accountsByType.length && account == null; i++) {
+			Account ac = accountsByType[i];
+			if (ac.name.equals(login)) {
+				account = ac;
+			}
+		}
+
+		if (account == null) {
+			manager.addAccountExplicitly(new Account(login, ACCOUNT_TYPE), password, null);
+		} else {
+			manager.setPassword(account, password);
+		}
 	}
 
 	public static void authenticate(final String username, final String password, DataRequestManager requestManager, final AuthenticationCallback callback) {
@@ -139,6 +178,16 @@ public class Authenticator extends AbstractAccountAuthenticator {
 				return b;
 			}
 		});
+	}
+
+	private static boolean getInternalAuthFlag(Bundle options) {
+		return options != null && options.getBoolean(INTERNAL_AUTH_FLAG);
+	}
+
+	private static void setInternalAuthFlag(Bundle options, boolean flag) {
+		if (options != null) {
+			options.putBoolean(INTERNAL_AUTH_FLAG, flag);
+		}
 	}
 
 	public static interface AuthenticationCallback {

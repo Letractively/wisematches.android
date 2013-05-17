@@ -1,5 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="ArtifactManager">
+    <artifact type="apk" name="wisematches">
+      <output-path>$PROJECT_DIR$/target/artifacts/wisematches</output-path>
+      <properties id="android-properties">
+        <options>
+          <option name="includeSystemProGuardCfgFile" value="true" />
+          <option name="keyStoreUrl" value="file://" />
+          <option name="proGuardCfgFileUrl" value="file://$PROJECT_DIR$/proguard-project.txt" />
+        </options>
+      </properties>
+      <root id="archive" name="wisematches.apk">
+        <element id="android-final-package" facet="wisematches/android/Android" />
+      </root>
+    </artifact>
+  </component>
   <component name="CompilerConfiguration">
     <option name="DEFAULT_COMPILER" value="Javac" />
     <resourceExtensions />

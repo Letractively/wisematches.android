@@ -78,6 +78,16 @@
                     android:gravity="center"
                     />
 
+            <ProgressBar
+                    style="@android:style/Widget.ProgressBar.Horizontal"
+                    android:layout_width="fill_parent"
+                    android:layout_height="3dp"
+                    android:id="@id/accountFldProgress"
+                    android:layout_gravity="center"
+                    android:indeterminate="true"
+                    android:indeterminateOnly="true"
+                    android:visibility="invisible"/>
+
             <Button
                     android:id="@id/accountBtnSignIn"
                     android:layout_width="fill_parent"

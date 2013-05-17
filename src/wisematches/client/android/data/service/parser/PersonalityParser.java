@@ -11,11 +11,12 @@ import java.util.TimeZone;
  */
 public class PersonalityParser {
 	public static Personality parse(JSONObject data) throws JSONException {
+		String timeZone = data.optString("timeZone");
 		return new Personality(
 				data.getLong("id"),
-				data.getString("nickname"),
+				data.optString("nickname"),
 				data.getString("language"),
-				TimeZone.getTimeZone(data.getString("timeZone")),
+				timeZone != null && !timeZone.isEmpty() ? TimeZone.getTimeZone(timeZone) : TimeZone.getDefault(),
 				data.getString("type"),
 				data.optString("membership", null),
 				true);

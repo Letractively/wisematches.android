@@ -59,9 +59,15 @@
         </activity>
 
         <!-- Account activities -->
-        <activity android:name=".app.account.LoginActivity"/>
+        <activity
+                android:name=".app.account.LoginActivity"
+                android:theme="@style/Theme.WM.NoActionBar"
+                android:noHistory="true"/>
 
-        <activity android:name=".app.account.RegisterActivity"/>
+        <activity
+                android:name=".app.account.RegisterActivity"
+                android:theme="@style/Theme.WM.NoActionBar"
+                android:noHistory="true"/>
 
         <!-- Playground activities -->
         <activity android:name=".app.playground.scribble.ActiveGamesActivity"/>

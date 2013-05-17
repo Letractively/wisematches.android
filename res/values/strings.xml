@@ -17,13 +17,6 @@
     <string name="board_surface_bonus_W3">3W</string>
     <string name="board_surface_captions">ABCDEFGHIJKLMNO</string>
 
-    <string-array name="languages_array_codes">
-        <item>en</item>
-        <item>ru</item>
-    </string-array>
-
-    <string-array name="languages_array_values">
-        <item>English</item>
-        <item>Russian</item>
-    </string-array>
+    <string name="language_en">English</string>
+    <string name="language_ru">Russian</string>
 </resources>

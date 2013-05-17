@@ -144,13 +144,11 @@ public abstract class RequestService extends MultiThreadedIntentService {
         try {
             sendSuccess(receiver, operation.execute(this, request));
         } catch (ConnectionException e) {
-            DataDroidLog.e(LOG_TAG, "ConnectionException", e);
             sendConnexionFailure(receiver, e);
         } catch (DataException e) {
             DataDroidLog.e(LOG_TAG, "DataException", e);
             sendDataFailure(receiver);
         } catch (CustomRequestException e) {
-            DataDroidLog.e(LOG_TAG, "Custom Exception", e);
             sendCustomFailure(receiver, onCustomRequestException(request, e));
         } catch (RuntimeException e) {
             DataDroidLog.e(LOG_TAG, "RuntimeException", e);

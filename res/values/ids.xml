@@ -9,4 +9,6 @@
     <item name="accountBtnRegister" type="id"/>
     <item name="accountBtnVisitor" type="id"/>
     <item name="accountFldLanguage" type="id"/>
+    <item name="accountFldProgress" type="id"/>
+    <item name="accountFldTerms" type="id"/>
 </resources>
