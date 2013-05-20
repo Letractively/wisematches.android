@@ -48,4 +48,6 @@
 
     <color name="progress.hand.border">#ffa19e01</color>
     <color name="progress.hand.background">#ffdcd900</color>
+
+    <color name="pressed_wisematches">#CC0099CC</color>
 </resources>

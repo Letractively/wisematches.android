@@ -1,5 +1,7 @@
 package wisematches.client.android.app.playground.scribble.board;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -23,13 +25,18 @@ import wisematches.client.android.app.playground.scribble.board.view.ProgressVie
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
  */
+@Deprecated
 public class ScribbleBoardActivity extends WiseMatchesActivity {
+	private static final String INTENT_EXTRA_BOARD_ID = "INTENT_EXTRA_BOARD_ID";
+
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.playground_board);
 
-		final Bundle extras = getIntent().getExtras();
-		final long boardId = 2552;// extras.getLong("boardId");
+		final long boardId = getIntent().getLongExtra(INTENT_EXTRA_BOARD_ID, 0);
+		if (boardId == 0) {
+			// TODO: incorrect
+		}
 
 /*
 		ProgressTask<Long, Void, ScribbleGame> a = new ProgressTask<Long, Void, ScribbleGame>("Loading board #" + boardId, this) {
@@ -228,5 +235,11 @@ public class ScribbleBoardActivity extends WiseMatchesActivity {
 			public void onClick(View v) {
 			}
 		});
+	}
+
+	public static Intent createIntent(Context context, long boardId) {
+		final Intent intent = new Intent(context, ScribbleBoardActivity.class);
+		intent.putExtra(INTENT_EXTRA_BOARD_ID, boardId);
+		return intent;
 	}
 }

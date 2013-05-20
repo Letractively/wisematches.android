@@ -3,6 +3,7 @@ package wisematches.client.android.app.account.model;
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
  */
+@Deprecated
 public interface Player {
 	long getId();
 
