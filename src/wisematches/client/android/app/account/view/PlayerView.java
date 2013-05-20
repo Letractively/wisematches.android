@@ -13,11 +13,12 @@ import wisematches.client.android.app.account.model.Player;
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
  */
+@Deprecated
 public class PlayerView extends LinearLayout {
 	public PlayerView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 
-		LayoutInflater.from(context).inflate(R.layout.player, this, true);
+		LayoutInflater.from(context).inflate(R.layout.personality, this, true);
 	}
 
 	public void setPlayer(Player player) {

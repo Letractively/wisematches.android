@@ -3,6 +3,7 @@ package wisematches.client.android.data.service;
 import com.foxykeep.datadroid.requestmanager.Request;
 import wisematches.client.android.data.service.operation.person.RegisterPlayerOperation;
 import wisematches.client.android.data.service.operation.person.SignInPlayerOperation;
+import wisematches.client.android.data.service.operation.scribble.ActiveGamesOperation;
 
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
@@ -10,6 +11,7 @@ import wisematches.client.android.data.service.operation.person.SignInPlayerOper
 public final class JSONRequestFactory {
 	public static final int REQUEST_TYPE_AUTH = 1;
 	public static final int REQUEST_TYPE_REGISTER = 2;
+	public static final int ACTIVE_GAMES_LIST = 3;
 
 	public static final String BUNDLE_EXTRA_RESPONSE_TYPE = "wisematches.client.extra.response.type";
 	public static final String BUNDLE_EXTRA_RESPONSE_TYPE_LIST = "wisematches.client.extra.response.type.list";
@@ -39,6 +41,12 @@ public final class JSONRequestFactory {
 		request.put(RegisterPlayerOperation.PARAM_CONFIRM, confirm);
 		request.put(RegisterPlayerOperation.PARAM_LANGUAGE, language);
 		request.put(RegisterPlayerOperation.PARAM_TIMEZONE, timezone);
+		return request;
+	}
+
+	public static Request getActiveGamesRequest(long pid) {
+		final Request request = new Request(ACTIVE_GAMES_LIST);
+		request.put(ActiveGamesOperation.PLAYER_ID, pid);
 		return request;
 	}
 }

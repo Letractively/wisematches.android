@@ -32,13 +32,9 @@ public class JSONRequestManager extends RequestManager implements DataRequestMan
 	}
 
 	@Override
-	public void getPersonality(long pid, DataResponse<Personality> response) {
-		throw new UnsupportedOperationException("TODO: not implemented");
-	}
-
-	@Override
 	public void getActiveGames(long pid, DataResponse<ArrayList<ScribbleDescriptor>> response) {
-		throw new UnsupportedOperationException("TODO: not implemented");
+		Request request = JSONRequestFactory.getActiveGamesRequest(pid);
+		execute(request, new TheRequestListener<>(response));
 	}
 
 	private class TheRequestListener<T> implements RequestManager.RequestListener {

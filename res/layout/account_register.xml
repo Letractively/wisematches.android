@@ -163,7 +163,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dip"
                     android:text="Создать мой аккаунт"
-                    style="@style/Widget.WM.Button"
                     android:padding="10dp"/>
         </LinearLayout>
     </LinearLayout>

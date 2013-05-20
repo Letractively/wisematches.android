@@ -41,7 +41,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:stretchColumns="1"
-                    style="@style/Widget.WM.Content">
+                    style="@style/Widget.WiseMatches.Content">
 
                 <TableRow
                         android:layout_width="fill_parent"
@@ -128,7 +128,7 @@
             <TableLayout
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    style="@style/Widget.WM.Content"
+                    style="@style/Widget.WiseMatches.Content"
                     android:stretchColumns="0"
                     android:longClickable="false"
                     android:id="@+id/scribbleBoardPlayers">
@@ -189,7 +189,7 @@
                     android:orientation="vertical"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    style="@style/Widget.WM.Content">
+                    style="@style/Widget.WiseMatches.Content">
 
                 <LinearLayout
                         android:orientation="horizontal"
@@ -220,7 +220,6 @@
                             android:layout_height="wrap_content"
                             android:id="@+id/scribbleBoardBtnDict"
                             android:layout_gravity="center"
-                            style="@style/Widget.WM.Button"
                             android:drawableLeft="@drawable/board_dictionary_check"
                             android:padding="3dp"/>
                 </LinearLayout>
@@ -245,7 +244,6 @@
                             android:id="@+id/button"
                             android:drawableLeft="@drawable/board_memory_add"
                             android:layout_gravity="center"
-                            style="@style/Widget.WM.Button"
                             android:longClickable="false"
                             android:paddingLeft="5dp"
                             android:paddingTop="2dp"
@@ -272,7 +270,6 @@
                         android:text="Ходить"
                         android:id="@+id/scribbleBoardBtnMake"
                         android:layout_weight="1"
-                        style="@style/Widget.WM.Button"
                         android:layout_marginRight="2dp"
                         android:enabled="false"
                         android:singleLine="true"
@@ -283,7 +280,6 @@
                         android:layout_height="wrap_content"
                         android:text="Пропуск"
                         android:id="@+id/scribbleBoardBtnPass"
-                        style="@style/Widget.WM.Button"
                         android:layout_marginRight="2dp"
                         android:layout_marginLeft="2dp"
                         android:enabled="false"
@@ -296,7 +292,6 @@
                         android:layout_height="wrap_content"
                         android:text="Обмен"
                         android:id="@+id/scribbleBoardBtnExchange"
-                        style="@style/Widget.WM.Button"
                         android:enabled="false"
                         android:singleLine="true"
                         android:layout_marginRight="2dp"
@@ -304,8 +299,6 @@
                         android:drawableLeft="@drawable/board_control_exchange"
                         android:layout_weight="1"/>
             </LinearLayout>
-
         </LinearLayout>
-
     </LinearLayout>
 </LinearLayout>

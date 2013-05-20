@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">WiseMatches Scribble</string>
+    <string name="app_name">WiseMatches Эрудит</string>
     <string name="app_account">WiseMatches</string>
 
     <string name="login.login.label">EMail</string>
-    <string name="login.pwd.label">Password</string>
-    <string name="login.signin">Sign In</string>
-    <string name="login.register.desc">Click to create new WiseMatches account</string>
-    <string name="login.login.desc">Your email address</string>
-    <string name="login.register.label">Register</string>
-    <string name="login.restore.label">forgot password</string>
+    <string name="login.login.desc">Ваша эл. почты</string>
+    <string name="login.pwd.label">Пароль</string>
+    <string name="login.signin">Войти</string>
+    <string name="login.register.desc">Нажмите, что бы создать новый аккаунт WiseMatches</string>
+    <string name="login.register.label">Зарегистрироваться</string>
+    <string name="login.restore.label">восстановать пароль</string>
 
-    <string name="board_surface_bonus_L2">2L</string>
-    <string name="board_surface_bonus_L3">3L</string>
-    <string name="board_surface_bonus_W2">2W</string>
-    <string name="board_surface_bonus_W3">3W</string>
-    <string name="board_surface_captions">ABCDEFGHIJKLMNO</string>
+    <string name="board_surface_bonus_L2">2Б</string>
+    <string name="board_surface_bonus_L3">3Б</string>
+    <string name="board_surface_bonus_W2">2С</string>
+    <string name="board_surface_bonus_W3">3С</string>
+    <string name="board_surface_captions">АБВГДЕЖЗИКЛМНОП</string>
 
-    <string name="language_en">English</string>
-    <string name="language_ru">Russian</string>
+    <string name="language_en">Английский</string>
+    <string name="language_ru">Русский</string>
 </resources>

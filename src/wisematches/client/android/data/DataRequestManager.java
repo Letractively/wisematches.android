@@ -1,7 +1,5 @@
 package wisematches.client.android.data;
 
-import android.app.Activity;
-import android.content.Context;
 import wisematches.client.android.data.model.person.Personality;
 import wisematches.client.android.data.model.scribble.ScribbleDescriptor;
 
@@ -11,12 +9,10 @@ import java.util.ArrayList;
  * @author Sergey Klimenko (smklimenko@gmail.com)
  */
 public interface DataRequestManager {
-	void authenticate(String username, String password, DataResponse<Personality> response);
-
 	void register(String nickname, String email, String password, String confirm, String language, String timezone, DataResponse<Personality> response);
 
+	void authenticate(String username, String password, DataResponse<Personality> response);
 
-	void getPersonality(long pid, DataResponse<Personality> response);
 
 	void getActiveGames(long pid, DataResponse<ArrayList<ScribbleDescriptor>> response);
 

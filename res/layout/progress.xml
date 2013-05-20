@@ -5,10 +5,9 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
-    <ListView
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:id="@+id/scribbleViewActive"
-            android:divider="#60e141"
-            android:smoothScrollbar="true"/>
+    <ProgressBar
+            android:id="@+id/commonProgressBar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:indeterminate="true"/>
 </LinearLayout>

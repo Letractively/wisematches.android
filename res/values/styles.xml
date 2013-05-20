@@ -1,12 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.WM" parent="Theme.Sherlock.Light">
+    <style name="Theme.Wisematches" parent="Theme.Sherlock.Light">
+        <item name="actionBarItemBackground">@drawable/selectable_background_wisematches</item>
+        <item name="popupMenuStyle">@style/PopupMenu.Wisematches</item>
+        <item name="dropDownListViewStyle">@style/DropDownListView.Wisematches</item>
+        <item name="actionBarTabStyle">@style/ActionBarTabStyle.Wisematches</item>
+        <item name="actionDropDownStyle">@style/DropDownNav.Wisematches</item>
+        <item name="actionBarStyle">@style/ActionBar.Solid.Wisematches</item>
+        <item name="actionModeBackground">@drawable/cab_background_top_wisematches</item>
+        <item name="actionModeSplitBackground">@drawable/cab_background_bottom_wisematches</item>
+        <item name="actionModeCloseButtonStyle">@style/ActionButton.CloseMode.Wisematches</item>
+        <item name="android:buttonStyle">@style/Widget.WiseMatches.Button</item>
+
+        <item name="android:background">@color/theme.color</item>
+        <item name="android:colorBackground">@color/theme.color</item>
         <item name="android:windowBackground">@color/theme.color</item>
     </style>
 
-    <style name="Theme.WM.NoActionBar" parent="Theme.Sherlock.Light.NoActionBar">
+    <style name="Theme.Wisematches.NoActionBar" parent="Theme.Sherlock.Light.NoActionBar">
+        <item name="actionBarItemBackground">@drawable/selectable_background_wisematches</item>
+        <item name="popupMenuStyle">@style/PopupMenu.Wisematches</item>
+        <item name="dropDownListViewStyle">@style/DropDownListView.Wisematches</item>
+        <item name="actionBarTabStyle">@style/ActionBarTabStyle.Wisematches</item>
+        <item name="actionDropDownStyle">@style/DropDownNav.Wisematches</item>
+        <item name="actionBarStyle">@style/ActionBar.Solid.Wisematches</item>
+        <item name="actionModeBackground">@drawable/cab_background_top_wisematches</item>
+        <item name="actionModeSplitBackground">@drawable/cab_background_bottom_wisematches</item>
+        <item name="actionModeCloseButtonStyle">@style/ActionButton.CloseMode.Wisematches</item>
+        <item name="android:buttonStyle">@style/Widget.WiseMatches.Button</item>
+
+        <item name="android:background">@color/theme.color</item>
+        <item name="android:colorBackground">@color/theme.color</item>
         <item name="android:windowBackground">@color/theme.color</item>
+    </style>
+
+    <style name="ActionBar.Solid.Wisematches" parent="@style/Widget.Sherlock.Light.ActionBar.Solid">
+        <item name="background">@drawable/ab_solid_wisematches</item>
+        <item name="backgroundStacked">@drawable/ab_stacked_solid_wisematches</item>
+        <item name="backgroundSplit">@drawable/ab_bottom_solid_wisematches</item>
+        <item name="progressBarStyle">@style/ProgressBar.Wisematches</item>
+    </style>
+
+    <style name="ActionBar.Transparent.Wisematches" parent="@style/Widget.Sherlock.Light.ActionBar">
+        <item name="background">@drawable/ab_transparent_wisematches</item>
+        <item name="progressBarStyle">@style/ProgressBar.Wisematches</item>
+    </style>
+
+    <style name="PopupMenu.Wisematches" parent="@style/Widget.Sherlock.Light.ListPopupWindow">
+        <item name="android:popupBackground">@drawable/menu_dropdown_panel_wisematches</item>
+    </style>
+
+    <style name="DropDownListView.Wisematches" parent="@style/Widget.Sherlock.Light.ListView.DropDown">
+        <item name="android:listSelector">@drawable/selectable_background_wisematches</item>
+    </style>
+
+    <style name="ActionBarTabStyle.Wisematches" parent="@style/Widget.Sherlock.Light.ActionBar.TabView">
+        <item name="android:background">@drawable/tab_indicator_ab_wisematches</item>
+    </style>
+
+    <style name="DropDownNav.Wisematches" parent="@style/Widget.Sherlock.Light.Spinner.DropDown.ActionBar">
+        <item name="android:background">@drawable/spinner_background_ab_wisematches</item>
+        <item name="android:popupBackground">@drawable/menu_dropdown_panel_wisematches</item>
+        <item name="android:dropDownSelector">@drawable/selectable_background_wisematches</item>
+    </style>
+
+    <style name="ProgressBar.Wisematches" parent="@style/Widget.Sherlock.Light.ProgressBar.Horizontal">
+        <item name="android:progressDrawable">@drawable/progress_horizontal_wisematches</item>
+    </style>
+
+    <style name="ActionButton.CloseMode.Wisematches" parent="@style/Widget.Sherlock.Light.ActionButton.CloseMode">
+        <item name="android:background">@drawable/btn_cab_done_wisematches</item>
     </style>
 
     <style name="TextAppearance.WM" parent="android:TextAppearance">
@@ -29,41 +93,34 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="Widget.WM" parent="Widget">
+    <style name="Widget.WiseMatches" parent="Widget">
         <item name="android:textColor">@color/widget.content.color</item>
         <item name="android:background">@drawable/ui_widget_content</item>
     </style>
 
-    <style name="Widget.WM.Button" parent="Widget.WM">
+    <style name="Widget.WiseMatches.Button" parent="Widget.WiseMatches">
         <item name="android:textColor">@color/ui_button</item>
         <item name="android:background">@drawable/ui_button</item>
         <item name="android:focusable">true</item>
         <item name="android:clickable">true</item>
     </style>
 
-    <style name="Widget.WM.Button" parent="Widget.WM">
-        <item name="android:textColor">@color/ui_button</item>
-        <item name="android:background">@drawable/ui_button</item>
-        <item name="android:focusable">true</item>
-        <item name="android:clickable">true</item>
-    </style>
-
-    <style name="Widget.WM.Header" parent="Widget.WM">
+    <style name="Widget.WiseMatches.Header" parent="Widget.WiseMatches">
         <item name="android:textColor">@color/widget.header.color</item>
         <item name="android:background">@drawable/ui_widget_header</item>
     </style>
 
-    <style name="Widget.WM.Content" parent="Widget.WM">
+    <style name="Widget.WiseMatches.Content" parent="Widget.WiseMatches">
         <item name="android:textColor">@color/widget.content.color</item>
         <item name="android:background">@drawable/ui_widget_content</item>
     </style>
 
-    <style name="Widget.WM.Active" parent="Widget.WM">
+    <style name="Widget.WiseMatches.Active" parent="Widget.WiseMatches">
         <item name="android:textColor">@color/state.active.color</item>
         <item name="android:background">@drawable/ui_widget_active</item>
     </style>
 
-    <style name="Widget.WM.Highlight" parent="Widget.WM">
+    <style name="Widget.WiseMatches.Highlight" parent="Widget.WiseMatches">
         <item name="android:textColor">@color/state.highlight.color</item>
         <item name="android:background">@drawable/ui_widget_highlight</item>
     </style>

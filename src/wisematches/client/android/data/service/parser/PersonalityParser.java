@@ -15,10 +15,10 @@ public class PersonalityParser {
 		return new Personality(
 				data.getLong("id"),
 				data.optString("nickname"),
-				data.getString("language"),
+				data.optString("language"),
 				timeZone != null && !timeZone.isEmpty() ? TimeZone.getTimeZone(timeZone) : TimeZone.getDefault(),
 				data.getString("type"),
 				data.optString("membership", null),
-				true);
+				data.optBoolean("online", false));
 	}
 }

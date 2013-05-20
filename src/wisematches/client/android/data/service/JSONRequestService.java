@@ -11,6 +11,7 @@ import com.foxykeep.datadroid.service.RequestService;
 import wisematches.client.android.data.service.operation.JSONOperation;
 import wisematches.client.android.data.service.operation.person.RegisterPlayerOperation;
 import wisematches.client.android.data.service.operation.person.SignInPlayerOperation;
+import wisematches.client.android.data.service.operation.scribble.ActiveGamesOperation;
 import wisematches.client.android.http.JSONConnection;
 
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ public class JSONRequestService extends RequestService {
 	public JSONRequestService() {
 		operationMap.put(JSONRequestFactory.REQUEST_TYPE_AUTH, new JSONResponseOperation(new SignInPlayerOperation()));
 		operationMap.put(JSONRequestFactory.REQUEST_TYPE_REGISTER, new JSONResponseOperation(new RegisterPlayerOperation()));
+		operationMap.put(JSONRequestFactory.ACTIVE_GAMES_LIST, new JSONResponseOperation(new ActiveGamesOperation()));
 	}
 
 	@Override
