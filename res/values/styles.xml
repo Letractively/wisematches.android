@@ -11,11 +11,9 @@
         <item name="actionModeBackground">@drawable/cab_background_top_wisematches</item>
         <item name="actionModeSplitBackground">@drawable/cab_background_bottom_wisematches</item>
         <item name="actionModeCloseButtonStyle">@style/ActionButton.CloseMode.Wisematches</item>
-        <item name="android:buttonStyle">@style/Widget.WiseMatches.Button</item>
 
-        <item name="android:background">@color/theme.color</item>
-        <item name="android:colorBackground">@color/theme.color</item>
-        <item name="android:windowBackground">@color/theme.color</item>
+        <item name="android:buttonStyle">@style/Widget.WiseMatches.Button</item>
+        <item name="android:windowBackground">@color/theme.color.background</item>
     </style>
 
     <style name="Theme.Wisematches.NoActionBar" parent="Theme.Sherlock.Light.NoActionBar">
@@ -28,11 +26,9 @@
         <item name="actionModeBackground">@drawable/cab_background_top_wisematches</item>
         <item name="actionModeSplitBackground">@drawable/cab_background_bottom_wisematches</item>
         <item name="actionModeCloseButtonStyle">@style/ActionButton.CloseMode.Wisematches</item>
-        <item name="android:buttonStyle">@style/Widget.WiseMatches.Button</item>
 
-        <item name="android:background">@color/theme.color</item>
-        <item name="android:colorBackground">@color/theme.color</item>
-        <item name="android:windowBackground">@color/theme.color</item>
+        <item name="android:buttonStyle">@style/Widget.WiseMatches.Button</item>
+        <item name="android:windowBackground">@color/theme.color.background</item>
     </style>
 
     <style name="ActionBar.Solid.Wisematches" parent="@style/Widget.Sherlock.Light.ActionBar.Solid">
@@ -85,7 +81,6 @@
     </style>
 
     <style name="TextAppearance.WM.Player" parent="TextAppearance.WM">
-        <item name="android:textStyle">bold</item>
         <item name="android:textColor">#ffa52a2a</item>
     </style>
 

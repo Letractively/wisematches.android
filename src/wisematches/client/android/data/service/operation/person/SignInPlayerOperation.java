@@ -8,9 +8,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import wisematches.client.android.data.model.person.Personality;
 import wisematches.client.android.data.service.operation.JSONOperation;
-import wisematches.client.android.data.service.parser.PersonalityParser;
-
-import java.util.TimeZone;
+import wisematches.client.android.data.service.parser.person.PersonalityParser;
 
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)

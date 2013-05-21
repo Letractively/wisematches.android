@@ -1,5 +1,6 @@
 package wisematches.client.android.app;
 
+import android.R;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -37,7 +38,7 @@ public final class MenuFactory {
 	}
 
 	public static enum Type {
-		ACTIVE_GAMES("Текущие игры", 0) {
+		ACTIVE_GAMES("Текущие игры", R.drawable.ic_menu_agenda) {
 			@Override
 			public Intent createIntent(Context context) {
 				return ActiveGamesActivity.createIntent(context);

@@ -1,4 +1,4 @@
-package wisematches.client.android.data.service.parser;
+package wisematches.client.android.data.service.parser.person;
 
 import org.json.JSONException;
 import org.json.JSONObject;

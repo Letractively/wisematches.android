@@ -1,5 +1,7 @@
 package wisematches.client.android.data;
 
+import wisematches.client.android.data.model.Id;
+import wisematches.client.android.data.model.Language;
 import wisematches.client.android.data.model.person.Personality;
 import wisematches.client.android.data.model.scribble.ScribbleDescriptor;
 
@@ -15,6 +17,8 @@ public interface DataRequestManager {
 
 
 	void getActiveGames(long pid, DataResponse<ArrayList<ScribbleDescriptor>> response);
+
+	void createNewGame(String title, Language language, int timeout, String createTab, String robotType, int opponentsCount, DataResponse<Id> response);
 
 
 	/**

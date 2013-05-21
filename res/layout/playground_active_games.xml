@@ -25,8 +25,11 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:id="@+id/scribbleViewActive"
-            android:divider="#60e141"
+            android:divider="@color/state.default.border"
             android:smoothScrollbar="true"
             android:drawSelectorOnTop="false"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:headerDividersEnabled="true"
+            android:footerDividersEnabled="true"
+            android:dividerHeight="1dp"/>
 </LinearLayout>

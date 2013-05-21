@@ -3,6 +3,7 @@ package wisematches.client.android.app.playground.scribble.board.model;
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
  */
+@Deprecated
 public class ScribbleSettings {
 	private final String title;
 	private final String language;

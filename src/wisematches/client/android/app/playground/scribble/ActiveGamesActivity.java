@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.*;
+import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import wisematches.client.android.R;
@@ -13,9 +14,8 @@ import wisematches.client.android.app.MenuFactory;
 import wisematches.client.android.app.account.view.PersonalityView;
 import wisematches.client.android.app.playground.scribble.board.ScribbleBoardActivity;
 import wisematches.client.android.data.DataRequestManager;
-import wisematches.client.android.data.model.person.Personality;
 import wisematches.client.android.data.model.scribble.ScribbleDescriptor;
-import wisematches.client.android.data.model.scribble.ScribbleScore;
+import wisematches.client.android.data.model.scribble.ScribbleHand;
 import wisematches.client.android.security.SecurityContext;
 import wisematches.client.android.widget.ArrayAdapter;
 
@@ -38,7 +38,10 @@ public class ActiveGamesActivity extends WiseMatchesActivity {
 		final SecurityContext securityContext = getSecurityContext();
 		final long pid = getIntent().getLongExtra(INTENT_EXTRA_PID, securityContext.getPersonality().getId());
 
-		getSupportActionBar().setTitle("Текущие игры");
+		ActionBar supportActionBar = getSupportActionBar();
+		if (supportActionBar != null) {
+			supportActionBar.setTitle("Текущие игры");
+		}
 
 		final ListView listView = (ListView) findViewById(R.id.scribbleViewActive);
 		listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -46,7 +49,7 @@ public class ActiveGamesActivity extends WiseMatchesActivity {
 			public void onItemClick(AdapterView<?> adapterView, View view, int position, long arg) {
 				final ScribbleDescriptor desc = (ScribbleDescriptor) adapterView.getItemAtPosition(position);
 				if (desc != null) {
-					startActivity(ScribbleBoardActivity.createIntent(ActiveGamesActivity.this, desc.getBoardId()));
+					startActivity(ScribbleBoardActivity.createIntent(ActiveGamesActivity.this, desc.getId()));
 				}
 			}
 		});
@@ -122,34 +125,30 @@ public class ActiveGamesActivity extends WiseMatchesActivity {
 				view.setTag(holder);
 			}
 
-			holder.title.setText(value.getTitle());
-			holder.number.setText(String.valueOf(value.getBoardId()));
+			holder.title.setText(value.getSettings().getTitle());
+			holder.number.setText(String.valueOf(value.getId()));
+			holder.elapsedTime.setText(String.valueOf(value.getRemainedTime().getText()));
 
-			holder.players.removeAllViews();
-
-			final int count = value.getPlayersCount();
-			final Personality[] players = value.getPlayers();
-			final ScribbleScore[] scores = value.getScores();
-
-			for (int index = 0; index < count; index++) {
-				final Personality personality = players[index];
-				final ScribbleScore score = scores[index];
-				final TableRow row = new TableRow(context);
+			final ScribbleHand[] players = value.getPlayers();
+			for (int index = 0; index < players.length; index++) {
+				final ScribbleHand hand = players[index];
+				final TableRow row = (TableRow) holder.players.getChildAt(index);
+				row.setVisibility(View.VISIBLE);
 
 				if (value.getPlayerTurnIndex() == index) {
 					row.setBackgroundResource(R.drawable.player_state_active);
 				}
 
-				final PersonalityView player = new PersonalityView(context, null);
-				player.setPersonality(personality);
-				row.addView(player);
 
-				final TextView p = new TextView(context);
-				p.setText(String.valueOf(score.getPoints()));
-				p.setPadding(5, 0, 0, 0);
-				row.addView(p);
+				final PersonalityView player = (PersonalityView) row.findViewById(R.id.dashboardPlayerView);
+				player.setPersonality(hand.getPersonality());
 
-				holder.players.addView(row);
+				final TextView points = (TextView) row.findViewById(R.id.dashboardPlayerPoints);
+				points.setText(String.valueOf(hand.getPoints()));
+			}
+
+			for (int i = players.length; i < holder.players.getChildCount(); i++) {
+				holder.players.getChildAt(i).setVisibility(View.GONE);
 			}
 		}
 

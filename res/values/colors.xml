@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="theme.color">#ffeaf4fc</color>
+    <color name="theme.color.background">#ffeaf4fc</color>
 
     <color name="widget.header.color">#ffffffff</color>
     <color name="widget.header.border">#ff4297d7</color>

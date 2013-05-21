@@ -3,7 +3,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:orientation="vertical"
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
+                android:layout_height="wrap_content"
                 android:padding="5dip">
 
     <TableLayout
@@ -13,48 +13,90 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true">
 
-        <TableRow android:background="@drawable/ui_state_online">
+        <TableRow
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent">
 
-            <LinearLayout
-                    android:orientation="horizontal"
+            <view
+                    android:id="@+id/dashboardPlayerView"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-
-                <TextView
-                        android:singleLine="true"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="player_name"/>
-            </LinearLayout>
+                    android:layout_height="wrap_content"
+                    class="wisematches.client.android.app.account.view.PersonalityView"
+                    />
 
             <TextView
+                    android:id="@+id/dashboardPlayerPoints"
                     android:singleLine="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="5dip"
-                    android:text="1023"/>
+                    android:text="1023"
+                    android:layout_gravity="bottom"
+                    android:paddingLeft="5dp"/>
         </TableRow>
 
-        <TableRow>
+        <TableRow
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent">
 
-            <LinearLayout
-                    android:orientation="horizontal"
+            <view
+                    android:id="@+id/dashboardPlayerView"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-
-                <TextView
-                        android:singleLine="true"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="player_name"/>
-            </LinearLayout>
+                    android:layout_height="wrap_content"
+                    class="wisematches.client.android.app.account.view.PersonalityView"
+                    />
 
             <TextView
+                    android:id="@+id/dashboardPlayerPoints"
                     android:singleLine="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="5dip"
-                    android:text="1023"/>
+                    android:text="1023"
+                    android:layout_gravity="bottom"
+                    android:paddingLeft="5dp"/>
+        </TableRow>
+
+        <TableRow
+                android:visibility="gone"
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent">
+
+            <view
+                    android:id="@+id/dashboardPlayerView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    class="wisematches.client.android.app.account.view.PersonalityView"
+                    />
+
+            <TextView
+                    android:id="@+id/dashboardPlayerPoints"
+                    android:singleLine="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="1023"
+                    android:layout_gravity="bottom"
+                    android:paddingLeft="5dp"/>
+        </TableRow>
+
+        <TableRow
+                android:visibility="gone"
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent">
+
+            <view
+                    android:id="@+id/dashboardPlayerView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    class="wisematches.client.android.app.account.view.PersonalityView"
+                    />
+
+            <TextView
+                    android:id="@+id/dashboardPlayerPoints"
+                    android:singleLine="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="1023"
+                    android:layout_gravity="bottom"
+                    android:paddingLeft="5dp"/>
         </TableRow>
     </TableLayout>
 
@@ -71,15 +113,7 @@
                 android:layout_height="wrap_content">
 
             <TextView
-                    android:id="@+id/boardTitle"
-                    android:singleLine="true"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="This is game of new game"/>
-
-            <TextView
                     android:text="#"
-                    android:paddingLeft="5px"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 
@@ -89,12 +123,36 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:singleLine="true"/>
+
+            <TextView
+                    android:id="@+id/boardTitle"
+                    android:singleLine="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="This is game of new game"
+                    android:paddingLeft="5dp"/>
         </LinearLayout>
 
-        <TextView
-                android:id="@+id/boardElapsedTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="23d 13h"/>
+        <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:orientation="horizontal">
+
+            <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:id="@+id/imageView"
+                    android:src="@android:drawable/ic_menu_recent_history"
+                    android:scaleType="fitStart"
+                    android:layout_gravity="bottom|right"/>
+
+            <TextView
+                    android:id="@+id/boardElapsedTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="23d 13h"/>
+
+        </LinearLayout>
+
     </LinearLayout>
 </RelativeLayout>

@@ -16,6 +16,7 @@ import wisematches.client.android.data.model.person.Personality;
 public class PersonalityView extends LinearLayout {
 	public PersonalityView(Context context, AttributeSet attrs) {
 		super(context, attrs);
+		setOrientation(HORIZONTAL);
 		LayoutInflater.from(context).inflate(R.layout.personality, this, true);
 	}
 

@@ -5,6 +5,7 @@ import wisematches.client.android.app.account.model.Player;
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
  */
+@Deprecated
 public class ScribblePlayer implements Player {
 	private final long id;
 	private final String nickname;

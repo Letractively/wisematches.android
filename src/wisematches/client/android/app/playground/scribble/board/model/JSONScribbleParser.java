@@ -9,6 +9,7 @@ import java.util.*;
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
  */
+@Deprecated
 public final class JSONScribbleParser {
 	public static ScribbleGame parseGame(JSONObject data) throws JSONException {
 		final long id = data.getLong("id");

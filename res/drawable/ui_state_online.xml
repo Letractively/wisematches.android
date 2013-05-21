@@ -7,7 +7,7 @@
             android:width="@dimen/ui.widget.border"
             android:color="@color/state.online.border"/>
 
-    <size
-            android:height="8dp"
-            android:width="8dp"/>
+    <!--<size-->
+    <!--android:height="8dp"-->
+    <!--android:width="8dp"/>-->
 </shape>

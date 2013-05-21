@@ -5,11 +5,12 @@ import com.foxykeep.datadroid.requestmanager.Request;
 import org.apache.http.HttpRequest;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.protocol.HTTP;
 import org.json.JSONException;
 import org.json.JSONObject;
 import wisematches.client.android.data.model.person.Personality;
 import wisematches.client.android.data.service.operation.JSONOperation;
-import wisematches.client.android.data.service.parser.PersonalityParser;
+import wisematches.client.android.data.service.parser.person.PersonalityParser;
 
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
@@ -35,7 +36,7 @@ public class RegisterPlayerOperation extends JSONOperation.Primitive<Personality
 			form.put("language", request.getString(PARAM_LANGUAGE));
 			form.put("timezone", request.getString(PARAM_TIMEZONE));
 
-			httpPost.setEntity(new StringEntity(form.toString()));
+			httpPost.setEntity(new StringEntity(form.toString(), HTTP.UTF_8));
 		} catch (Exception ex) {
 			throw new DataException("Data preparation error", ex);
 		}

@@ -15,11 +15,9 @@ import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.CoreProtocolPNames;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
+import org.apache.http.params.*;
 import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HTTP;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
@@ -61,7 +59,7 @@ public class JSONConnection {
 
 		if (data != null) {
 			try {
-				request.setEntity(new StringEntity(data.toString(), "UTF-8"));
+				request.setEntity(new StringEntity(data.toString(), HTTP.UTF_8));
 			} catch (UnsupportedEncodingException ex) {
 				throw new DataException("Unsupported encoding UTF-8", ex);
 			}
@@ -80,8 +78,11 @@ public class JSONConnection {
 			request.setHeader("Content-type", "application/json");
 			request.setHeader("Accept-Language", "ru");
 
-			HttpConnectionParams.setSoTimeout(request.getParams(), DEFAULT_TIMEOUT);
-			HttpConnectionParams.setConnectionTimeout(request.getParams(), DEFAULT_TIMEOUT);
+			final HttpParams params = request.getParams();
+			HttpProtocolParams.setContentCharset(params, HTTP.UTF_8);
+			HttpProtocolParams.setHttpElementCharset(params, HTTP.UTF_8);
+			HttpConnectionParams.setSoTimeout(params, DEFAULT_TIMEOUT);
+			HttpConnectionParams.setConnectionTimeout(params, DEFAULT_TIMEOUT);
 
 			final HttpResponse response = client.execute(WiseMatchesApplication.WEB_HOST, request, localContext);
 			final StatusLine status = response.getStatusLine();

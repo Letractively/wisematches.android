@@ -1,4 +1,4 @@
-package wisematches.client.android.data.service.parser;
+package wisematches.client.android.data.service.parser.scribble;
 
 import org.json.JSONException;
 import org.json.JSONObject;

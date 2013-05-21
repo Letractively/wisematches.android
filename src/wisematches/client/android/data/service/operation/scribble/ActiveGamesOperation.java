@@ -9,7 +9,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import wisematches.client.android.data.model.scribble.ScribbleDescriptor;
 import wisematches.client.android.data.service.operation.JSONOperation;
-import wisematches.client.android.data.service.parser.ScribbleDescriptorParser;
+import wisematches.client.android.data.service.parser.scribble.ScribbleDescriptorParser;
 
 import java.util.ArrayList;
 

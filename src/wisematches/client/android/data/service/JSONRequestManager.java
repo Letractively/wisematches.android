@@ -6,8 +6,14 @@ import android.util.Log;
 import com.foxykeep.datadroid.requestmanager.Request;
 import com.foxykeep.datadroid.requestmanager.RequestManager;
 import wisematches.client.android.data.DataRequestManager;
+import wisematches.client.android.data.model.Id;
+import wisematches.client.android.data.model.Language;
 import wisematches.client.android.data.model.person.Personality;
 import wisematches.client.android.data.model.scribble.ScribbleDescriptor;
+import wisematches.client.android.data.service.operation.person.RegisterPlayerOperation;
+import wisematches.client.android.data.service.operation.person.SignInPlayerOperation;
+import wisematches.client.android.data.service.operation.scribble.ActiveGamesOperation;
+import wisematches.client.android.data.service.operation.scribble.CreateGameOperation;
 
 import java.util.ArrayList;
 
@@ -15,25 +21,65 @@ import java.util.ArrayList;
  * @author Sergey Klimenko (smklimenko@gmail.com)
  */
 public class JSONRequestManager extends RequestManager implements DataRequestManager {
+	public static final int REQUEST_TYPE_AUTH = 1;
+	public static final int REQUEST_TYPE_REGISTER = 2;
+	public static final int REQUEST_TYPE_ACTIVE_GAMES = 3;
+	public static final int REQUEST_TYPE_CREATE_GAME = 4;
+
+	public static final String BUNDLE_EXTRA_RESPONSE_TYPE = "wisematches.client.extra.response.type";
+	public static final String BUNDLE_EXTRA_RESPONSE_TYPE_LIST = "wisematches.client.extra.response.type.list";
+	public static final String BUNDLE_EXTRA_RESPONSE_TYPE_PRIMITIVE = "wisematches.client.extra.response.type.primitive";
+
 	public JSONRequestManager(Context context) {
 		super(context, JSONRequestService.class);
 	}
 
 	@Override
 	public void authenticate(String username, String password, DataResponse<Personality> response) {
-		Request request = JSONRequestFactory.getAuthRequest(username, password);
+		final Request request = new Request(REQUEST_TYPE_AUTH);
+		request.setMemoryCacheEnabled(false);
+		if (username == null && password == null) {
+			request.put(SignInPlayerOperation.PARAM_VISITOR, true);
+		} else {
+			request.put(SignInPlayerOperation.PARAM_USERNAME, username);
+			request.put(SignInPlayerOperation.PARAM_PASSWORD, password);
+		}
+
 		execute(request, new TheRequestListener<>(response));
 	}
 
 	@Override
 	public void register(String nickname, String email, String password, String confirm, String language, String timezone, DataResponse<Personality> response) {
-		Request request = JSONRequestFactory.getRegisterRequest(nickname, email, password, confirm, language, timezone);
+		final Request request = new Request(REQUEST_TYPE_REGISTER);
+		request.setMemoryCacheEnabled(false);
+		request.put(RegisterPlayerOperation.PARAM_USERNAME, nickname);
+		request.put(RegisterPlayerOperation.PARAM_EMAIL, email);
+		request.put(RegisterPlayerOperation.PARAM_PASSWORD, password);
+		request.put(RegisterPlayerOperation.PARAM_CONFIRM, confirm);
+		request.put(RegisterPlayerOperation.PARAM_LANGUAGE, language);
+		request.put(RegisterPlayerOperation.PARAM_TIMEZONE, timezone);
+
 		execute(request, new TheRequestListener<>(response));
 	}
 
 	@Override
 	public void getActiveGames(long pid, DataResponse<ArrayList<ScribbleDescriptor>> response) {
-		Request request = JSONRequestFactory.getActiveGamesRequest(pid);
+		final Request request = new Request(REQUEST_TYPE_ACTIVE_GAMES);
+		request.put(ActiveGamesOperation.PLAYER_ID, pid);
+
+		execute(request, new TheRequestListener<>(response));
+	}
+
+	@Override
+	public void createNewGame(String title, Language language, int timeout, String createTab, String robotType, int opponentsCount, DataResponse<Id> response) {
+		final Request request = new Request(REQUEST_TYPE_CREATE_GAME);
+		request.put(CreateGameOperation.PARAM_TITLE, title);
+		request.put(CreateGameOperation.PARAM_LANGUAGE, language.getCode());
+		request.put(CreateGameOperation.PARAM_TIMEOUT, timeout);
+		request.put(CreateGameOperation.PARAM_TAB, createTab);
+		request.put(CreateGameOperation.PARAM_ROBOT_TYPE, robotType);
+		request.put(CreateGameOperation.PARAM_OPPONENTS_COUNT, opponentsCount);
+
 		execute(request, new TheRequestListener<>(response));
 	}
 
@@ -52,11 +98,11 @@ public class JSONRequestManager extends RequestManager implements DataRequestMan
 				response.onSuccess(null);
 			} else {
 				Log.d("WM", "Finished: not empty");
-				final String type = resultData.getString(JSONRequestFactory.BUNDLE_EXTRA_RESPONSE_TYPE);
-				if (type.equals(JSONRequestFactory.BUNDLE_EXTRA_RESPONSE_TYPE_LIST)) {
-					response.onSuccess((T) resultData.getParcelableArrayList(JSONRequestFactory.BUNDLE_EXTRA_RESPONSE_TYPE_LIST));
-				} else if (type.equals(JSONRequestFactory.BUNDLE_EXTRA_RESPONSE_TYPE_PRIMITIVE)) {
-					response.onSuccess((T) resultData.getParcelable(JSONRequestFactory.BUNDLE_EXTRA_RESPONSE_TYPE_PRIMITIVE));
+				final String type = resultData.getString(BUNDLE_EXTRA_RESPONSE_TYPE);
+				if (type.equals(BUNDLE_EXTRA_RESPONSE_TYPE_LIST)) {
+					response.onSuccess((T) resultData.getParcelableArrayList(BUNDLE_EXTRA_RESPONSE_TYPE_LIST));
+				} else if (type.equals(BUNDLE_EXTRA_RESPONSE_TYPE_PRIMITIVE)) {
+					response.onSuccess((T) resultData.getParcelable(BUNDLE_EXTRA_RESPONSE_TYPE_PRIMITIVE));
 				}
 			}
 		}

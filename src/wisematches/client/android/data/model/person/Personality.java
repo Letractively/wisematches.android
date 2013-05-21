@@ -44,7 +44,7 @@ public class Personality implements Parcelable {
 		online = bundle.getBoolean("online");
 	}
 
-	private Personality(Parcel in) {
+	public Personality(Parcel in) {
 		this.id = in.readLong();
 		this.nickname = in.readString();
 		this.language = in.readString();
