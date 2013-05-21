@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <LinearLayout
+            android:id="@+id/listProgressBar"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+        <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:indeterminate="true"
+                >
+        </ProgressBar>
+    </LinearLayout>
+
+    <ListView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/scribbleViewActive"
+            android:divider="@color/state.default.border"
+            android:smoothScrollbar="true"
+            android:drawSelectorOnTop="false"
+            android:layout_weight="1"
+            android:headerDividersEnabled="true"
+            android:footerDividersEnabled="true"
+            android:dividerHeight="1dp"/>
+</LinearLayout>

@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <TableLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+        <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Название игры:"
+                    android:textAppearance="@style/TextAppearance.WM.Label"/>
+
+            <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/playgroundCreateTitle"
+                    android:layout_weight="1"
+                    android:text="Давайте играть в эрудит"/>
+        </TableRow>
+
+        <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Язык игры:"
+                    android:textAppearance="@style/TextAppearance.WM.Label"/>
+
+            <Spinner
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/playgroundCreateLanguage"
+                    android:layout_weight="1"
+                    android:focusable="true"/>
+        </TableRow>
+
+        <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Время на ход:"
+                    android:textAppearance="@style/TextAppearance.WM.Label"/>
+
+            <Spinner
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/playgroundCreateTimeout"
+                    android:layout_weight="1"
+                    android:focusable="true"/>
+        </TableRow>
+
+        <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Противники:"
+                    android:textAppearance="@style/TextAppearance.WM.Label"/>
+
+            <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                <RadioGroup
+                        android:orientation="vertical"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:longClickable="false"
+                        android:id="@+id/playgroundCreateRobot">
+
+                    <RadioButton
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Робот Балбес (800)"
+                            android:id="@+id/playgroundCreateRobotDull"
+                            android:singleLine="true"/>
+
+                    <RadioButton
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Робот Трус (1200)"
+                            android:checked="true"
+                            android:id="@+id/playgroundCreateRobotTrainee"
+                            android:singleLine="true"/>
+
+                    <RadioButton
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Работ Бывалый (1600)"
+                            android:id="@+id/playgroundCreateRobotExpert"
+                            android:singleLine="true"/>
+                </RadioGroup>
+
+                <RadioGroup
+                        android:orientation="vertical"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/playgroundCreateWaiting"
+                        android:visibility="gone">
+
+                    <RadioButton
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Один противник"
+                            android:id="@+id/playgroundCreateWaitingOne"
+                            android:singleLine="true"
+                            android:checked="true"
+                            />
+
+                    <RadioButton
+                            android:enabled="false"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Два противник"
+                            android:id="@+id/playgroundCreateWaitingTwo"
+                            android:singleLine="true"
+                            />
+
+                    <RadioButton
+                            android:enabled="false"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Три противника"
+                            android:id="@+id/playgroundCreateWaitingThree"
+                            android:singleLine="true"
+                            />
+                </RadioGroup>
+            </LinearLayout>
+
+        </TableRow>
+    </TableLayout>
+
+    <Button
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Создать новую игру"
+            android:id="@+id/playgroundCreateBtn"
+            android:padding="5dp"
+            android:gravity="center"/>
+</LinearLayout>
