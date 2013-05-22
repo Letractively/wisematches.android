@@ -140,6 +140,7 @@ public class Authenticator extends AbstractAccountAuthenticator {
 				final Bundle b = createBundle();
 				b.putBoolean(AccountManager.KEY_BOOLEAN_RESULT, true);
 				b.putBundle(AccountManager.KEY_USERDATA, data.writeToBundle(new Bundle()));
+				b.putString(AccountManager.KEY_PASSWORD, password);
 
 				callback.onResult(b);
 			}

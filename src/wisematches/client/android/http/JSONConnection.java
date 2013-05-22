@@ -7,7 +7,6 @@ import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.client.CookieStore;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.params.ClientPNames;
 import org.apache.http.client.params.HttpClientParams;
@@ -23,6 +22,7 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import wisematches.client.android.WiseMatchesApplication;
+import wisematches.client.android.security.SecurityContext;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -31,13 +31,15 @@ import java.io.UnsupportedEncodingException;
  * @author Sergey Klimenko (smklimenko@gmail.com)
  */
 public class JSONConnection {
-	private final HttpClient client;
+	private final DefaultHttpClient client;
+	private final SecurityContext securityContext;
 	private final CookieStore cookieStore = new BasicCookieStore();
 	private final HttpContext localContext = new BasicHttpContext();
 
 	private static final int DEFAULT_TIMEOUT = 10000;
 
-	public JSONConnection() {
+	public JSONConnection(SecurityContext securityContext) {
+		this.securityContext = securityContext;
 		final HttpParams params = new BasicHttpParams();
 		params.setParameter(ClientPNames.ALLOW_CIRCULAR_REDIRECTS, true);
 		params.setParameter(CoreProtocolPNames.USER_AGENT, "Wisematches/1.0");
@@ -47,6 +49,7 @@ public class JSONConnection {
 		HttpConnectionParams.setConnectionTimeout(params, DEFAULT_TIMEOUT);
 
 		client = new DefaultHttpClient(params);
+		client.setCredentialsProvider(securityContext);
 		localContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
 	}
 

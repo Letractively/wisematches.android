@@ -99,7 +99,9 @@ public class JSONRequestManager extends RequestManager implements DataRequestMan
 			} else {
 				Log.d("WM", "Finished: not empty");
 				final String type = resultData.getString(BUNDLE_EXTRA_RESPONSE_TYPE);
-				if (type.equals(BUNDLE_EXTRA_RESPONSE_TYPE_LIST)) {
+				if (type == null) {
+					response.onSuccess(null);
+				} else if (type.equals(BUNDLE_EXTRA_RESPONSE_TYPE_LIST)) {
 					response.onSuccess((T) resultData.getParcelableArrayList(BUNDLE_EXTRA_RESPONSE_TYPE_LIST));
 				} else if (type.equals(BUNDLE_EXTRA_RESPONSE_TYPE_PRIMITIVE)) {
 					response.onSuccess((T) resultData.getParcelable(BUNDLE_EXTRA_RESPONSE_TYPE_PRIMITIVE));
