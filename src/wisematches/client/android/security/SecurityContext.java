@@ -7,6 +7,10 @@ import android.accounts.AccountManagerFuture;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.Credentials;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
 import wisematches.client.android.data.model.person.Personality;
 import wisematches.client.android.security.auth.AccountSelectorDialog;
 import wisematches.client.android.security.auth.Authenticator;
@@ -14,17 +18,16 @@ import wisematches.client.android.security.auth.Authenticator;
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
  */
-public class SecurityContext {
-	private Account account;
-	private Personality personality;
+public class SecurityContext implements CredentialsProvider {
+	private SecuredPrincipal principal;
 
 	public SecurityContext() {
 	}
 
 	public void authenticate(final Activity activity, final AuthorizationListener authorizationListener) {
 		final Account[] accounts = Authenticator.getAccounts(activity);
-		if (account != null) {
-			Account res = searchAccount(account.name, accounts);
+		if (principal != null) {
+			Account res = searchAccount(principal.credentials.getUserPrincipal().getName(), accounts);
 			if (res != null) {
 				authenticate(activity, res, authorizationListener);
 				return;
@@ -45,20 +48,39 @@ public class SecurityContext {
 		}
 	}
 
+	public Personality getPersonality() {
+		return principal != null ? principal.personality : null;
+	}
+
+	@Override
+	public void setCredentials(AuthScope authScope, Credentials credentials) {
+		throw new UnsupportedOperationException("Authenticate method must be used instead");
+	}
+
+	@Override
+	public Credentials getCredentials(AuthScope authScope) {
+		return principal != null ? principal.credentials : null;
+	}
+
+	@Override
 	public void clear() {
-		this.account = null;
-		this.personality = null;
+		this.principal = null;
 	}
 
 
-	public Personality getPersonality() {
-		return personality;
+	private Account searchAccount(String name, Account[] accounts) {
+		for (Account ac : accounts) {
+			if (ac.name.equals(name)) {
+				return ac;
+			}
+		}
+		return null;
 	}
 
 	private void authenticate(Activity activity, Account account, AuthorizationListener authorizationListener) {
 		clear();
 
-		final TheAccountManagerCallback callback = new TheAccountManagerCallback(account, authorizationListener);
+		final TheAccountManagerCallback callback = new TheAccountManagerCallback(authorizationListener);
 		if (account == null) {
 			Authenticator.createAccount(activity, callback);
 		} else {
@@ -66,21 +88,28 @@ public class SecurityContext {
 		}
 	}
 
-	private Account searchAccount(String name, Account[] accounts) {
-		for (Account ac : accounts) {
-			if (ac.name.equals(name)) {
-				return account;
-			}
+
+	/**
+	 * @author Sergey Klimenko (smklimenko@gmail.com)
+	 */
+	public static interface AuthorizationListener {
+		void authorized(Personality personality);
+	}
+
+	private static class SecuredPrincipal {
+		private final Credentials credentials;
+		private final Personality personality;
+
+		private SecuredPrincipal(String account, String password, Personality personality) {
+			this.credentials = new UsernamePasswordCredentials(account, password);
+			this.personality = personality;
 		}
-		return null;
 	}
 
 	private class TheAccountManagerCallback implements AccountManagerCallback<Bundle> {
-		private final Account account;
 		private final AuthorizationListener authorizationListener;
 
-		private TheAccountManagerCallback(Account account, AuthorizationListener authorizationListener) {
-			this.account = account;
+		private TheAccountManagerCallback(AuthorizationListener authorizationListener) {
 			this.authorizationListener = authorizationListener;
 		}
 
@@ -89,22 +118,23 @@ public class SecurityContext {
 			try {
 				final Bundle result = future.getResult();
 				if (result.getBoolean(AccountManager.KEY_BOOLEAN_RESULT)) {
-					SecurityContext.this.account = this.account;
-					SecurityContext.this.personality = new Personality(result.getBundle(AccountManager.KEY_USERDATA));
-					authorizationListener.authorized(personality);
+					final String pwd = result.getString(AccountManager.KEY_PASSWORD);
+					final String acc = result.getString(AccountManager.KEY_ACCOUNT_NAME);
+					final Personality personality = new Personality(result.getBundle(AccountManager.KEY_USERDATA));
+					SecurityContext.this.principal = new SecuredPrincipal(acc, pwd, personality);
+					if (authorizationListener != null) {
+						authorizationListener.authorized(personality);
+					}
 				} else {
-					authorizationListener.authorized(null);
+					if (authorizationListener != null) {
+						authorizationListener.authorized(null);
+					}
 				}
 			} catch (Exception ex) {
-				authorizationListener.authorized(null);
+				if (authorizationListener != null) {
+					authorizationListener.authorized(null);
+				}
 			}
 		}
-	}
-
-	/**
-	 * @author Sergey Klimenko (smklimenko@gmail.com)
-	 */
-	public static interface AuthorizationListener {
-		void authorized(Personality personality);
 	}
 }

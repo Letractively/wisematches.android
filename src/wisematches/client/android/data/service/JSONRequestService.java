@@ -8,6 +8,7 @@ import com.foxykeep.datadroid.exception.CustomRequestException;
 import com.foxykeep.datadroid.exception.DataException;
 import com.foxykeep.datadroid.requestmanager.Request;
 import com.foxykeep.datadroid.service.RequestService;
+import wisematches.client.android.WiseMatchesApplication;
 import wisematches.client.android.data.service.operation.JSONOperation;
 import wisematches.client.android.data.service.operation.person.RegisterPlayerOperation;
 import wisematches.client.android.data.service.operation.person.SignInPlayerOperation;
@@ -38,7 +39,7 @@ public class JSONRequestService extends RequestService {
 	public void onCreate() {
 		super.onCreate();
 
-		jsonConnection = new JSONConnection();
+		jsonConnection = new JSONConnection(((WiseMatchesApplication) getApplication()).getSecurityContext());
 	}
 
 	@Override

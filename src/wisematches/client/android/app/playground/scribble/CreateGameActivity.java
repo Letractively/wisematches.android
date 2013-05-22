@@ -1,9 +1,12 @@
 package wisematches.client.android.app.playground.scribble;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
+import android.text.Html;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -122,11 +125,24 @@ public class CreateGameActivity extends WiseMatchesActivity implements ActionBar
 				TIMEOUTS[timeoutEditor.getSelectedItemPosition()], createTab, robotType, opponentsCount, new DataRequestManager.DataResponse<Id>() {
 			@Override
 			public void onSuccess(Id data) {
-				startActivity(ScribbleBoardActivity.createIntent(CreateGameActivity.this, data.getId()));
+				if (data == null) {
+					startActivity(ActiveGamesActivity.createIntent(CreateGameActivity.this));
+				} else {
+					startActivity(ScribbleBoardActivity.createIntent(CreateGameActivity.this, data.getId()));
+				}
 			}
 
 			@Override
 			public void onFailure(String code, String message) {
+				final AlertDialog.Builder builder = new AlertDialog.Builder(CreateGameActivity.this);
+				builder.setMessage(Html.fromHtml(message));
+				builder.setNeutralButton("Закрыть", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.dismiss();
+					}
+				});
+				builder.show();
 				createButton.setEnabled(true);
 			}
 

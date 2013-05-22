@@ -44,6 +44,9 @@ public class CreateGameOperation extends JSONOperation.Primitive<Id> {
 
 	@Override
 	protected Id createResponse(JSONObject data) throws JSONException {
-		return new Id(data.getLong("board"));
+		if (data != null && data.has("board")) {
+			return new Id(data.getLong("board"));
+		}
+		return null;
 	}
 }
