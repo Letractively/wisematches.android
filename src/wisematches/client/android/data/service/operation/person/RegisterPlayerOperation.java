@@ -44,7 +44,7 @@ public class RegisterPlayerOperation extends JSONOperation.Primitive<Personality
 	}
 
 	@Override
-	protected Personality createResponse(JSONObject data) throws JSONException {
-		return PersonalityParser.parse(data);
+	protected Personality createResponse(Object data) throws JSONException {
+		return PersonalityParser.parse((JSONObject) data);
 	}
 }

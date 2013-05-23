@@ -37,7 +37,7 @@ public class RegisterActivity extends AuthenticationActivity {
 	private static final String INTENT_EXTRA_NICKNAME = "ACCOUNT_NICKNAME";
 
 	public RegisterActivity() {
-		super(R.layout.account_register);
+		super("Новый Аккаунт", R.layout.account_register);
 	}
 
 	public void onCreate(Bundle savedInstanceState) {

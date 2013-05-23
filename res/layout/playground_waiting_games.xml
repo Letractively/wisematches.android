@@ -5,6 +5,15 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content">
 
+    <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/playgroundJoinErr"
+            android:textAppearance="@style/TextAppearance.WM.Error"
+            android:background="@drawable/ui_widget_error"
+            android:textColor="@color/state.error.color"
+            android:visibility="gone"/>
+
     <ListView
             android:layout_width="fill_parent"
             android:layout_height="0dp"
@@ -15,8 +24,6 @@
             android:layout_weight="1"
             android:headerDividersEnabled="true"
             android:footerDividersEnabled="true"
-            android:dividerHeight="1dp"
-            android:focusable="false"
-            android:focusableInTouchMode="false"
-            android:clickable="false"/>
+            android:dividerHeight="1dp"/>
+
 </LinearLayout>

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="fill_parent"
+              android:layout_height="wrap_content"
+              android:padding="2dp">
+
+    <RelativeLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dip">
+
+        <LinearLayout
+                android:id="@+id/dashboardPlayers"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:orientation="vertical">
+
+            <view
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    class="wisematches.client.android.app.account.view.PersonalityView"/>
+
+            <view
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    class="wisematches.client.android.app.account.view.PersonalityView"/>
+
+            <view
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    class="wisematches.client.android.app.account.view.PersonalityView"/>
+
+            <view
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    class="wisematches.client.android.app.account.view.PersonalityView"/>
+        </LinearLayout>
+
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_toLeftOf="@+id/dashboardPlayers">
+
+            <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content">
+
+                <TextView
+                        android:id="@+id/boardTitle"
+                        android:singleLine="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="This is game of new game"
+                        android:paddingRight="5dp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:orientation="horizontal">
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Язык"
+                        android:id="@+id/playgroundJoinLanguage"/>
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=","
+                        />
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Время"
+                        android:id="@+id/playgroundJoinTimeout"
+                        android:singleLine="true"
+                        android:paddingLeft="5dp"/>
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=" на ход"
+                        />
+            </LinearLayout>
+        </LinearLayout>
+    </RelativeLayout>
+
+    <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="horizontal">
+
+        <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/playgroundJoinErr"
+                android:layout_weight="1"
+                android:textAppearance="@style/TextAppearance.WM.Player.Waiting"
+                android:visibility="visible"
+                android:text="фыва"
+                android:gravity="right"/>
+
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Присоединиться"
+                android:id="@+id/playgroundJoinAction"
+                />
+    </LinearLayout>
+</LinearLayout>

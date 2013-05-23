@@ -73,9 +73,7 @@
 
         <activity android:name=".app.playground.scribble.CreateGameActivity"/>
 
-        <activity android:name=".app.playground.scribble.JoinGameActivity"/>
-
-        <activity android:name=".app.playground.scribble.FinishedGamesActivity"/>
+        <activity android:name=".app.playground.scribble.WaitingGamesActivity"/>
 
         <activity
                 android:name=".app.playground.scribble.board.ScribbleBoardActivity"

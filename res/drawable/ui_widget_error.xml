@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/state.error.background"/>
+
+    <stroke
+            android:width="@dimen/ui.widget.border"
+            android:color="@color/state.error.border"/>
+
+    <padding
+            android:left="@dimen/ui.widget.border"
+            android:top="@dimen/ui.widget.border"
+            android:right="@dimen/ui.widget.border"
+            android:bottom="@dimen/ui.widget.border"/>
+</shape>

@@ -29,9 +29,12 @@ import wisematches.client.android.app.playground.scribble.board.view.ProgressVie
 public class ScribbleBoardActivity extends WiseMatchesActivity {
 	private static final String INTENT_EXTRA_BOARD_ID = "INTENT_EXTRA_BOARD_ID";
 
+	public ScribbleBoardActivity() {
+		super(null, R.layout.playground_board, true);
+	}
+
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.playground_board);
 
 		final long boardId = getIntent().getLongExtra(INTENT_EXTRA_BOARD_ID, 0);
 		if (boardId == 0) {

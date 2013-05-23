@@ -1,15 +1,14 @@
 package wisematches.client.android.app;
 
-import android.R;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+import wisematches.client.android.R;
 import wisematches.client.android.app.playground.scribble.ActiveGamesActivity;
 import wisematches.client.android.app.playground.scribble.CreateGameActivity;
-import wisematches.client.android.app.playground.scribble.FinishedGamesActivity;
-import wisematches.client.android.app.playground.scribble.JoinGameActivity;
+import wisematches.client.android.app.playground.scribble.WaitingGamesActivity;
 
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
@@ -28,36 +27,41 @@ public final class MenuFactory {
 	}
 
 	public static boolean startMenuActivity(Activity activity, MenuItem item) {
-		for (Type type : Type.values()) {
-			if (type.ordinal() == item.getItemId()) {
-				activity.startActivity(type.createIntent(activity));
-				return true;
+		Intent intent = null;
+		if (item.getItemId() == android.R.id.home) {
+			intent = Type.HOME.createIntent(activity);
+		} else {
+			Type[] values = Type.values();
+			for (int i = 0; i < values.length && intent == null; i++) {
+				Type type = values[i];
+				if (type.ordinal() == item.getItemId()) {
+					intent = type.createIntent(activity);
+				}
 			}
 		}
-		return false;
+
+		if (intent == null || intent.getComponent().equals(activity.getComponentName())) {
+			return false;
+		}
+		activity.startActivity(intent);
+		return true;
 	}
 
 	public static enum Type {
-		ACTIVE_GAMES("Текущие игры", R.drawable.ic_menu_agenda) {
+		HOME("Текущие игры", R.drawable.ic_logo) {
 			@Override
 			public Intent createIntent(Context context) {
 				return ActiveGamesActivity.createIntent(context);
 			}
 		},
-		FINISHED_GAMES("Завершенные игры", android.R.drawable.ic_menu_recent_history) {
-			@Override
-			public Intent createIntent(Context context) {
-				return FinishedGamesActivity.createIntent(context);
-			}
-		},
 
-		JOIN_GAME("Присоединиться", android.R.drawable.ic_menu_more) {
+		JOIN_GAME("Присоединиться", R.drawable.ic_menu_join) {
 			@Override
 			public Intent createIntent(Context context) {
-				return JoinGameActivity.createIntent(context);
+				return WaitingGamesActivity.createIntent(context);
 			}
 		},
-		CREATE_GAME("Новая игра", android.R.drawable.ic_menu_add) {
+		CREATE_GAME("Новая игра", R.drawable.ic_menu_create) {
 			@Override
 			public Intent createIntent(Context context) {
 				return CreateGameActivity.createIntent(context);
@@ -70,14 +74,6 @@ public final class MenuFactory {
 		private Type(String name, int icon) {
 			this.icon = icon;
 			this.name = name;
-		}
-
-		public int getIcon() {
-			return icon;
-		}
-
-		public String getName() {
-			return name;
 		}
 
 		public abstract Intent createIntent(Context context);
