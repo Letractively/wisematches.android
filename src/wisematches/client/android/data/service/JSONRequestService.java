@@ -14,6 +14,8 @@ import wisematches.client.android.data.service.operation.person.RegisterPlayerOp
 import wisematches.client.android.data.service.operation.person.SignInPlayerOperation;
 import wisematches.client.android.data.service.operation.scribble.ActiveGamesOperation;
 import wisematches.client.android.data.service.operation.scribble.CreateGameOperation;
+import wisematches.client.android.data.service.operation.scribble.ProcessProposalOperation;
+import wisematches.client.android.data.service.operation.scribble.WaitingGamesOperation;
 import wisematches.client.android.http.JSONConnection;
 
 import java.util.ArrayList;
@@ -33,6 +35,8 @@ public class JSONRequestService extends RequestService {
 		operationMap.put(JSONRequestManager.REQUEST_TYPE_REGISTER, new JSONResponseOperation(new RegisterPlayerOperation()));
 		operationMap.put(JSONRequestManager.REQUEST_TYPE_ACTIVE_GAMES, new JSONResponseOperation(new ActiveGamesOperation()));
 		operationMap.put(JSONRequestManager.REQUEST_TYPE_CREATE_GAME, new JSONResponseOperation(new CreateGameOperation()));
+		operationMap.put(JSONRequestManager.REQUEST_TYPE_WAITING_GAMES, new JSONResponseOperation(new WaitingGamesOperation()));
+		operationMap.put(JSONRequestManager.REQUEST_TYPE_PROCESS_PROPOSAL, new JSONResponseOperation(new ProcessProposalOperation()));
 	}
 
 	@Override

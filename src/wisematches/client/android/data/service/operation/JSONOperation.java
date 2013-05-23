@@ -7,7 +7,6 @@ import com.foxykeep.datadroid.exception.DataException;
 import com.foxykeep.datadroid.requestmanager.Request;
 import org.apache.http.HttpRequest;
 import org.json.JSONException;
-import org.json.JSONObject;
 import wisematches.client.android.data.service.RequestRejectedException;
 import wisematches.client.android.http.JSONConnection;
 
@@ -35,7 +34,7 @@ public abstract class JSONOperation<P> {
 
 	protected abstract HttpRequest createRequest(Request request) throws DataException;
 
-	protected abstract P createResponse(JSONObject data) throws JSONException;
+	protected abstract P createResponse(Object data) throws JSONException;
 
 
 	public static abstract class List<P extends Parcelable> extends JSONOperation<ArrayList<P>> {

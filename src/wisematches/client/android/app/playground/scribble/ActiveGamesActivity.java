@@ -4,47 +4,39 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.*;
-import com.actionbarsherlock.app.ActionBar;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
+import android.widget.ListView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import wisematches.client.android.R;
 import wisematches.client.android.WiseMatchesActivity;
 import wisematches.client.android.app.MenuFactory;
-import wisematches.client.android.app.account.view.PersonalityView;
+import wisematches.client.android.app.OnResultListener;
 import wisematches.client.android.app.playground.scribble.board.ScribbleBoardActivity;
-import wisematches.client.android.data.DataRequestManager;
+import wisematches.client.android.data.model.Id;
+import wisematches.client.android.data.model.scribble.ActiveGames;
 import wisematches.client.android.data.model.scribble.ScribbleDescriptor;
-import wisematches.client.android.data.model.scribble.ScribbleHand;
-import wisematches.client.android.security.SecurityContext;
-import wisematches.client.android.widget.ArrayAdapter;
-
-import java.util.ArrayList;
-import java.util.List;
+import wisematches.client.android.data.model.scribble.ScribbleProposal;
 
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
  */
 public class ActiveGamesActivity extends WiseMatchesActivity {
+	private ListView gamesListView;
+
 	private static final String INTENT_EXTRA_PID = "PLAYER_ID";
+
+	public ActiveGamesActivity() {
+		super("Текущие игры", R.layout.playground_active_games, true);
+	}
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.playground_active_games);
 
-		final View progressBar = findViewById(R.id.listProgressBar);
-		progressBar.setVisibility(View.VISIBLE);
-
-		final SecurityContext securityContext = getSecurityContext();
-		final long pid = getIntent().getLongExtra(INTENT_EXTRA_PID, securityContext.getPersonality().getId());
-
-		ActionBar supportActionBar = getSupportActionBar();
-		if (supportActionBar != null) {
-			supportActionBar.setTitle("Текущие игры");
-		}
-
-		final ListView listView = (ListView) findViewById(R.id.scribbleViewActive);
-		listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+		gamesListView = (ListView) findViewById(R.id.playgroundGamesList);
+		gamesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> adapterView, View view, int position, long arg) {
 				final ScribbleDescriptor desc = (ScribbleDescriptor) adapterView.getItemAtPosition(position);
@@ -54,27 +46,23 @@ public class ActiveGamesActivity extends WiseMatchesActivity {
 			}
 		});
 
-		getRequestManager().getActiveGames(pid, new DataRequestManager.DataResponse<ArrayList<ScribbleDescriptor>>() {
-			@Override
-			public void onSuccess(ArrayList<ScribbleDescriptor> data) {
-				listView.setAdapter(new ActiveGamesAdapter(ActiveGamesActivity.this, data));
+		loadActiveGames();
+	}
 
-				progressBar.setVisibility(View.GONE);
+	private void loadActiveGames() {
+		getRequestManager().getActiveGames(getPersonality().getId(), new SmartDataResponse<ActiveGames>(this) {
+			@Override
+			protected void onData(ActiveGames data) {
+				gamesListView.setAdapter(new GamesListAdapter(ActiveGamesActivity.this, data.getDescriptors(), data.getProposals()));
 			}
 
 			@Override
-			public void onFailure(String code, String message) {
-				getActionBar().setTitle("onFailure: " + message);
+			protected void onRetry() {
+				loadActiveGames();
 			}
 
 			@Override
-			public void onDataError() {
-				getActionBar().setTitle("onDataError");
-			}
-
-			@Override
-			public void onConnectionError(int code) {
-				getActionBar().setTitle("onConnectionError: " + code);
+			protected void onCancel() {
 			}
 		});
 	}
@@ -83,13 +71,7 @@ public class ActiveGamesActivity extends WiseMatchesActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuFactory.addMenuItem(menu, 1, 1, MenuFactory.Type.CREATE_GAME, MenuItem.SHOW_AS_ACTION_ALWAYS);
 		MenuFactory.addMenuItem(menu, 1, 2, MenuFactory.Type.JOIN_GAME, MenuItem.SHOW_AS_ACTION_ALWAYS);
-		MenuFactory.addMenuItem(menu, 2, 3, MenuFactory.Type.FINISHED_GAMES, MenuItem.SHOW_AS_ACTION_NEVER);
 		return super.onCreateOptionsMenu(menu);
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		return MenuFactory.startMenuActivity(this, item);
 	}
 
 	public static Intent createIntent(Context context) {
@@ -104,59 +86,78 @@ public class ActiveGamesActivity extends WiseMatchesActivity {
 		return intent;
 	}
 
-	/**
-	 * @author Sergey Klimenko (smklimenko@gmail.com)
-	 */
-	private static class ActiveGamesAdapter extends ArrayAdapter<ScribbleDescriptor> {
-		public ActiveGamesAdapter(Context context, List<ScribbleDescriptor> objects) {
-			super(context, R.layout.playground_active_game, R.layout.playground_active_game, false, objects);
+
+	private void cancelWaitingGame(final long proposalId, final OnResultListener<Boolean> listener) {
+		getRequestManager().processWaitingGame(proposalId, false, new SmartDataResponse<Id>(this) {
+			@Override
+			protected void onData(Id data) {
+				loadActiveGames();
+				listener.onResult(true);
+			}
+
+			@Override
+			protected void onRetry() {
+				cancelWaitingGame(proposalId, listener);
+			}
+
+			@Override
+			protected void onCancel() {
+				listener.onResult(false);
+			}
+		});
+	}
+
+	private class GamesListAdapter extends BaseAdapter {
+		private final ActiveGamesAdapter activeGamesAdapter;
+		private final WaitingGamesAdapter waitingGamesAdapter;
+
+		private GamesListAdapter(Context context, ScribbleDescriptor[] descriptors, ScribbleProposal[] proposals) {
+			activeGamesAdapter = new ActiveGamesAdapter(context, descriptors);
+			waitingGamesAdapter = new WaitingGamesAdapter(context, proposals, false, "Отказаться", new WaitingGamesAdapter.ProposalClickListener() {
+				@Override
+				public void onAccept(long id, OnResultListener<Boolean> listener) {
+					cancelWaitingGame(id, listener);
+				}
+
+				@Override
+				public void onReject(long id, OnResultListener<Boolean> listener) {
+				}
+			});
 		}
 
 		@Override
-		protected void populateValueToView(View view, ScribbleDescriptor value) {
-			ViewHolder holder = (ViewHolder) view.getTag();
-			if (holder == null) {
-				holder = new ViewHolder();
-				holder.title = (TextView) view.findViewById(R.id.boardTitle);
-				holder.number = (TextView) view.findViewById(R.id.boardNumber);
-				holder.elapsedTime = (TextView) view.findViewById(R.id.boardElapsedTime);
-				holder.players = (TableLayout) view.findViewById(R.id.dashboardPlayers);
+		public int getCount() {
+			return activeGamesAdapter.getCount() + waitingGamesAdapter.getCount();
+		}
 
-				view.setTag(holder);
-			}
-
-			holder.title.setText(value.getSettings().getTitle());
-			holder.number.setText(String.valueOf(value.getId()));
-			holder.elapsedTime.setText(String.valueOf(value.getRemainedTime().getText()));
-
-			final ScribbleHand[] players = value.getPlayers();
-			for (int index = 0; index < players.length; index++) {
-				final ScribbleHand hand = players[index];
-				final TableRow row = (TableRow) holder.players.getChildAt(index);
-				row.setVisibility(View.VISIBLE);
-
-				if (value.getPlayerTurnIndex() == index) {
-					row.setBackgroundResource(R.drawable.player_state_active);
-				}
-
-
-				final PersonalityView player = (PersonalityView) row.findViewById(R.id.dashboardPlayerView);
-				player.setPersonality(hand.getPersonality());
-
-				final TextView points = (TextView) row.findViewById(R.id.dashboardPlayerPoints);
-				points.setText(String.valueOf(hand.getPoints()));
-			}
-
-			for (int i = players.length; i < holder.players.getChildCount(); i++) {
-				holder.players.getChildAt(i).setVisibility(View.GONE);
+		@Override
+		public Object getItem(int position) {
+			int count = activeGamesAdapter.getCount();
+			if (position < count) {
+				return activeGamesAdapter.getItem(position);
+			} else {
+				return waitingGamesAdapter.getItem(position - count);
 			}
 		}
 
-		private static class ViewHolder {
-			private TextView title;
-			private TextView number;
-			private TextView elapsedTime;
-			private TableLayout players;
+		@Override
+		public long getItemId(int position) {
+			int count = activeGamesAdapter.getCount();
+			if (position < count) {
+				return activeGamesAdapter.getItemId(position);
+			} else {
+				return waitingGamesAdapter.getItemId(position - count);
+			}
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			int count = activeGamesAdapter.getCount();
+			if (position < count) {
+				return activeGamesAdapter.getView(position, null, parent);
+			} else {
+				return waitingGamesAdapter.getView(position - count, null, parent);
+			}
 		}
 	}
 }

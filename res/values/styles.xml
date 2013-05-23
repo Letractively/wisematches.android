@@ -82,6 +82,11 @@
 
     <style name="TextAppearance.WM.Player" parent="TextAppearance.WM">
         <item name="android:textColor">#ffa52a2a</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <style name="TextAppearance.WM.Player.Waiting" parent="TextAppearance.WM">
+        <item name="android:textColor">#ff808080</item>
     </style>
 
     <style name="TextAppearance.WM.Label" parent="TextAppearance.WM">

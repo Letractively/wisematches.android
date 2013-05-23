@@ -42,10 +42,13 @@ public class CreateGameActivity extends WiseMatchesActivity implements ActionBar
 
 	private static final int[] TIMEOUTS = new int[]{2, 3, 4, 5, 7, 10, 14};
 
+	public CreateGameActivity() {
+		super("Новая Игра", R.layout.playground_create_game);
+	}
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.playground_create_game);
 
 		titleEditor = (EditText) findViewById(R.id.playgroundCreateTitle);
 		languageEditor = (Spinner) findViewById(R.id.playgroundCreateLanguage);
@@ -57,7 +60,6 @@ public class CreateGameActivity extends WiseMatchesActivity implements ActionBar
 		createButton = (Button) findViewById(R.id.playgroundCreateBtn);
 
 		final ActionBar supportActionBar = getSupportActionBar();
-		supportActionBar.setTitle("Новая Игра");
 		supportActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
 		final ActionBar.Tab robotsTab = supportActionBar.newTab();
@@ -160,15 +162,8 @@ public class CreateGameActivity extends WiseMatchesActivity implements ActionBar
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuFactory.addMenuItem(menu, 1, 1, MenuFactory.Type.ACTIVE_GAMES, MenuItem.SHOW_AS_ACTION_IF_ROOM);
-		MenuFactory.addMenuItem(menu, 1, 2, MenuFactory.Type.JOIN_GAME, MenuItem.SHOW_AS_ACTION_IF_ROOM);
-		MenuFactory.addMenuItem(menu, 2, 3, MenuFactory.Type.FINISHED_GAMES, MenuItem.SHOW_AS_ACTION_NEVER);
+		MenuFactory.addMenuItem(menu, 1, 1, MenuFactory.Type.JOIN_GAME, MenuItem.SHOW_AS_ACTION_ALWAYS);
 		return super.onCreateOptionsMenu(menu);
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		return MenuFactory.startMenuActivity(this, item);
 	}
 
 	@Override

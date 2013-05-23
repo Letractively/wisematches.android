@@ -11,4 +11,8 @@
     <item name="accountFldLanguage" type="id"/>
     <item name="accountFldProgress" type="id"/>
     <item name="accountFldTerms" type="id"/>
+
+    <item name="commonLoadingProgress" type="id"/>
+
+    <item name="playgroundGamesList" type="id"/>
 </resources>

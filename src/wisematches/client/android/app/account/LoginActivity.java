@@ -22,7 +22,7 @@ public class LoginActivity extends AuthenticationActivity {
 	private EditText passwordField;
 
 	public LoginActivity() {
-		super(R.layout.account_signin);
+		super("Вход в аккаунт", R.layout.account_signin);
 	}
 
 	public void onCreate(Bundle savedInstanceState) {

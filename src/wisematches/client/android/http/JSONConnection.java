@@ -2,16 +2,17 @@ package wisematches.client.android.http;
 
 import com.foxykeep.datadroid.exception.ConnectionException;
 import com.foxykeep.datadroid.exception.DataException;
-import org.apache.http.Header;
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
-import org.apache.http.client.CookieStore;
+import org.apache.http.*;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.AuthState;
+import org.apache.http.auth.Credentials;
+import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.params.ClientPNames;
 import org.apache.http.client.params.HttpClientParams;
 import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.*;
@@ -32,14 +33,12 @@ import java.io.UnsupportedEncodingException;
  */
 public class JSONConnection {
 	private final DefaultHttpClient client;
-	private final SecurityContext securityContext;
-	private final CookieStore cookieStore = new BasicCookieStore();
-	private final HttpContext localContext = new BasicHttpContext();
+	private final BasicCookieStore cookieStore = new BasicCookieStore();
+	private final BasicHttpContext localContext = new BasicHttpContext();
 
 	private static final int DEFAULT_TIMEOUT = 10000;
 
 	public JSONConnection(SecurityContext securityContext) {
-		this.securityContext = securityContext;
 		final HttpParams params = new BasicHttpParams();
 		params.setParameter(ClientPNames.ALLOW_CIRCULAR_REDIRECTS, true);
 		params.setParameter(CoreProtocolPNames.USER_AGENT, "Wisematches/1.0");
@@ -50,6 +49,23 @@ public class JSONConnection {
 
 		client = new DefaultHttpClient(params);
 		client.setCredentialsProvider(securityContext);
+		client.addRequestInterceptor(new HttpRequestInterceptor() {
+			@Override
+			public void process(HttpRequest httpRequest, HttpContext context) throws HttpException, IOException {
+				AuthState state = (AuthState) context.getAttribute(ClientContext.TARGET_AUTH_STATE);
+				if (state.getAuthScheme() == null) {
+					BasicScheme scheme = new BasicScheme();
+					CredentialsProvider credentialsProvider = (CredentialsProvider) context.getAttribute(ClientContext.CREDS_PROVIDER);
+					Credentials credentials = credentialsProvider.getCredentials(AuthScope.ANY);
+					if (credentials != null) {
+						state.setAuthScope(AuthScope.ANY);
+						state.setAuthScheme(scheme);
+						state.setCredentials(credentials);
+					}
+				}
+			}
+		});
+
 		localContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
 	}
 
@@ -78,7 +94,11 @@ public class JSONConnection {
 	public Response execute(HttpRequest request) throws ConnectionException, DataException {
 		try {
 			request.setHeader("Accept", "application/json");
-			request.setHeader("Content-type", "application/json");
+			if (request instanceof HttpPost) {
+				request.setHeader("Content-type", "application/json");
+			} else {
+				request.setHeader("Content-type", "application/x-www-form-urlencoded");
+			}
 			request.setHeader("Accept-Language", "ru");
 
 			final HttpParams params = request.getParams();
@@ -89,24 +109,27 @@ public class JSONConnection {
 
 			final HttpResponse response = client.execute(WiseMatchesApplication.WEB_HOST, request, localContext);
 			final StatusLine status = response.getStatusLine();
+			final String content = EntityUtils.toString(response.getEntity());
 			if (status.getStatusCode() != 200) {
-				throw new ConnectionException(status.getReasonPhrase(), status.getStatusCode());
+				throw new ConnectionException(content, status.getStatusCode());
 			}
 
-			final String content = EntityUtils.toString(response.getEntity());
 			if (content == null || content.length() == 0) {
 				return null;
 			}
 
 			final JSONObject r = new JSONObject(content);
-			return new Response(r.getBoolean("success"), r.optJSONObject("data"), r.optString("code"), r.optString("message"));
+			Object data = r.opt("data");
+			if (data == JSONObject.NULL) {
+				data = null;
+			}
+			return new Response(r.getBoolean("success"), data, r.optString("code"), r.optString("message"));
 		} catch (JSONException ex) {
 			throw new DataException(ex.getMessage(), ex);
 		} catch (IOException ex) {
 			throw new ConnectionException(ex.getMessage(), ex);
 		}
 	}
-
 
 	public void release() {
 		this.cookieStore.clear();
@@ -119,11 +142,11 @@ public class JSONConnection {
 	 */
 	public static class Response {
 		private final boolean success;
-		private final JSONObject data;
+		private final Object data;
 		private final String errorCode;
 		private final String errorMessage;
 
-		public Response(boolean success, JSONObject data, String errorCode, String errorMessage) {
+		public Response(boolean success, Object data, String errorCode, String errorMessage) {
 			this.success = success;
 			this.data = data;
 			this.errorCode = errorCode;
@@ -134,7 +157,7 @@ public class JSONConnection {
 			return success;
 		}
 
-		public JSONObject getData() {
+		public Object getData() {
 			return data;
 		}
 

@@ -25,19 +25,17 @@ public abstract class AuthenticationActivity extends WiseMatchesActivity {
 
 	protected AccountAuthenticatorResponse authenticatorResponse;
 
-	private final int contentView;
 	private final ClearErrorListener clearErrorListener = new ClearErrorListener();
 
 	protected static final String INTERNAL_ACCOUNT_REGISTRANT = "INTERNAL_ACCOUNT_REGISTRANT";
 
-	public AuthenticationActivity(int contentView) {
-		this.contentView = contentView;
+	public AuthenticationActivity(String title, int contentView) {
+		super(title, contentView);
 	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(contentView);
 
 		errorField = (TextView) findViewById(R.id.accountFldError);
 

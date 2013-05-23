@@ -8,13 +8,16 @@ import wisematches.client.android.data.model.person.Personality;
 import wisematches.client.android.security.SecurityContext;
 
 public class EntryPointActivity extends WiseMatchesActivity {
+	public EntryPointActivity() {
+		super(null, R.layout.splash);
+	}
+
 	/**
 	 * Called when the activity is first created.
 	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.splash);
 
 		final SecurityContext.AuthorizationListener authorizationListener = new SecurityContext.AuthorizationListener() {
 			@Override

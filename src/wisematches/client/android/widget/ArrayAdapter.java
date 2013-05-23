@@ -34,6 +34,10 @@ public class ArrayAdapter<T> extends BaseAdapter implements Filterable {
 	private ArrayFilter arrayFilter;
 	protected LayoutInflater layoutInflater;
 
+	public ArrayAdapter(Context context, int viewResource, int dropDownResource, boolean notifyOnChange, T[] objects) {
+		this(context, viewResource, dropDownResource, notifyOnChange, Arrays.asList(objects));
+	}
+
 	public ArrayAdapter(Context context, int viewResource, int dropDownResource, boolean notifyOnChange, List<T> objects) {
 		this.context = context;
 		this.viewResource = viewResource;

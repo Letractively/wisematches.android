@@ -11,6 +11,9 @@ import java.util.TimeZone;
  */
 public class PersonalityParser {
 	public static Personality parse(JSONObject data) throws JSONException {
+		if (data == null) {
+			return null;
+		}
 		String timeZone = data.optString("timeZone");
 		return new Personality(
 				data.getLong("id"),

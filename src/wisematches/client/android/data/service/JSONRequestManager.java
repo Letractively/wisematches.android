@@ -9,13 +9,13 @@ import wisematches.client.android.data.DataRequestManager;
 import wisematches.client.android.data.model.Id;
 import wisematches.client.android.data.model.Language;
 import wisematches.client.android.data.model.person.Personality;
-import wisematches.client.android.data.model.scribble.ScribbleDescriptor;
+import wisematches.client.android.data.model.scribble.ActiveGames;
+import wisematches.client.android.data.model.scribble.WaitingGames;
 import wisematches.client.android.data.service.operation.person.RegisterPlayerOperation;
 import wisematches.client.android.data.service.operation.person.SignInPlayerOperation;
 import wisematches.client.android.data.service.operation.scribble.ActiveGamesOperation;
 import wisematches.client.android.data.service.operation.scribble.CreateGameOperation;
-
-import java.util.ArrayList;
+import wisematches.client.android.data.service.operation.scribble.ProcessProposalOperation;
 
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
@@ -23,8 +23,12 @@ import java.util.ArrayList;
 public class JSONRequestManager extends RequestManager implements DataRequestManager {
 	public static final int REQUEST_TYPE_AUTH = 1;
 	public static final int REQUEST_TYPE_REGISTER = 2;
-	public static final int REQUEST_TYPE_ACTIVE_GAMES = 3;
-	public static final int REQUEST_TYPE_CREATE_GAME = 4;
+
+	public static final int REQUEST_TYPE_CREATE_GAME = 3;
+
+	public static final int REQUEST_TYPE_ACTIVE_GAMES = 4;
+	public static final int REQUEST_TYPE_WAITING_GAMES = 5;
+	public static final int REQUEST_TYPE_PROCESS_PROPOSAL = 6;
 
 	public static final String BUNDLE_EXTRA_RESPONSE_TYPE = "wisematches.client.extra.response.type";
 	public static final String BUNDLE_EXTRA_RESPONSE_TYPE_LIST = "wisematches.client.extra.response.type.list";
@@ -63,10 +67,24 @@ public class JSONRequestManager extends RequestManager implements DataRequestMan
 	}
 
 	@Override
-	public void getActiveGames(long pid, DataResponse<ArrayList<ScribbleDescriptor>> response) {
+	public void getActiveGames(long pid, DataResponse<ActiveGames> response) {
 		final Request request = new Request(REQUEST_TYPE_ACTIVE_GAMES);
 		request.put(ActiveGamesOperation.PLAYER_ID, pid);
 
+		execute(request, new TheRequestListener<>(response));
+	}
+
+	@Override
+	public void getWaitingGames(DataResponse<WaitingGames> response) {
+		final Request request = new Request(REQUEST_TYPE_WAITING_GAMES);
+		execute(request, new TheRequestListener<>(response));
+	}
+
+	@Override
+	public void processWaitingGame(long proposalId, boolean accept, DataResponse<Id> response) {
+		final Request request = new Request(REQUEST_TYPE_PROCESS_PROPOSAL);
+		request.put(ProcessProposalOperation.PARAM_ID, proposalId);
+		request.put(ProcessProposalOperation.PARAM_TYPE, accept);
 		execute(request, new TheRequestListener<>(response));
 	}
 
