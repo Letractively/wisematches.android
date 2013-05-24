@@ -1,4 +1,4 @@
-package wisematches.client.android.data.service.parser.proposal;
+package wisematches.client.android.data.service.parser.scribble;
 
 import org.json.JSONObject;
 import wisematches.client.android.data.model.scribble.CriterionViolation;

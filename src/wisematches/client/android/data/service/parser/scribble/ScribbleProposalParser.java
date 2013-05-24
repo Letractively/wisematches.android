@@ -1,4 +1,4 @@
-package wisematches.client.android.data.service.parser.proposal;
+package wisematches.client.android.data.service.parser.scribble;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -10,7 +10,6 @@ import wisematches.client.android.data.model.scribble.ScribbleProposal;
 import wisematches.client.android.data.model.scribble.ScribbleSettings;
 import wisematches.client.android.data.service.parser.TimeParser;
 import wisematches.client.android.data.service.parser.person.PersonalityParser;
-import wisematches.client.android.data.service.parser.scribble.ScribbleSettingsParser;
 
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)

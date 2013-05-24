@@ -7,6 +7,7 @@ import wisematches.client.android.data.model.Time;
 import wisematches.client.android.data.model.person.Personality;
 import wisematches.client.android.data.model.scribble.ScribbleDescriptor;
 import wisematches.client.android.data.model.scribble.ScribbleHand;
+import wisematches.client.android.data.model.scribble.ScribbleScore;
 import wisematches.client.android.data.model.scribble.ScribbleSettings;
 import wisematches.client.android.data.service.parser.TimeParser;
 import wisematches.client.android.data.service.parser.person.PersonalityParser;
@@ -29,21 +30,18 @@ public class ScribbleDescriptorParser {
 		int playerTurnIndex = -1;
 		long playerTurn = o.getLong("playerTurn");
 		JSONArray jsonPlayers = o.getJSONArray("players");
-		ScribbleHand[] players = new ScribbleHand[jsonPlayers.length()];
+		ScribbleHand[] hands = new ScribbleHand[jsonPlayers.length()];
 		for (int j = 0; j < jsonPlayers.length(); j++) {
 			final JSONObject po = jsonPlayers.getJSONObject(j);
+
 			final Personality parse = PersonalityParser.parse(po.getJSONObject("info"));
+			final ScribbleScore score = ScribbleScoreParser.parse(po.getJSONObject("score"));
+
+			hands[j] = new ScribbleHand(parse, score);
 			if (parse != null && parse.getId() == playerTurn) {
 				playerTurnIndex = j;
 			}
-
-			final JSONObject score = po.getJSONObject("score");
-			players[j] = new ScribbleHand(parse,
-					score.getInt("points"),
-					score.getInt("oldRating"),
-					score.getInt("newRating"),
-					score.getBoolean("winner"));
 		}
-		return new ScribbleDescriptor(id, settings, players, active, resolution, playerTurnIndex, spentTime, startedTime, finishedTime, remainedTime, lastChange);
+		return new ScribbleDescriptor(id, settings, hands, active, resolution, playerTurnIndex, spentTime, startedTime, finishedTime, remainedTime, lastChange);
 	}
 }

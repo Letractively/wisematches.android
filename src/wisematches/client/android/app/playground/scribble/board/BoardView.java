@@ -1,4 +1,4 @@
-package wisematches.client.android.app.playground.scribble.board.view;
+package wisematches.client.android.app.playground.scribble.board;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -9,9 +9,9 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
-import wisematches.client.android.app.playground.scribble.board.model.*;
 import wisematches.client.android.app.playground.scribble.board.surface.BoardSurface;
 import wisematches.client.android.app.playground.scribble.board.surface.TileSurface;
+import wisematches.client.android.data.model.scribble.*;
 import wisematches.client.android.graphics.BitmapFactory;
 
 import java.util.ArrayList;
@@ -51,11 +51,11 @@ public class BoardView extends FrameLayout {
 		setOnTouchListener(new TheOnTouchListener());
 	}
 
-	public void initBoardView(ScribbleGame scribbleBord, BitmapFactory bitmapFactory) {
+	public void initBoardView(ScribbleBoard board, BitmapFactory bitmapFactory) {
 		this.bitmapFactory = bitmapFactory;
-		this.boardSurface = new BoardSurface(scribbleBord, getResources());
+		this.boardSurface = new BoardSurface(board, getResources());
 
-		for (ScribbleMove move : scribbleBord.getMoves()) {
+		for (ScribbleMove move : board.getMoves()) {
 			if (move instanceof ScribbleMove.Make) {
 				final ScribbleMove.Make make = (ScribbleMove.Make) move;
 

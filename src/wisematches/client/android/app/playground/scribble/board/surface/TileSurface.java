@@ -3,7 +3,7 @@ package wisematches.client.android.app.playground.scribble.board.surface;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import wisematches.client.android.app.playground.scribble.board.model.ScribbleTile;
+import wisematches.client.android.data.model.scribble.ScribbleTile;
 import wisematches.client.android.graphics.BitmapFactory;
 
 /**

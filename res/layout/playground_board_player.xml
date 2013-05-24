@@ -10,7 +10,7 @@
     <view
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            class="wisematches.client.android.app.account.view.PlayerView"
+            class="wisematches.client.android.app.account.view.PersonalityView"
             android:id="@+id/scribbleBoardPlayerView"
             android:gravity="left"
             style="@style/TextAppearance.WM.Player"

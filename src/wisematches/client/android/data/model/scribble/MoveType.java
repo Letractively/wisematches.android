@@ -1,4 +1,4 @@
-package wisematches.client.android.app.playground.scribble.board.model;
+package wisematches.client.android.data.model.scribble;
 
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)

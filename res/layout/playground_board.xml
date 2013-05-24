@@ -19,7 +19,7 @@
             <view
                     android:layout_width="356px"
                     android:layout_height="370px"
-                    class="wisematches.client.android.app.playground.scribble.board.view.BoardView"
+                    class="wisematches.client.android.app.playground.scribble.board.BoardView"
                     android:id="@+id/scribbleBoardView"
                     android:layout_gravity="left|top"
                     android:background="@android:color/transparent"
@@ -103,7 +103,7 @@
                         <view
                                 android:layout_width="fill_parent"
                                 android:layout_height="16dp"
-                                class="wisematches.client.android.app.playground.scribble.board.view.ProgressView"
+                                class="wisematches.client.android.app.playground.scribble.board.ProgressView"
                                 android:id="@+id/scribbleBoardProgressView"
                                 android:text="dsfasfdasdf asdf"
                                 android:layout_gravity="center"
@@ -140,7 +140,7 @@
                     <view
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            class="wisematches.client.android.app.account.view.PlayerView"
+                            class="wisematches.client.android.app.account.view.PersonalityView"
                             android:id="@+id/view"
                             android:layout_column="0"/>
 
@@ -156,7 +156,7 @@
                         android:layout_height="fill_parent">
 
                     <view
-                            class="wisematches.client.android.app.account.view.PlayerView"
+                            class="wisematches.client.android.app.account.view.PersonalityView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:id="@+id/view1"

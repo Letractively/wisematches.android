@@ -11,8 +11,8 @@ import wisematches.client.android.data.model.scribble.ActiveGames;
 import wisematches.client.android.data.model.scribble.ScribbleDescriptor;
 import wisematches.client.android.data.model.scribble.ScribbleProposal;
 import wisematches.client.android.data.service.operation.JSONOperation;
-import wisematches.client.android.data.service.parser.proposal.ScribbleProposalParser;
 import wisematches.client.android.data.service.parser.scribble.ScribbleDescriptorParser;
+import wisematches.client.android.data.service.parser.scribble.ScribbleProposalParser;
 
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
