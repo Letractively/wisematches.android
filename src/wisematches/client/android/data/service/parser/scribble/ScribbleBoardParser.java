@@ -1,52 +1,29 @@
-package wisematches.client.android.app.playground.scribble.board.model;
+package wisematches.client.android.data.service.parser.scribble;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import wisematches.client.android.data.model.scribble.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
  */
-@Deprecated
-public final class JSONScribbleParser {
-	public static ScribbleGame parseGame(JSONObject data) throws JSONException {
-		final long id = data.getLong("id");
+public final class ScribbleBoardParser {
+	public static ScribbleBoard parseGame(JSONObject data) throws JSONException {
+		final ScribbleDescriptor descriptor = ScribbleDescriptorParser.parse(data);
 
+		final int allHandBonus = data.getInt("allHandBonus");
 		final JSONArray jsonBonuses = data.getJSONArray("bonuses");
 		final ScoreBonus[] bonuses = new ScoreBonus[jsonBonuses.length()];
 		for (int i = 0; i < bonuses.length; i++) {
 			JSONObject o = jsonBonuses.getJSONObject(i);
 			bonuses[i] = new ScoreBonus(o.getInt("row"), o.getInt("column"), ScoreBonus.Type.valueOf(o.getString("type")));
 		}
-
-		final JSONArray jsonPlayers = data.getJSONArray("players");
-		final List<ScribblePlayer> players = new ArrayList<>();
-		final Map<Long, ScribblePlayer> playersMap = new HashMap<>();
-		for (int i = 0; i < jsonPlayers.length(); i++) {
-			final JSONObject jsonPlayer = jsonPlayers.getJSONObject(i);
-
-			final long pid = jsonPlayer.getLong("id");
-
-			final JSONObject jsonInfo = jsonPlayer.getJSONObject("info");
-
-			final JSONObject jsonScore = jsonPlayer.getJSONObject("score");
-
-			ScribblePlayer p = new ScribblePlayer(pid,
-					jsonInfo.getString("nickname"),
-					jsonInfo.getString("type"),
-					jsonInfo.getString("membership"),
-					jsonInfo.getBoolean("online"));
-
-			p.setPoints(jsonScore.getInt("points"));
-			p.setNewRating(jsonScore.getInt("newRating"));
-			p.setOldRating(jsonScore.getInt("oldRating"));
-			p.setWinner(jsonScore.getBoolean("winner"));
-
-			players.add(p);
-			playersMap.put(p.getId(), p);
-		}
+		final ScoreEngine scoreEngine = new ScoreEngine(bonuses, allHandBonus);
 
 		final JSONArray jsonMoves = data.getJSONArray("moves");
 		List<ScribbleMove> moves = new ArrayList<>();
@@ -80,38 +57,28 @@ public final class JSONScribbleParser {
 							jsonPosition.getInt("column"),
 							WordDirection.valueOf(jsonWord.getString("direction")),
 							tiles);
-					move = new ScribbleMove.Make(number, points, time, playersMap.get(pid), w);
+					move = new ScribbleMove.Make(number, points, time, pid, w);
 					break;
 				case PASS:
-					move = new ScribbleMove.Pass(number, points, time, playersMap.get(pid));
+					move = new ScribbleMove.Pass(number, points, time, pid);
 					break;
 				case EXCHANGE:
-					move = new ScribbleMove.Exchange(number, points, time, playersMap.get(pid));
+					move = new ScribbleMove.Exchange(number, points, time, pid);
 					break;
 			}
 			moves.add(move);
 		}
 
-		final JSONObject jsonSettings = data.getJSONObject("settings");
-		final ScribbleSettings settings = new ScribbleSettings(
-				jsonSettings.getString("title"),
-				jsonSettings.getString("language"),
-				jsonSettings.getInt("daysPerMove"),
-				jsonSettings.getBoolean("scratch"));
 
 		final JSONObject jsonBank = data.getJSONObject("bank");
 		final JSONArray letterDescriptions = jsonBank.getJSONArray("letterDescriptions");
-
-		final Collection<ScribbleLetter> letters = new ArrayList<>(letterDescriptions.length());
+		final ScribbleLetter[] letters = new ScribbleLetter[letterDescriptions.length()];
 		for (int i = 0; i < letterDescriptions.length(); i++) {
 			final JSONObject jsonLetter = letterDescriptions.getJSONObject(i);
-			letters.add(new ScribbleLetter(
-					jsonLetter.getString("letter").charAt(0),
-					jsonLetter.getInt("count"),
-					jsonLetter.getInt("cost")));
+			letters[i] = new ScribbleLetter(jsonLetter.getString("letter").charAt(0), jsonLetter.getInt("count"), jsonLetter.getInt("cost"));
 		}
 		final ScribbleBank scribbleBank = new ScribbleBank(letters);
 
-		return new ScribbleGame(id, settings, scribbleBank, players, moves, new ScoreEngine(bonuses, 30));
+		return new ScribbleBoard(descriptor, scoreEngine, scribbleBank, moves);
 	}
 }

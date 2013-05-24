@@ -8,46 +8,25 @@ import wisematches.client.android.data.model.person.Personality;
  * @author Sergey Klimenko (smklimenko@gmail.com)
  */
 public class ScribbleHand implements Parcelable {
-	private int points;
-	private int oldRating;
-	private int newRating;
-	private boolean winner;
-	private final Personality personality;
+	private final Personality player;
+	private final ScribbleScore scores;
 
-	public ScribbleHand(Personality p, int points, int oldRating, int newRating, boolean winner) {
-		this.personality = p;
-		this.points = points;
-		this.oldRating = oldRating;
-		this.newRating = newRating;
-		this.winner = winner;
+	public ScribbleHand(Personality player, ScribbleScore scores) {
+		this.player = player;
+		this.scores = scores;
 	}
 
 	public ScribbleHand(Parcel in) {
-		personality = in.readParcelable(getClass().getClassLoader());
-		this.points = in.readInt();
-		this.oldRating = in.readInt();
-		this.newRating = in.readInt();
-		this.winner = in.readByte() == 1;
+		player = in.readParcelable(getClass().getClassLoader());
+		scores = in.readParcelable(getClass().getClassLoader());
 	}
 
-	public Personality getPersonality() {
-		return personality;
+	public Personality getPlayer() {
+		return player;
 	}
 
-	public int getPoints() {
-		return points;
-	}
-
-	public int getOldRating() {
-		return oldRating;
-	}
-
-	public int getNewRating() {
-		return newRating;
-	}
-
-	public boolean isWinner() {
-		return winner;
+	public ScribbleScore getScores() {
+		return scores;
 	}
 
 	@Override
@@ -57,11 +36,8 @@ public class ScribbleHand implements Parcelable {
 
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
-		dest.writeParcelable(personality, flags);
-		dest.writeInt(points);
-		dest.writeInt(oldRating);
-		dest.writeInt(newRating);
-		dest.writeByte((byte) (winner ? 1 : 0));
+		dest.writeParcelable(player, flags);
+		dest.writeParcelable(scores, flags);
 	}
 
 	public static final Parcelable.Creator<ScribbleHand> CREATOR = new Parcelable.Creator<ScribbleHand>() {

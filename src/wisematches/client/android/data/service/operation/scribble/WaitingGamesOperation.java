@@ -10,8 +10,8 @@ import wisematches.client.android.data.model.scribble.CriterionViolation;
 import wisematches.client.android.data.model.scribble.ScribbleProposal;
 import wisematches.client.android.data.model.scribble.WaitingGames;
 import wisematches.client.android.data.service.operation.JSONOperation;
-import wisematches.client.android.data.service.parser.proposal.CriterionViolationParser;
-import wisematches.client.android.data.service.parser.proposal.ScribbleProposalParser;
+import wisematches.client.android.data.service.parser.scribble.CriterionViolationParser;
+import wisematches.client.android.data.service.parser.scribble.ScribbleProposalParser;
 
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)

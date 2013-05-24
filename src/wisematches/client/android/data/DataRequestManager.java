@@ -4,6 +4,7 @@ import wisematches.client.android.data.model.Id;
 import wisematches.client.android.data.model.Language;
 import wisematches.client.android.data.model.person.Personality;
 import wisematches.client.android.data.model.scribble.ActiveGames;
+import wisematches.client.android.data.model.scribble.ScribbleBoard;
 import wisematches.client.android.data.model.scribble.WaitingGames;
 
 /**
@@ -25,6 +26,8 @@ public interface DataRequestManager {
 
 	void processWaitingGame(long proposalId, boolean accept, DataResponse<Id> response);
 
+
+	void openBoard(long boardId, DataResponse<ScribbleBoard> response);
 
 	/**
 	 * @author Sergey Klimenko (smklimenko@gmail.com)

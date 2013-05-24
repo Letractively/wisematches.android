@@ -1,12 +1,12 @@
-package wisematches.client.android.app.playground.scribble.board.view;
+package wisematches.client.android.app.playground.scribble.board;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.view.View;
-import wisematches.client.android.app.playground.scribble.board.model.ScribbleBank;
-import wisematches.client.android.app.playground.scribble.board.model.ScribbleGame;
 import wisematches.client.android.app.playground.scribble.board.surface.ProgressSurface;
+import wisematches.client.android.data.model.scribble.ScribbleBank;
+import wisematches.client.android.data.model.scribble.ScribbleBoard;
 
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
@@ -24,14 +24,14 @@ public class ProgressView extends View {
 		progressSurface.onDraw(canvas, getWidth(), getHeight());
 	}
 
-	public void updateProgress(ScribbleGame board) {
+	public void updateProgress(ScribbleBoard board) {
 		if (board.isActive()) {
 			final ScribbleBank bank = board.getScribbleBank();
 
 			final int totalTiles = bank.getLettersCount();
 			final int boardTiles = board.getBoardTilesCount();
 
-			int k = board.getPlayers().size() * 7;
+			int k = board.getPlayers().length * 7;
 			final int handTiles = (k <= totalTiles - boardTiles) ? k : totalTiles - boardTiles;
 
 			progressSurface.updateProgress(boardTiles, handTiles, totalTiles);
@@ -39,10 +39,4 @@ public class ProgressView extends View {
 			progressSurface.finalizeProgress("Finished");
 		}
 	}
-
-/*
-	public void setScribbleBoard(ScribbleBoardView scribbleBoard) {
-		this.scribbleBoard = scribbleBoard;
-	}
-*/
 }
