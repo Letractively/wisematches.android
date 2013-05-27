@@ -15,9 +15,11 @@ public class ScribbleBoard extends ScribbleDescriptor {
 	private final ScribbleBank scribbleBank;
 	private final List<ScribbleMove> moves;
 
+	private final ScribbleTile[] handTiles = new ScribbleTile[7];
+
 	private final Set<Integer> placedTiles = new HashSet<>();
 
-	public ScribbleBoard(ScribbleDescriptor descriptor, ScoreEngine scoreEngine, ScribbleBank scribbleBank, List<ScribbleMove> moves) {
+	public ScribbleBoard(ScribbleDescriptor descriptor, ScoreEngine scoreEngine, ScribbleBank scribbleBank, List<ScribbleMove> moves, ScribbleTile[] handTiles) {
 		super(descriptor.getId(), descriptor.getSettings(), descriptor.getPlayers(), descriptor.isActive(),
 				descriptor.getResolution(), descriptor.getPlayerTurnIndex(),
 				descriptor.getSpentTime(), descriptor.getStartedTime(), descriptor.getFinishedTime(),
@@ -25,6 +27,17 @@ public class ScribbleBoard extends ScribbleDescriptor {
 		this.scoreEngine = scoreEngine;
 		this.scribbleBank = scribbleBank;
 		this.moves = moves;
+
+		for (ScribbleMove move : moves) {
+			if (move instanceof ScribbleMove.Make) {
+				final ScribbleMove.Make make = (ScribbleMove.Make) move;
+				for (ScribbleTile tile : make.getWord().getTiles()) {
+					placedTiles.add(tile.getNumber());
+				}
+			}
+		}
+
+		System.arraycopy(handTiles, 0, this.handTiles, 0, handTiles.length);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -38,7 +51,7 @@ public class ScribbleBoard extends ScribbleDescriptor {
 
 	@Deprecated
 	public int getBoardTilesCount() {
-		return 10;
+		return placedTiles.size();
 	}
 
 	public ScoreEngine getScoreEngine() {
@@ -49,8 +62,16 @@ public class ScribbleBoard extends ScribbleDescriptor {
 		return moves;
 	}
 
+	public ScribbleTile[] getHandTiles() {
+		return handTiles;
+	}
+
 	public ScribbleBank getScribbleBank() {
 		return scribbleBank;
+	}
+
+	public boolean isBoardTile(int number) {
+		return placedTiles.contains(number);
 	}
 
 	@Override

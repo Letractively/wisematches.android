@@ -4,25 +4,34 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
-import android.widget.TableLayout;
-import android.widget.TableRow;
-import android.widget.TextView;
+import android.widget.*;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
 import wisematches.client.android.R;
 import wisematches.client.android.WiseMatchesActivity;
 import wisematches.client.android.app.account.view.PersonalityView;
-import wisematches.client.android.data.model.scribble.ScribbleBoard;
-import wisematches.client.android.data.model.scribble.ScribbleHand;
-import wisematches.client.android.data.model.scribble.ScribbleTile;
-import wisematches.client.android.data.model.scribble.ScribbleWord;
+import wisematches.client.android.data.model.scribble.*;
+
+import java.util.Set;
 
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
  */
 public class ScribbleBoardActivity extends WiseMatchesActivity {
+	private Button makeTurnBtn;
+	private Button passTurnBtn;
+	private Button exchangeTilesBtn;
+
+	private Button selectTilesBtn;
+	private Button clearSelectionBtn;
+
+	private EditText dictField;
+	private BoardView boardView;
+	private Button dictionaryBth;
+	private ProgressView progressView;
+
+	private TextView pointsCalculationFld;
+
 	private static final String INTENT_EXTRA_BOARD_ID = "INTENT_EXTRA_BOARD_ID";
 
 	public ScribbleBoardActivity() {
@@ -32,7 +41,58 @@ public class ScribbleBoardActivity extends WiseMatchesActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		openBoard(getIntent().getLongExtra(INTENT_EXTRA_BOARD_ID, 0));
+		makeTurnBtn = (Button) findViewById(R.id.scribbleBoardBtnMake);
+		makeTurnBtn.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				makeTurn();
+			}
+		});
+
+		passTurnBtn = (Button) findViewById(R.id.scribbleBoardBtnPass);
+		passTurnBtn.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				passTurn();
+			}
+		});
+
+		exchangeTilesBtn = (Button) findViewById(R.id.scribbleBoardBtnExchange);
+		exchangeTilesBtn.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				exchangeTiles();
+			}
+		});
+
+		selectTilesBtn = (Button) findViewById(R.id.scribbleBoardBtnSelect);
+		selectTilesBtn.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				selectTiles();
+			}
+		});
+
+		clearSelectionBtn = (Button) findViewById(R.id.scribbleBoardBtnDeselect);
+		clearSelectionBtn.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				clearSelection();
+			}
+		});
+
+		dictField = (EditText) findViewById(R.id.scribbleBoardDictField);
+		boardView = (BoardView) findViewById(R.id.scribbleBoardView);
+		progressView = (ProgressView) findViewById(R.id.scribbleBoardProgressView);
+		dictionaryBth = (Button) findViewById(R.id.scribbleBoardBtnDict);
+		pointsCalculationFld = (TextView) findViewById(R.id.scribbleBoardFltPoints);
+
+		long longExtra = getIntent().getLongExtra(INTENT_EXTRA_BOARD_ID, 0);
+		if (longExtra == 0) {
+			finish();
+		} else {
+			openBoard(longExtra);
+		}
 	}
 
 	private void openBoard(final long boardId) {
@@ -53,41 +113,77 @@ public class ScribbleBoardActivity extends WiseMatchesActivity {
 		});
 	}
 
+	private void makeTurn() {
+		ScribbleWord word = boardView.getSelectedWord();
+		if (word != null) {
+			getRequestManager().makeTurn(boardView.getBoard().getId(), word, new SmartDataResponse<ScribbleChanges>(this) {
+				@Override
+				protected void onData(ScribbleChanges data) {
+					updateBoardState(data);
+				}
+
+				@Override
+				protected void onRetry() {
+					makeTurn();
+				}
+
+				@Override
+				protected void onCancel() {
+				}
+			});
+		}
+	}
+
+	private void passTurn() {
+		getRequestManager().passTurn(boardView.getBoard().getId(), new SmartDataResponse<ScribbleChanges>(this) {
+			@Override
+			protected void onData(ScribbleChanges data) {
+				updateBoardState(data);
+			}
+
+			@Override
+			protected void onRetry() {
+				makeTurn();
+			}
+
+			@Override
+			protected void onCancel() {
+			}
+		});
+	}
+
+	private void exchangeTiles() {
+	}
+
+	private void resignGame() {
+	}
+
+	private void selectTiles() {
+	}
+
+	private void clearSelection() {
+		boardView.clearSelection();
+	}
+
+	private void updateBoardState(ScribbleChanges data) {
+	}
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
 
-		MenuItem test = menu.add("Memory Words");
-		test.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-			@Override
-			public boolean onMenuItemClick(MenuItem item) {
-
-				return true;
-			}
-		});
-		test.setIcon(R.drawable.board_memory_add).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-
 		return true;
 	}
 
-	private void showBoardInfo(ScribbleBoard board) {
+	private void showBoardInfo(final ScribbleBoard board) {
 		final ActionBar actionBar = getSupportActionBar();
 		actionBar.setTitle(board.getSettings().getTitle() + " #" + board.getId());
 
-		final Button makeTurnBtn = (Button) findViewById(R.id.scribbleBoardBtnMake);
-		final Button passTurnBtn = (Button) findViewById(R.id.scribbleBoardBtnPass);
-		final Button exchangeBtn = (Button) findViewById(R.id.scribbleBoardBtnExchange);
-
-		final TextView dictField = (TextView) findViewById(R.id.scribbleBoardDictField);
-
-		final BoardView boardView = (BoardView) findViewById(R.id.scribbleBoardView);
 		boardView.initBoardView(board, getBitmapFactory());
 		boardView.requestFocus();
 
-		final ProgressView progressView = (ProgressView) findViewById(R.id.scribbleBoardProgressView);
 		progressView.updateProgress(board);
 
-		final Button dictionaryBth = (Button) findViewById(R.id.scribbleBoardBtnDict);
 
 		int index = 0;
 		final TableLayout tableLayout = (TableLayout) findViewById(R.id.scribbleBoardPlayers);
@@ -110,7 +206,8 @@ public class ScribbleBoardActivity extends WiseMatchesActivity {
 
 		boardView.setScribbleBoardListener(new BoardViewListener() {
 			@Override
-			public void onTileSelected(ScribbleTile tile, boolean selected) {
+			public void onTileSelected(ScribbleTile tile, boolean selected, Set<ScribbleTile> selectedTiles) {
+				clearSelectionBtn.setEnabled(!selectedTiles.isEmpty());
 			}
 
 			@Override
@@ -119,12 +216,16 @@ public class ScribbleBoardActivity extends WiseMatchesActivity {
 
 				makeTurnBtn.setEnabled(enabled);
 				passTurnBtn.setEnabled(enabled);
-				exchangeBtn.setEnabled(enabled);
+				exchangeTilesBtn.setEnabled(enabled);
 
 				if (!enabled) {
 					dictField.setText("");
+					pointsCalculationFld.setText("");
 				} else {
-					dictField.setText(word.getRow() + " " + word.getColumn() + " " + word.getDirection() + " " + word.getText());
+					dictField.setText(word.getText());
+
+					final ScoreCalculation calculation = board.getScoreEngine().calculateWordScore(board, word);
+					pointsCalculationFld.setText(calculation.getFormula() + " = " + calculation.getPoints());
 				}
 			}
 		});

@@ -4,23 +4,22 @@ import android.content.res.Resources;
 import android.graphics.*;
 import wisematches.client.android.R;
 import wisematches.client.android.data.model.scribble.ScoreBonus;
-import wisematches.client.android.data.model.scribble.ScribbleBoard;
+import wisematches.client.android.data.model.scribble.ScoreEngine;
 
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
  */
 public class BoardSurface {
 	private final Resources resources;
-	private final ScribbleBoard board;
-
 	private final Bitmap boardBackground;
+	private final ScoreEngine scoreEngine;
 
 	private final Rect handRegion = new Rect(102, 346, 254, 378);
 	private final Rect boardRegion = new Rect(13, 13, 342, 342);
 
-	public BoardSurface(ScribbleBoard board, Resources resources) {
-		this.board = board;
+	public BoardSurface(ScoreEngine scoreEngine, Resources resources) {
 		this.resources = resources;
+		this.scoreEngine = scoreEngine;
 
 		this.boardBackground = createBoardView();
 	}
@@ -89,7 +88,7 @@ public class BoardSurface {
 
 		for (int i = 0; i < 15; i++) {
 			for (int j = 0; j < 15; j++) {
-				final ScoreBonus bonus = board.getScoreEngine().getScoreBonus(i, j);
+				final ScoreBonus bonus = scoreEngine.getScoreBonus(i, j);
 				if (bonus != null) {
 					paint.setAntiAlias(true);
 					int r = bonus.getRow();

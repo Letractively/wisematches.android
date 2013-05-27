@@ -31,10 +31,11 @@ public class JSONRequestService extends RequestService {
 		operationMap.put(JSONRequestManager.REQUEST_TYPE_AUTH, new JSONResponseOperation(new SignInPlayerOperation()));
 		operationMap.put(JSONRequestManager.REQUEST_TYPE_REGISTER, new JSONResponseOperation(new RegisterPlayerOperation()));
 		operationMap.put(JSONRequestManager.REQUEST_TYPE_ACTIVE_GAMES, new JSONResponseOperation(new ActiveGamesOperation()));
-		operationMap.put(JSONRequestManager.REQUEST_TYPE_OPEN_GAME, new JSONResponseOperation(new OpenGameOperation()));
+		operationMap.put(JSONRequestManager.REQUEST_TYPE_OPEN_GAME, new JSONResponseOperation(new OpenBoardOperation()));
 		operationMap.put(JSONRequestManager.REQUEST_TYPE_CREATE_GAME, new JSONResponseOperation(new CreateGameOperation()));
 		operationMap.put(JSONRequestManager.REQUEST_TYPE_WAITING_GAMES, new JSONResponseOperation(new WaitingGamesOperation()));
 		operationMap.put(JSONRequestManager.REQUEST_TYPE_PROCESS_PROPOSAL, new JSONResponseOperation(new ProcessProposalOperation()));
+		operationMap.put(JSONRequestManager.REQUEST_TYPE_BOARD_ACTION, new JSONResponseOperation(new BoardActionOperation()));
 	}
 
 	@Override

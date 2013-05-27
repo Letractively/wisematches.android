@@ -3,9 +3,7 @@ package wisematches.client.android.data;
 import wisematches.client.android.data.model.Id;
 import wisematches.client.android.data.model.Language;
 import wisematches.client.android.data.model.person.Personality;
-import wisematches.client.android.data.model.scribble.ActiveGames;
-import wisematches.client.android.data.model.scribble.ScribbleBoard;
-import wisematches.client.android.data.model.scribble.WaitingGames;
+import wisematches.client.android.data.model.scribble.*;
 
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
@@ -28,6 +26,16 @@ public interface DataRequestManager {
 
 
 	void openBoard(long boardId, DataResponse<ScribbleBoard> response);
+
+
+	void passTurn(long boardId, DataResponse<ScribbleChanges> response);
+
+	void resignGame(long boardId, DataResponse<ScribbleChanges> response);
+
+	void makeTurn(long boardId, ScribbleWord word, DataResponse<ScribbleChanges> response);
+
+	void exchangeTiles(long boardId, ScribbleTile[] tiles, DataResponse<ScribbleChanges> response);
+
 
 	/**
 	 * @author Sergey Klimenko (smklimenko@gmail.com)

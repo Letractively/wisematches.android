@@ -50,7 +50,7 @@ public class ActiveGamesActivity extends WiseMatchesActivity {
 	}
 
 	private void loadActiveGames() {
-		getRequestManager().getActiveGames(getPersonality().getId(), new SmartDataResponse<ActiveGames>(this) {
+		getRequestManager().getActiveGames(getPersonality(true).getId(), new SmartDataResponse<ActiveGames>(this) {
 			@Override
 			protected void onData(ActiveGames data) {
 				gamesListView.setAdapter(new GamesListAdapter(ActiveGamesActivity.this, data.getDescriptors(), data.getProposals()));

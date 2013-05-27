@@ -2,7 +2,6 @@ package wisematches.client.android.app.playground.scribble.board;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.View;
 import wisematches.client.android.app.playground.scribble.board.surface.ProgressSurface;
@@ -13,31 +12,39 @@ import wisematches.client.android.data.model.scribble.ScribbleBoard;
  * @author Sergey Klimenko (smklimenko@gmail.com)
  */
 public class ProgressView extends View {
-    private ProgressSurface progressSurface;
+	private ProgressSurface progressSurface;
 
-    public ProgressView(Context context, AttributeSet attrs) {
-        super(context, attrs);
+	public ProgressView(Context context, AttributeSet attrs) {
+		super(context, attrs);
 
-//        progressSurface = new ProgressSurface(context.getResources());
-    }
+		if (!isInEditMode()) {
+			progressSurface = new ProgressSurface(context.getResources());
+		}
+	}
 
-    protected void onDraw(Canvas canvas) {
-//        progressSurface.onDraw(canvas, getWidth(), getHeight());
-    }
+	protected void onDraw(Canvas canvas) {
+		if (progressSurface != null) {
+			progressSurface.onDraw(canvas, getWidth(), getHeight());
+		}
+	}
 
-    public void updateProgress(ScribbleBoard board) {
-        if (board.isActive()) {
-            final ScribbleBank bank = board.getScribbleBank();
+	public void updateProgress(ScribbleBoard board) {
+		if (progressSurface == null) {
+			return;
+		}
 
-            final int totalTiles = bank.getLettersCount();
-            final int boardTiles = board.getBoardTilesCount();
+		if (board.isActive()) {
+			final ScribbleBank bank = board.getScribbleBank();
 
-            int k = board.getPlayers().length * 7;
-            final int handTiles = (k <= totalTiles - boardTiles) ? k : totalTiles - boardTiles;
+			final int totalTiles = bank.getLettersCount();
+			final int boardTiles = board.getBoardTilesCount();
 
-            progressSurface.updateProgress(boardTiles, handTiles, totalTiles);
-        } else {
-            progressSurface.finalizeProgress("Finished");
-        }
-    }
+			int k = board.getPlayers().length * 7;
+			final int handTiles = (k <= totalTiles - boardTiles) ? k : totalTiles - boardTiles;
+
+			progressSurface.updateProgress(boardTiles, handTiles, totalTiles);
+		} else {
+			progressSurface.finalizeProgress("Finished");
+		}
+	}
 }

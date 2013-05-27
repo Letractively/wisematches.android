@@ -13,7 +13,7 @@ import wisematches.client.android.data.service.parser.scribble.ScribbleBoardPars
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
  */
-public class OpenGameOperation extends JSONOperation.Primitive<ScribbleBoard> {
+public class OpenBoardOperation extends JSONOperation.Primitive<ScribbleBoard> {
 	public static final String PARAM_BOARD_ID = "PARAM_BOARD_ID";
 
 	@Override

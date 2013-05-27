@@ -46,11 +46,7 @@ public final class ScribbleBoardParser {
 					final JSONArray jsonTiles = jsonWord.getJSONArray("tiles");
 					final ScribbleTile[] tiles = new ScribbleTile[jsonTiles.length()];
 					for (int j = 0; j < jsonTiles.length(); j++) {
-						final JSONObject jsonTile = jsonTiles.getJSONObject(j);
-						tiles[j] = new ScribbleTile(
-								jsonTile.getInt("cost"),
-								jsonTile.getInt("number"),
-								jsonTile.getString("letter"));
+						tiles[j] = ScribbleTileParser.parseTile(jsonTiles.getJSONObject(j));
 					}
 					final ScribbleWord w = new ScribbleWord(
 							jsonPosition.getInt("row"),
@@ -79,6 +75,14 @@ public final class ScribbleBoardParser {
 		}
 		final ScribbleBank scribbleBank = new ScribbleBank(letters);
 
-		return new ScribbleBoard(descriptor, scoreEngine, scribbleBank, moves);
+		JSONArray jsonHandTiles = data.optJSONArray("handTiles");
+		ScribbleTile[] handTiles = new ScribbleTile[7];
+		if (jsonHandTiles != null) {
+			for (int i = 0; i < jsonHandTiles.length(); i++) {
+				handTiles[i] = ScribbleTileParser.parseTile(jsonHandTiles.getJSONObject(i));
+			}
+		}
+
+		return new ScribbleBoard(descriptor, scoreEngine, scribbleBank, moves, handTiles);
 	}
 }

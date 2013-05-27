@@ -13,6 +13,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.MenuItem;
 import wisematches.client.android.app.MenuFactory;
+import wisematches.client.android.app.account.LoginActivity;
 import wisematches.client.android.data.DataRequestManager;
 import wisematches.client.android.data.model.person.Personality;
 import wisematches.client.android.graphics.BitmapFactory;
@@ -69,8 +70,12 @@ public abstract class WiseMatchesActivity extends SherlockActivity {
 		return MenuFactory.startMenuActivity(this, item);
 	}
 
-	protected Personality getPersonality() {
-		return getSecurityContext().getPersonality();
+	protected Personality getPersonality(boolean safe) {
+		Personality personality = getSecurityContext().getPersonality();
+		if (safe && personality == null) {
+			startActivity(LoginActivity.createIntent(this, null, true, null));
+		}
+		return personality;
 	}
 
 	protected SecurityContext getSecurityContext() {
