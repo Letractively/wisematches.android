@@ -4,15 +4,15 @@
     <solid android:color="@color/state.hover.background"/>
 
     <stroke
-            android:width="1dp"
+            android:width="@dimen/ui.button.border"
             android:color="@color/state.hover.border"/>
 
-    <corners android:radius="8dp"/>
+    <corners android:radius="@dimen/ui.button.radius"/>
 
     <padding
-            android:top="7px"
-            android:bottom="7px"
-            android:left="12px"
-            android:right="12px"/>
+            android:top="@dimen/ui.button.padding_vertical"
+            android:bottom="@dimen/ui.button.padding_vertical"
+            android:left="@dimen/ui.button.padding_horizontal"
+            android:right="@dimen/ui.button.padding_horizontal"/>
 
 </shape>

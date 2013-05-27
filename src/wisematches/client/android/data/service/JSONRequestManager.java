@@ -9,15 +9,10 @@ import wisematches.client.android.data.DataRequestManager;
 import wisematches.client.android.data.model.Id;
 import wisematches.client.android.data.model.Language;
 import wisematches.client.android.data.model.person.Personality;
-import wisematches.client.android.data.model.scribble.ActiveGames;
-import wisematches.client.android.data.model.scribble.ScribbleBoard;
-import wisematches.client.android.data.model.scribble.WaitingGames;
+import wisematches.client.android.data.model.scribble.*;
 import wisematches.client.android.data.service.operation.person.RegisterPlayerOperation;
 import wisematches.client.android.data.service.operation.person.SignInPlayerOperation;
-import wisematches.client.android.data.service.operation.scribble.ActiveGamesOperation;
-import wisematches.client.android.data.service.operation.scribble.CreateGameOperation;
-import wisematches.client.android.data.service.operation.scribble.OpenGameOperation;
-import wisematches.client.android.data.service.operation.scribble.ProcessProposalOperation;
+import wisematches.client.android.data.service.operation.scribble.*;
 
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
@@ -34,6 +29,8 @@ public class JSONRequestManager extends RequestManager implements DataRequestMan
 	public static final int REQUEST_TYPE_ACTIVE_GAMES = requestInIndex++;
 	public static final int REQUEST_TYPE_WAITING_GAMES = requestInIndex++;
 	public static final int REQUEST_TYPE_PROCESS_PROPOSAL = requestInIndex++;
+
+	public static final int REQUEST_TYPE_BOARD_ACTION = requestInIndex++;
 
 	public static final String BUNDLE_EXTRA_RESPONSE_TYPE = "wisematches.client.extra.response.type";
 	public static final String BUNDLE_EXTRA_RESPONSE_TYPE_LIST = "wisematches.client.extra.response.type.list";
@@ -109,7 +106,46 @@ public class JSONRequestManager extends RequestManager implements DataRequestMan
 	@Override
 	public void openBoard(long boardId, DataResponse<ScribbleBoard> response) {
 		final Request request = new Request(REQUEST_TYPE_OPEN_GAME);
-		request.put(OpenGameOperation.PARAM_BOARD_ID, boardId);
+		request.put(OpenBoardOperation.PARAM_BOARD_ID, boardId);
+		execute(request, new TheRequestListener<>(response));
+	}
+
+
+	@Override
+	public void passTurn(long boardId, DataResponse<ScribbleChanges> response) {
+		final Request request = new Request(REQUEST_TYPE_BOARD_ACTION);
+		request.put(BoardActionOperation.PARAM_BOARD_ID, boardId);
+		request.put(BoardActionOperation.PARAM_ACTION_TYPE, BoardActionOperation.ACTION_TYPE_PASS);
+		execute(request, new TheRequestListener<>(response));
+	}
+
+	@Override
+	public void resignGame(long boardId, DataResponse<ScribbleChanges> response) {
+		final Request request = new Request(REQUEST_TYPE_BOARD_ACTION);
+		request.put(BoardActionOperation.PARAM_BOARD_ID, boardId);
+		request.put(BoardActionOperation.PARAM_ACTION_TYPE, BoardActionOperation.ACTION_TYPE_RESIGN);
+		execute(request, new TheRequestListener<>(response));
+	}
+
+	@Override
+	public void makeTurn(long boardId, ScribbleWord word, DataResponse<ScribbleChanges> response) {
+		final Request request = new Request(REQUEST_TYPE_BOARD_ACTION);
+		request.put(BoardActionOperation.PARAM_WORD, word);
+		request.put(BoardActionOperation.PARAM_BOARD_ID, boardId);
+		request.put(BoardActionOperation.PARAM_ACTION_TYPE, BoardActionOperation.ACTION_TYPE_MAKE);
+		execute(request, new TheRequestListener<>(response));
+	}
+
+	@Override
+	public void exchangeTiles(long boardId, ScribbleTile[] tiles, DataResponse<ScribbleChanges> response) {
+		final Request request = new Request(REQUEST_TYPE_BOARD_ACTION);
+		request.put(BoardActionOperation.PARAM_TILES_COUNT, tiles.length);
+		for (int i = 0; i < tiles.length; i++) {
+			request.put(BoardActionOperation.PARAM_TILE_ITEM + "_" + i, tiles[i]);
+		}
+
+		request.put(BoardActionOperation.PARAM_BOARD_ID, boardId);
+		request.put(BoardActionOperation.PARAM_ACTION_TYPE, BoardActionOperation.ACTION_TYPE_EXCHANGE);
 		execute(request, new TheRequestListener<>(response));
 	}
 

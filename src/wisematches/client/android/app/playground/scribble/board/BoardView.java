@@ -15,13 +15,15 @@ import wisematches.client.android.data.model.scribble.*;
 import wisematches.client.android.graphics.BitmapFactory;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
  */
 public class BoardView extends FrameLayout {
-	private static final int TILE_SIZE = 22;
+	private ScribbleBoard board;
 
 	private BoardSurface boardSurface;
 	private BitmapFactory bitmapFactory;
@@ -33,6 +35,7 @@ public class BoardView extends FrameLayout {
 	private Position highlightPosition = null;
 
 	private ScribbleWord selectedWord = null;
+	private final Set<ScribbleTile> selectedTiles = new HashSet<>();
 
 	private final Point draggingOffset = new Point();
 	private final Point draggingPosition = new Point();
@@ -41,6 +44,8 @@ public class BoardView extends FrameLayout {
 	private final TileSurface[][] boardTileSurfaces = new TileSurface[15][15];
 
 	private final List<BoardViewListener> listeners = new ArrayList<>();
+
+	private static final int TILE_SIZE = 22;
 
 	public BoardView(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -52,8 +57,9 @@ public class BoardView extends FrameLayout {
 	}
 
 	public void initBoardView(ScribbleBoard board, BitmapFactory bitmapFactory) {
+		this.board = board;
 		this.bitmapFactory = bitmapFactory;
-		this.boardSurface = new BoardSurface(board, getResources());
+		this.boardSurface = new BoardSurface(board.getScoreEngine(), getResources());
 
 		for (ScribbleMove move : board.getMoves()) {
 			if (move instanceof ScribbleMove.Make) {
@@ -65,7 +71,7 @@ public class BoardView extends FrameLayout {
 				int col = word.getColumn();
 				WordDirection direction = word.getDirection();
 
-				final ScribbleTile[] selectedTiles = word.getSelectedTiles();
+				final ScribbleTile[] selectedTiles = word.getTiles();
 				for (ScribbleTile tile : selectedTiles) {
 					if (boardTileSurfaces[row][col] == null) {
 						boardTileSurfaces[row][col] = new TileSurface(tile, true, bitmapFactory);
@@ -79,6 +85,16 @@ public class BoardView extends FrameLayout {
 				}
 			}
 		}
+
+		ScribbleTile[] handTiles = board.getHandTiles();
+		if (handTiles != null) {
+			for (int i = 0; i < handTiles.length; i++) {
+				ScribbleTile handTile = handTiles[i];
+				if (handTile != null) {
+					handTileSurfaces[i] = new TileSurface(handTile, false, bitmapFactory);
+				}
+			}
+		}
 		invalidate();
 	}
 
@@ -87,6 +103,17 @@ public class BoardView extends FrameLayout {
 		this.listeners.add(listener);
 	}
 
+	public ScribbleBoard getBoard() {
+		return board;
+	}
+
+	public ScribbleWord getSelectedWord() {
+		return selectedWord;
+	}
+
+	public Set<ScribbleTile> getSelectedTiles() {
+		return selectedTiles;
+	}
 
 	public void clearSelection() {
 		for (int i = 0; i < boardTileSurfaces.length; i++) {
@@ -107,10 +134,6 @@ public class BoardView extends FrameLayout {
 			}
 		}
 		invalidate();
-	}
-
-	public ScribbleWord getSelectedWord() {
-		return selectedWord;
 	}
 
 
@@ -218,10 +241,15 @@ public class BoardView extends FrameLayout {
 	protected void changeTileSelected(TileSurface tileSurface, boolean selected) {
 		tileSurface.setSelected(selected);
 
-		for (BoardViewListener selectionListener : listeners) {
-			selectionListener.onTileSelected(tileSurface.getTile(), selected);
+		if (selected) {
+			selectedTiles.add(tileSurface.getTile());
+		} else {
+			selectedTiles.remove(tileSurface.getTile());
 		}
 
+		for (BoardViewListener selectionListener : listeners) {
+			selectionListener.onTileSelected(tileSurface.getTile(), selected, selectedTiles);
+		}
 
 		Position position = null;
 		ScribbleWord word = null;
