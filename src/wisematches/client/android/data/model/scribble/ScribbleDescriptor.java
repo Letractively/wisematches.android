@@ -62,6 +62,15 @@ public class ScribbleDescriptor implements Parcelable {
 		return players;
 	}
 
+	public ScribbleHand getPlayer(long player) {
+		for (ScribbleHand scribbleHand : players) {
+			if (scribbleHand.getPlayer().getId() == player) {
+				return scribbleHand;
+			}
+		}
+		return null;
+	}
+
 	public ScribbleSettings getSettings() {
 		return settings;
 	}

@@ -37,6 +37,9 @@ public interface DataRequestManager {
 	void exchangeTiles(long boardId, ScribbleTile[] tiles, DataResponse<ScribbleChanges> response);
 
 
+	void getWordEntry(String word, String lang, DataResponse<WordEntry> response);
+
+
 	/**
 	 * @author Sergey Klimenko (smklimenko@gmail.com)
 	 */

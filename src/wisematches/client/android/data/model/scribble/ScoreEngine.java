@@ -66,7 +66,7 @@ public class ScoreEngine implements Parcelable {
 
 			points += tile.getCost();
 			if (formula.length() != 0) {
-				formula.append(" + ");
+				formula.append("+");
 			}
 			formula.append(tile.getCost());
 

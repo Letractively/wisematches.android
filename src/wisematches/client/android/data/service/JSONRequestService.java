@@ -10,6 +10,7 @@ import com.foxykeep.datadroid.requestmanager.Request;
 import com.foxykeep.datadroid.service.RequestService;
 import wisematches.client.android.WiseMatchesApplication;
 import wisematches.client.android.data.service.operation.JSONOperation;
+import wisematches.client.android.data.service.operation.dict.LoadWordEntryOperation;
 import wisematches.client.android.data.service.operation.person.RegisterPlayerOperation;
 import wisematches.client.android.data.service.operation.person.SignInPlayerOperation;
 import wisematches.client.android.data.service.operation.scribble.*;
@@ -30,12 +31,17 @@ public class JSONRequestService extends RequestService {
 	public JSONRequestService() {
 		operationMap.put(JSONRequestManager.REQUEST_TYPE_AUTH, new JSONResponseOperation(new SignInPlayerOperation()));
 		operationMap.put(JSONRequestManager.REQUEST_TYPE_REGISTER, new JSONResponseOperation(new RegisterPlayerOperation()));
-		operationMap.put(JSONRequestManager.REQUEST_TYPE_ACTIVE_GAMES, new JSONResponseOperation(new ActiveGamesOperation()));
+
 		operationMap.put(JSONRequestManager.REQUEST_TYPE_OPEN_GAME, new JSONResponseOperation(new OpenBoardOperation()));
 		operationMap.put(JSONRequestManager.REQUEST_TYPE_CREATE_GAME, new JSONResponseOperation(new CreateGameOperation()));
 		operationMap.put(JSONRequestManager.REQUEST_TYPE_WAITING_GAMES, new JSONResponseOperation(new WaitingGamesOperation()));
+		operationMap.put(JSONRequestManager.REQUEST_TYPE_ACTIVE_GAMES, new JSONResponseOperation(new ActiveGamesOperation()));
+
 		operationMap.put(JSONRequestManager.REQUEST_TYPE_PROCESS_PROPOSAL, new JSONResponseOperation(new ProcessProposalOperation()));
+
 		operationMap.put(JSONRequestManager.REQUEST_TYPE_BOARD_ACTION, new JSONResponseOperation(new BoardActionOperation()));
+
+		operationMap.put(JSONRequestManager.REQUEST_TYPE_DICT_WORD, new JSONResponseOperation(new LoadWordEntryOperation()));
 	}
 
 	@Override

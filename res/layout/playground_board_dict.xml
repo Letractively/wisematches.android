@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content">
+
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            >
+
+        <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/scribbleBoardDictField"
+                android:layout_weight="1"
+                android:singleLine="true"
+                style="@android:style/Widget.TextView"
+                android:layout_gravity="center"
+                android:autoText="false"
+                android:background="@android:drawable/editbox_background_normal"
+                android:selectAllOnFocus="true"
+                android:layout_margin="0dp"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:paddingTop="0dp"
+                android:paddingBottom="0dp"
+                />
+
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:id="@+id/scribbleBoardDictAction"
+                android:layout_gravity="center"
+                android:drawableLeft="@drawable/board_dictionary_check"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="0dp"
+                android:paddingBottom="0dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="2dp"
+                android:enabled="false"/>
+
+    </LinearLayout>
+
+    <ProgressBar
+            style="@android:style/Widget.ProgressBar.Horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="2dp"
+            android:id="@+id/scribbleBoardDictProgress"
+            android:layout_marginLeft="3dp"
+            android:indeterminate="true"
+            android:indeterminateOnly="true"
+            android:visibility="invisible"/>
+</LinearLayout>

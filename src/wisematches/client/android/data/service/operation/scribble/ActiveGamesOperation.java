@@ -18,7 +18,7 @@ import wisematches.client.android.data.service.parser.scribble.ScribbleProposalP
  * @author Sergey Klimenko (smklimenko@gmail.com)
  */
 public class ActiveGamesOperation extends JSONOperation.Primitive<ActiveGames> {
-	public static final String PLAYER_ID = "PLAYER_ID";
+	public static final String PARAM_PLAYER_ID = "PARAM_PLAYER_ID";
 
 	private static final ScribbleProposal[] EMPTY_PROPOSALS = new ScribbleProposal[0];
 	private static final ScribbleDescriptor[] EMPTY_DESCRIPTORS = new ScribbleDescriptor[0];
@@ -31,7 +31,7 @@ public class ActiveGamesOperation extends JSONOperation.Primitive<ActiveGames> {
 		final HttpGet httpGet = new HttpGet("/playground/scribble/active.ajax");
 
 		final BasicHttpParams params = new BasicHttpParams();
-		params.setParameter("pid", request.getLong(PLAYER_ID));
+		params.setParameter("pid", request.getLong(PARAM_PLAYER_ID));
 		httpGet.setParams(params);
 
 		return httpGet;
