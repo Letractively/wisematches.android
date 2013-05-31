@@ -10,6 +10,7 @@ import wisematches.client.android.data.model.Id;
 import wisematches.client.android.data.model.Language;
 import wisematches.client.android.data.model.person.Personality;
 import wisematches.client.android.data.model.scribble.*;
+import wisematches.client.android.data.service.operation.dict.LoadWordEntryOperation;
 import wisematches.client.android.data.service.operation.person.RegisterPlayerOperation;
 import wisematches.client.android.data.service.operation.person.SignInPlayerOperation;
 import wisematches.client.android.data.service.operation.scribble.*;
@@ -31,6 +32,8 @@ public class JSONRequestManager extends RequestManager implements DataRequestMan
 	public static final int REQUEST_TYPE_PROCESS_PROPOSAL = requestInIndex++;
 
 	public static final int REQUEST_TYPE_BOARD_ACTION = requestInIndex++;
+
+	public static final int REQUEST_TYPE_DICT_WORD = requestInIndex++;
 
 	public static final String BUNDLE_EXTRA_RESPONSE_TYPE = "wisematches.client.extra.response.type";
 	public static final String BUNDLE_EXTRA_RESPONSE_TYPE_LIST = "wisematches.client.extra.response.type.list";
@@ -71,7 +74,7 @@ public class JSONRequestManager extends RequestManager implements DataRequestMan
 	@Override
 	public void getActiveGames(long pid, DataResponse<ActiveGames> response) {
 		final Request request = new Request(REQUEST_TYPE_ACTIVE_GAMES);
-		request.put(ActiveGamesOperation.PLAYER_ID, pid);
+		request.put(ActiveGamesOperation.PARAM_PLAYER_ID, pid);
 
 		execute(request, new TheRequestListener<>(response));
 	}
@@ -146,6 +149,14 @@ public class JSONRequestManager extends RequestManager implements DataRequestMan
 
 		request.put(BoardActionOperation.PARAM_BOARD_ID, boardId);
 		request.put(BoardActionOperation.PARAM_ACTION_TYPE, BoardActionOperation.ACTION_TYPE_EXCHANGE);
+		execute(request, new TheRequestListener<>(response));
+	}
+
+	@Override
+	public void getWordEntry(String word, String lang, DataResponse<WordEntry> response) {
+		final Request request = new Request(REQUEST_TYPE_DICT_WORD);
+		request.put(LoadWordEntryOperation.PARAM_WORD, word);
+		request.put(LoadWordEntryOperation.PARAM_LANGUAGE, lang);
 		execute(request, new TheRequestListener<>(response));
 	}
 

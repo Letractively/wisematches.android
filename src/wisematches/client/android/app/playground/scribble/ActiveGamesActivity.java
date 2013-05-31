@@ -26,7 +26,7 @@ import wisematches.client.android.data.model.scribble.ScribbleProposal;
 public class ActiveGamesActivity extends WiseMatchesActivity {
 	private ListView gamesListView;
 
-	private static final String INTENT_EXTRA_PID = "PLAYER_ID";
+	private static final String INTENT_EXTRA_PID = "PARAM_PLAYER_ID";
 
 	public ActiveGamesActivity() {
 		super("Текущие игры", R.layout.playground_active_games, true);

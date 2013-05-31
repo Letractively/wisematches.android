@@ -9,7 +9,7 @@
     <LinearLayout
             android:orientation="horizontal"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="fill_parent"
             android:paddingLeft="2dp"
             android:paddingRight="2dp"
             android:paddingTop="2dp">
@@ -31,7 +31,7 @@
 
             <LinearLayout
                     android:layout_width="fill_parent"
-                    android:layout_height="10dp"
+                    android:layout_height="5dp"
                     android:orientation="horizontal">
             </LinearLayout>
 
@@ -46,7 +46,7 @@
 
             <LinearLayout
                     android:layout_width="fill_parent"
-                    android:layout_height="10dp"
+                    android:layout_height="5dp"
                     android:orientation="horizontal">
             </LinearLayout>
 
@@ -61,26 +61,20 @@
 
         </LinearLayout>
 
-        <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+        <view
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                class="wisematches.client.android.app.playground.scribble.board.BoardView"
+                android:id="@+id/scribbleBoardView"
                 android:layout_gravity="left|top"
+                android:background="@android:color/transparent"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignWithParentIfMissing="false"
+                android:layout_alignParentRight="false"
+                android:layout_alignParentBottom="false"
                 android:layout_marginLeft="2dp"
-                android:layout_marginRight="2dp">
-
-            <view
-                    android:layout_width="356px"
-                    android:layout_height="370px"
-                    class="wisematches.client.android.app.playground.scribble.board.BoardView"
-                    android:id="@+id/scribbleBoardView"
-                    android:layout_gravity="left|top"
-                    android:background="@android:color/transparent"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignWithParentIfMissing="false"
-                    android:layout_alignParentRight="false"
-                    android:layout_alignParentBottom="false"/>
-        </RelativeLayout>
+                android:layout_marginRight="2dp"/>
 
         <LinearLayout
                 android:orientation="vertical"
@@ -99,7 +93,7 @@
 
             <LinearLayout
                     android:layout_width="fill_parent"
-                    android:layout_height="10dp"
+                    android:layout_height="5dp"
                     android:orientation="horizontal">
             </LinearLayout>
 
@@ -113,7 +107,7 @@
 
             <LinearLayout
                     android:layout_width="fill_parent"
-                    android:layout_height="10dp"
+                    android:layout_height="5dp"
                     android:orientation="horizontal">
             </LinearLayout>
 
@@ -141,229 +135,270 @@
                 android:cropToPadding="false"/>
     </LinearLayout>
 
-    <LinearLayout
-            android:orientation="vertical"
+    <ScrollView
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:paddingRight="2dp"
-            android:paddingTop="2dp">
-
-        <RelativeLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content">
-
-            <ImageView
-                    android:layout_width="fill_parent"
-                    android:layout_height="1dp"
-                    android:background="?android:attr/listDivider"
-                    android:layout_centerVertical="true"/>
-
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Игроки"
-                    android:singleLine="true"
-                    android:layout_centerVertical="true"
-                    android:background="@color/theme.color.background"
-                    android:layout_marginLeft="15dp"
-                    android:paddingLeft="2dp"
-                    android:paddingRight="2dp"
-                    android:shadowColor="@color/abs__bright_foreground_disabled_holo_light"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:textSize="10dp"/>
-        </RelativeLayout>
+            android:layout_height="wrap_content"
+            android:id="@+id/scrollView">
 
         <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp">
-
-            <TableLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:stretchColumns="0"
-                    android:longClickable="false"
-                    android:id="@+id/scribbleBoardPlayers">
-
-                <TableRow
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent">
-
-                    <view
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            class="wisematches.client.android.app.account.view.PersonalityView"
-                            android:layout_column="0"
-                            android:longClickable="false"/>
-
-                    <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            />
-
-                </TableRow>
-
-                <TableRow
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent">
-
-                    <view
-                            class="wisematches.client.android.app.account.view.PersonalityView"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_column="0"/>
-
-                    <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            />
-                </TableRow>
-
-                <TableRow
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent"
-                        android:visibility="gone">
-                </TableRow>
-
-                <TableRow
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent"
-                        android:visibility="gone">
-                </TableRow>
-            </TableLayout>
-        </LinearLayout>
-
-        <RelativeLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp">
-
-            <ImageView
-                    android:layout_width="fill_parent"
-                    android:layout_height="1dp"
-                    android:background="?android:attr/listDivider"
-                    android:layout_centerVertical="true"/>
-
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Прогресс"
-                    android:singleLine="true"
-                    android:layout_centerVertical="true"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:background="@color/theme.color.background"
-                    android:layout_marginLeft="15dp"
-                    android:paddingLeft="2dp"
-                    android:paddingRight="2dp"
-                    android:shadowColor="@color/abs__bright_foreground_disabled_holo_light"
-                    android:textSize="10dp"/>
-        </RelativeLayout>
-
-        <LinearLayout
-                android:orientation="vertical"
-                android:layout_column="1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="fill_parent"
                 >
 
-            <view
-                    android:layout_width="fill_parent"
-                    android:layout_height="16dp"
-                    class="wisematches.client.android.app.playground.scribble.board.ProgressView"
-                    android:id="@+id/scribbleBoardProgressView"
-                    android:text="dsfasfdasdf asdf"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"/>
-
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="фишек на доске/банке/руках"
-                    android:id="@+id/scribbleBoardProgressText"
-                    android:textSize="8dp"
-                    android:layout_gravity="right"/>
-        </LinearLayout>
-
-
-        <RelativeLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp">
-
-            <ImageView
-                    android:layout_width="fill_parent"
-                    android:layout_height="1dp"
-                    android:background="?android:attr/listDivider"
-                    android:layout_centerVertical="true"/>
-
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Проверка слова"
-                    android:singleLine="true"
-                    android:layout_centerVertical="true"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:background="@color/theme.color.background"
-                    android:layout_marginLeft="15dp"
-                    android:paddingLeft="2dp"
-                    android:paddingRight="2dp"
-                    android:shadowColor="@color/abs__bright_foreground_disabled_holo_light"
-                    android:textSize="10dp"/>
-        </RelativeLayout>
-
-        <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp">
-
             <LinearLayout
-                    android:orientation="horizontal"
+                    android:orientation="vertical"
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    >
+                    android:layout_height="wrap_content">
 
-                <EditText
+                <RelativeLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content">
+
+                    <ImageView
+                            android:layout_width="fill_parent"
+                            android:layout_height="1dp"
+                            android:background="?android:attr/listDivider"
+                            android:layout_centerVertical="true"/>
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Игроки"
+                            style="@style/TextAppearance.WiseMatches.BoardWidgetCaption"/>
+                </RelativeLayout>
+
+                <LinearLayout
+                        android:orientation="vertical"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/scribbleBoardDictField"
-                        android:layout_weight="1"
-                        android:singleLine="true"
-                        style="@android:style/Widget.TextView"
-                        android:layout_gravity="center"
-                        android:autoText="false"
-                        android:background="@android:drawable/editbox_background_normal"
-                        android:selectAllOnFocus="true"
-                        android:layout_margin="0dp"
-                        android:paddingLeft="5dp"
-                        android:paddingRight="5dp"
-                        android:paddingTop="0dp"
-                        android:paddingBottom="0dp"/>
+                        android:layout_marginLeft="@dimen/ui.board.widget.padding"
+                        android:layout_marginRight="@dimen/ui.board.widget.padding">
 
-                <Button
-                        android:layout_width="wrap_content"
-                        android:layout_height="fill_parent"
-                        android:id="@+id/scribbleBoardBtnDict"
-                        android:layout_gravity="center"
-                        android:drawableLeft="@drawable/board_dictionary_check"
-                        android:paddingLeft="10dp"
-                        android:paddingRight="10dp"
-                        android:paddingTop="0dp"
-                        android:paddingBottom="0dp"
-                        android:layout_marginTop="2dp"
-                        android:layout_marginBottom="2dp"/>
+                    <TableLayout
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:stretchColumns="0"
+                            android:longClickable="false"
+                            android:id="@+id/scribbleBoardPlayers">
+
+                        <TableRow
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent">
+
+                            <view
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    class="wisematches.client.android.app.account.view.PersonalityView"
+                                    android:layout_column="0"
+                                    android:longClickable="false"/>
+
+                            <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    />
+
+                        </TableRow>
+
+                        <TableRow
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent">
+
+                            <view
+                                    class="wisematches.client.android.app.account.view.PersonalityView"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_column="0"/>
+
+                            <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    />
+                        </TableRow>
+
+                        <TableRow
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent"
+                                android:visibility="gone">
+                        </TableRow>
+
+                        <TableRow
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent"
+                                android:visibility="gone">
+                        </TableRow>
+                    </TableLayout>
+                </LinearLayout>
             </LinearLayout>
 
-            <TextView
+            <LinearLayout
+                    android:orientation="vertical"
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/scribbleBoardFltPoints"
-                    android:singleLine="true"
-                    android:layout_marginLeft="3dp"/>
+                    android:layout_height="wrap_content">
+
+                <RelativeLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp">
+
+                    <ImageView
+                            android:layout_width="fill_parent"
+                            android:layout_height="1dp"
+                            android:background="?android:attr/listDivider"
+                            android:layout_centerVertical="true"/>
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Прогресс"
+                            style="@style/TextAppearance.WiseMatches.BoardWidgetCaption"/>
+                </RelativeLayout>
+
+                <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/ui.board.widget.padding"
+                        android:layout_marginRight="@dimen/ui.board.widget.padding">
+
+                    <view
+                            android:layout_width="fill_parent"
+                            android:layout_height="16dp"
+                            class="wisematches.client.android.app.playground.scribble.board.ProgressView"
+                            android:id="@+id/scribbleBoardProgressView"
+                            android:text="dsfasfdasdf asdf"
+                            android:layout_gravity="center"
+                            android:layout_weight="1"/>
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="фишек на доске/банке/руках"
+                            android:id="@+id/scribbleBoardProgressText"
+                            android:textSize="8dp"
+                            android:layout_gravity="right"/>
+                </LinearLayout>
+            </LinearLayout>
+
+
+            <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content">
+
+                <RelativeLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp">
+
+                    <ImageView
+                            android:layout_width="fill_parent"
+                            android:layout_height="1dp"
+                            android:background="?android:attr/listDivider"
+                            android:layout_centerVertical="true"/>
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Словарь"
+                            style="@style/TextAppearance.WiseMatches.BoardWidgetCaption"/>
+                </RelativeLayout>
+
+                <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/ui.board.widget.padding"
+                        android:layout_marginRight="@dimen/ui.board.widget.padding">
+
+
+                    <include
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            layout="@layout/playground_board_dict"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content">
+
+                <RelativeLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp">
+
+                    <ImageView
+                            android:layout_width="fill_parent"
+                            android:layout_height="1dp"
+                            android:background="?android:attr/listDivider"
+                            android:layout_centerVertical="true"/>
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Баллы за выделенное слово"
+                            style="@style/TextAppearance.WiseMatches.BoardWidgetCaption"/>
+                </RelativeLayout>
+
+                <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/ui.board.widget.padding"
+                        android:layout_marginRight="@dimen/ui.board.widget.padding">
+
+                    <TextView
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/scribbleBoardFltPoints"
+                            android:singleLine="true"
+                            />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content">
+
+                <RelativeLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp">
+
+                    <ImageView
+                            android:layout_width="fill_parent"
+                            android:layout_height="1dp"
+                            android:background="?android:attr/listDivider"
+                            android:layout_centerVertical="true"/>
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            style="@style/TextAppearance.WiseMatches.BoardWidgetCaption"
+                            android:text="История ходов"/>
+                </RelativeLayout>
+
+                <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/ui.board.widget.padding"
+                        android:layout_marginRight="@dimen/ui.board.widget.padding">
+
+
+                    <TableLayout
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/scribbleBoardMovesHistory">
+                    </TableLayout>
+                </LinearLayout>
+
+            </LinearLayout>
 
         </LinearLayout>
-
-    </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>

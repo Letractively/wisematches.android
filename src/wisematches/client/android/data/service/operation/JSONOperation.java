@@ -25,7 +25,8 @@ public abstract class JSONOperation<P> {
 			if (!response.isSuccess()) {
 				throw new RequestRejectedException(response.getErrorCode(), response.getErrorMessage());
 			}
-			return createResponse(response.getData());
+			final Object data = response.getData();
+			return data == null ? null : createResponse(data);
 		} catch (JSONException ex) {
 			throw new DataException("Response can't be parsed: " + ex.getMessage(), ex);
 		}

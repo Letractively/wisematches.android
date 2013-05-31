@@ -1,6 +1,7 @@
 package wisematches.client.android.app.playground.scribble.board;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Point;
@@ -9,6 +10,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
+import wisematches.client.android.R;
 import wisematches.client.android.app.playground.scribble.board.surface.BoardSurface;
 import wisematches.client.android.app.playground.scribble.board.surface.TileSurface;
 import wisematches.client.android.data.model.scribble.*;
@@ -25,7 +27,10 @@ import java.util.Set;
 public class BoardView extends FrameLayout {
 	private ScribbleBoard board;
 
-	private BoardSurface boardSurface;
+	private int width;
+	private int height;
+	private int scale;
+
 	private BitmapFactory bitmapFactory;
 
 	private Position draggingAnchor = null;
@@ -40,15 +45,28 @@ public class BoardView extends FrameLayout {
 	private final Point draggingOffset = new Point();
 	private final Point draggingPosition = new Point();
 
+	private final BoardSurface boardSurface;
 	private final TileSurface[] handTileSurfaces = new TileSurface[7];
 	private final TileSurface[][] boardTileSurfaces = new TileSurface[15][15];
 
 	private final List<BoardViewListener> listeners = new ArrayList<>();
 
-	private static final int TILE_SIZE = 22;
-
 	public BoardView(Context context, AttributeSet attrs) {
 		super(context, attrs);
+
+		final Resources resources = context.getResources();
+
+
+		final String boardCaption = resources.getString(R.string.board_surface_captions);
+
+		final ScoreBonus.Type[] values = ScoreBonus.Type.values();
+		final String[] bonusCaption = new String[values.length];
+		for (int i = 0; i < values.length; i++) {
+			final ScoreBonus.Type value = values[i];
+			bonusCaption[i] = resources.getString(resources.getIdentifier("board_surface_bonus_" + value.name(), "string", "wisematches.client.android"));
+		}
+
+		boardSurface = new BoardSurface(boardCaption, bonusCaption);
 
 		setWillNotDraw(false);
 		setFocusable(true);
@@ -56,10 +74,26 @@ public class BoardView extends FrameLayout {
 		setOnTouchListener(new TheOnTouchListener());
 	}
 
+	@Override
+	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
+		int parentWidth = MeasureSpec.getSize(widthMeasureSpec);
+		int parentHeight = MeasureSpec.getSize(heightMeasureSpec);
+
+		width = 356;//parentHeight / 2 - 25;
+		height = 370;//parentHeight / 2;
+		scale = 22;
+
+		boardSurface.setMeasuredDimension(width, height, scale);
+		this.setMeasuredDimension(width, height);
+	}
+
 	public void initBoardView(ScribbleBoard board, BitmapFactory bitmapFactory) {
 		this.board = board;
 		this.bitmapFactory = bitmapFactory;
-		this.boardSurface = new BoardSurface(board.getScoreEngine(), getResources());
+
+		this.boardSurface.initBoardView(board.getScoreEngine());
 
 		for (ScribbleMove move : board.getMoves()) {
 			if (move instanceof ScribbleMove.Make) {
@@ -136,20 +170,6 @@ public class BoardView extends FrameLayout {
 		invalidate();
 	}
 
-
-	public int getBankCapacity() {
-		return 124;
-	}
-
-	public int getBankTilesCount() {
-		return 110;
-	}
-
-	public int getBoardTilesCount() {
-		return 0;
-	}
-
-
 	@Override
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
@@ -162,7 +182,7 @@ public class BoardView extends FrameLayout {
 
 			if (highlightMask != null && highlightPosition != null) {
 				Rect r = highlightPosition.rect;
-				canvas.drawBitmap(highlightMask, r.left + highlightPosition.col * TILE_SIZE, r.top + highlightPosition.row * TILE_SIZE, null);
+				canvas.drawBitmap(highlightMask, r.left + highlightPosition.col * scale, r.top + highlightPosition.row * scale, null);
 			}
 
 			for (int row = 0; row < boardTileSurfaces.length; row++) {
@@ -170,7 +190,7 @@ public class BoardView extends FrameLayout {
 				for (int col = 0; col < boardTileSurface.length; col++) {
 					TileSurface tileSurface = boardTileSurface[col];
 					if (tileSurface != null) {
-						tileSurface.onDraw(canvas, boardRegion.left + col * TILE_SIZE, boardRegion.top + row * TILE_SIZE);
+						tileSurface.onDraw(canvas, boardRegion.left + col * scale, boardRegion.top + row * scale);
 					}
 				}
 			}
@@ -178,7 +198,7 @@ public class BoardView extends FrameLayout {
 			for (int i = 0; i < handTileSurfaces.length; i++) {
 				TileSurface handTileSurface = handTileSurfaces[i];
 				if (handTileSurface != null) {
-					handTileSurface.onDraw(canvas, handRegion.left + i * TILE_SIZE, handRegion.top);
+					handTileSurface.onDraw(canvas, handRegion.left + i * scale, handRegion.top);
 				}
 			}
 
@@ -210,7 +230,7 @@ public class BoardView extends FrameLayout {
 							boardTileSurfaces[tilePosition.row][tilePosition.col] = null;
 						}
 					}
-					draggingOffset.set(x - tilePosition.rect.left - tilePosition.col * TILE_SIZE, y - tilePosition.rect.top - tilePosition.row * TILE_SIZE);
+					draggingOffset.set(x - tilePosition.rect.left - tilePosition.col * scale, y - tilePosition.rect.top - tilePosition.row * scale);
 				}
 				break;
 			case MotionEvent.ACTION_MOVE:
@@ -230,7 +250,7 @@ public class BoardView extends FrameLayout {
 							changeTileSelected(tileSurface, true);
 						}
 					} else {
-						clearSelection();
+//						clearSelection();
 					}
 				}
 				break;
@@ -358,15 +378,15 @@ public class BoardView extends FrameLayout {
 		Rect region;
 		region = boardSurface.getBoardRegion();
 		if (region.contains(x, y)) {
-			final int row = (y - region.top) / TILE_SIZE;
-			final int col = (x - region.left) / TILE_SIZE;
+			final int row = (y - region.top) / scale;
+			final int col = (x - region.left) / scale;
 			return new Position(row, col, region, false);
 		}
 
 		region = boardSurface.getHandRegion();
 		if (region.contains(x, y)) {
-			final int row = (y - region.top) / TILE_SIZE;
-			final int col = (x - region.left) / TILE_SIZE;
+			final int row = (y - region.top) / scale;
+			final int col = (x - region.left) / scale;
 			return new Position(row, col, region, true);
 		}
 		return null;

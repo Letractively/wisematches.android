@@ -116,16 +116,6 @@ public class ScribbleWord implements Parcelable, Iterable<ScribbleWord.IteratorI
 		};
 	}
 
-	public static final Parcelable.Creator<ScribbleWord> CREATOR = new Parcelable.Creator<ScribbleWord>() {
-		public ScribbleWord createFromParcel(Parcel in) {
-			return new ScribbleWord(in);
-		}
-
-		public ScribbleWord[] newArray(int size) {
-			return new ScribbleWord[size];
-		}
-	};
-
 	/**
 	 * A item of word's iterator. Each item has a tile, it's row and it's column position.
 	 * <p/>
@@ -182,4 +172,14 @@ public class ScribbleWord implements Parcelable, Iterable<ScribbleWord.IteratorI
 			return new IteratorItem(tile, row, column);
 		}
 	}
+
+	public static final Parcelable.Creator<ScribbleWord> CREATOR = new Parcelable.Creator<ScribbleWord>() {
+		public ScribbleWord createFromParcel(Parcel in) {
+			return new ScribbleWord(in);
+		}
+
+		public ScribbleWord[] newArray(int size) {
+			return new ScribbleWord[size];
+		}
+	};
 }
