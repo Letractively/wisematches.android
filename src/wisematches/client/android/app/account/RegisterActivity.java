@@ -8,15 +8,14 @@ import android.os.Bundle;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Spinner;
-import android.widget.TextView;
+import android.widget.*;
+import com.actionbarsherlock.app.ActionBar;
 import wisematches.client.android.R;
 import wisematches.client.android.WiseMatchesApplication;
 import wisematches.client.android.data.DataRequestManager;
 import wisematches.client.android.data.model.Language;
 import wisematches.client.android.data.model.person.Personality;
+import wisematches.client.android.http.InfoWebView;
 import wisematches.client.android.widget.LanguageAdapter;
 
 import java.util.TimeZone;
@@ -33,15 +32,33 @@ public class RegisterActivity extends AuthenticationActivity {
 
 	private Button registerButton;
 
+	private InfoWebView infoWebView;
+
 	private static final String INTENT_EXTRA_EMAIL = "ACCOUNT_EMAIL";
 	private static final String INTENT_EXTRA_NICKNAME = "ACCOUNT_NICKNAME";
 
 	public RegisterActivity() {
-		super("Новый Аккаунт", R.layout.account_register);
+		super("Создание нового аккаунта WiseMatches", R.layout.account_register);
 	}
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		final ActionBar supportActionBar = getSupportActionBar();
+		if (supportActionBar != null) {
+			supportActionBar.setDisplayShowHomeEnabled(false);
+		}
+
+		infoWebView = (InfoWebView) findViewById(R.id.infoWebView);
+
+		final TabHost host = (TabHost) findViewById(R.id.tabHost);
+		if (host != null) {
+			final TheTabContentFactory factory = new TheTabContentFactory();
+
+			host.addTab(host.newTabSpec("terms").setIndicator("Условия Использования").setContent(factory));
+			host.addTab(host.newTabSpec("policy").setIndicator("Политика Конфиденциальности").setContent(factory));
+			host.addTab(host.newTabSpec("naming").setIndicator("Имя Пользователя").setContent(factory));
+		}
 
 		emailEditor = (EditText) findViewById(R.id.accountFldEmail);
 		nicknameEditor = (EditText) findViewById(R.id.accountFldNickname);
@@ -141,5 +158,14 @@ public class RegisterActivity extends AuthenticationActivity {
 		intent.putExtra(INTERNAL_ACCOUNT_REGISTRANT, internal);
 		intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
 		return intent;
+	}
+
+	private class TheTabContentFactory implements TabHost.TabContentFactory {
+		@Override
+		public View createTabContent(String tag) {
+			final InfoWebView webView = new InfoWebView(RegisterActivity.this);
+			webView.loadInfo("/info/" + tag);
+			return webView;
+		}
 	}
 }

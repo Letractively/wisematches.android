@@ -97,16 +97,6 @@ public class ProgressSurface {
 			}
 			drawText(canvas, width, height, this.boardTiles + "/" + bankTiles + "/" + handTiles);
 		}
-
-
-//		bo + " / " + ba + " / " + ha
-
-/*
-		final int handTiles = totalTiles - boardTiles - bankTiles;
-
-
-		drawText(canvas, width, height, bo, ba, ha);
-*/
 	}
 
 	public void finalizeProgress(String finalizationMessage) {

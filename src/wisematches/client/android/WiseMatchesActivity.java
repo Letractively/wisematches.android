@@ -16,7 +16,6 @@ import wisematches.client.android.app.MenuFactory;
 import wisematches.client.android.app.account.LoginActivity;
 import wisematches.client.android.data.DataRequestManager;
 import wisematches.client.android.data.model.person.Personality;
-import wisematches.client.android.graphics.BitmapFactory;
 import wisematches.client.android.security.SecurityContext;
 
 /**
@@ -84,10 +83,6 @@ public abstract class WiseMatchesActivity extends SherlockActivity {
 
 	protected DataRequestManager getRequestManager() {
 		return ((WiseMatchesApplication) getApplication()).getRequestManager();
-	}
-
-	protected BitmapFactory getBitmapFactory() {
-		return ((WiseMatchesApplication) getApplication()).getBitmapFactory();
 	}
 
 	protected void showWaitingView() {

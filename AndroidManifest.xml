@@ -60,12 +60,10 @@
         <!-- Account activities -->
         <activity
                 android:name=".app.account.LoginActivity"
-                android:theme="@style/Theme.Wisematches.NoActionBar"
                 android:noHistory="true"/>
 
         <activity
                 android:name=".app.account.RegisterActivity"
-                android:theme="@style/Theme.Wisematches.NoActionBar"
                 android:noHistory="true"/>
 
         <!-- Playground activities -->

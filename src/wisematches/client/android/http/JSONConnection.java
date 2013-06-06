@@ -97,7 +97,7 @@ public class JSONConnection {
 			if (request instanceof HttpPost) {
 				request.setHeader("Content-type", "application/json");
 			} else {
-				request.setHeader("Content-type", "application/x-www-form-urlencoded");
+				request.setHeader("Content-type", "application/width-www-form-urlencoded");
 			}
 			request.setHeader("Accept-Language", "ru");
 

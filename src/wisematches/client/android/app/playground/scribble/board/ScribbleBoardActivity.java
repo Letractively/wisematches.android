@@ -196,7 +196,7 @@ public class ScribbleBoardActivity extends WiseMatchesActivity {
 		final ActionBar actionBar = getSupportActionBar();
 		actionBar.setTitle(board.getSettings().getTitle() + " #" + board.getId());
 
-		boardView.initBoardView(board, getBitmapFactory());
+		boardView.initBoardView(board);
 		boardView.requestFocus();
 
 		progressView.updateProgress(board);

@@ -4,15 +4,12 @@ import android.app.Application;
 import org.apache.http.HttpHost;
 import wisematches.client.android.data.DataRequestManager;
 import wisematches.client.android.data.service.JSONRequestManager;
-import wisematches.client.android.graphics.BitmapFactory;
 import wisematches.client.android.security.SecurityContext;
 
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
  */
 public class WiseMatchesApplication extends Application {
-	private BitmapFactory bitmapFactory;
-
 	private SecurityContext securityContext;
 	private DataRequestManager requestManager;
 
@@ -26,7 +23,6 @@ public class WiseMatchesApplication extends Application {
 	public void onCreate() {
 		super.onCreate();
 
-		this.bitmapFactory = new BitmapFactory(getResources());
 		this.securityContext = new SecurityContext();
 		this.requestManager = new JSONRequestManager(getApplicationContext());
 	}
@@ -39,12 +35,6 @@ public class WiseMatchesApplication extends Application {
 
 		this.securityContext.clear();
 		this.securityContext = null;
-
-		bitmapFactory.terminate();
-	}
-
-	public BitmapFactory getBitmapFactory() {
-		return bitmapFactory;
 	}
 
 	public SecurityContext getSecurityContext() {

@@ -14,7 +14,7 @@ public class ScribbleTile implements Parcelable {
 	public ScribbleTile(int cost, int number, String letter) {
 		this.cost = cost;
 		this.number = number;
-		this.letter = letter;
+		this.letter = letter.toUpperCase();
 	}
 
 	public ScribbleTile(Parcel in) {
