@@ -1,8 +1,6 @@
 package wisematches.client.android.app.playground.scribble.board;
 
 import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -10,11 +8,10 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
-import wisematches.client.android.R;
 import wisematches.client.android.app.playground.scribble.board.surface.BoardSurface;
 import wisematches.client.android.app.playground.scribble.board.surface.TileSurface;
 import wisematches.client.android.data.model.scribble.*;
-import wisematches.client.android.graphics.BitmapFactory;
+import wisematches.client.android.graphics.Dimension;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -27,22 +24,16 @@ import java.util.Set;
 public class BoardView extends FrameLayout {
 	private ScribbleBoard board;
 
-	private int width;
-	private int height;
-	private int scale;
-
-	private BitmapFactory bitmapFactory;
-
 	private Position draggingAnchor = null;
 	private TileSurface draggingTile = null;
 
-	private Bitmap highlightMask = null;
 	private Position highlightPosition = null;
 
 	private ScribbleWord selectedWord = null;
 	private final Set<ScribbleTile> selectedTiles = new HashSet<>();
 
 	private final Point draggingOffset = new Point();
+	private final Point touchingPosition = new Point();
 	private final Point draggingPosition = new Point();
 
 	private final BoardSurface boardSurface;
@@ -54,46 +45,32 @@ public class BoardView extends FrameLayout {
 	public BoardView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 
-		final Resources resources = context.getResources();
-
-
-		final String boardCaption = resources.getString(R.string.board_surface_captions);
-
-		final ScoreBonus.Type[] values = ScoreBonus.Type.values();
-		final String[] bonusCaption = new String[values.length];
-		for (int i = 0; i < values.length; i++) {
-			final ScoreBonus.Type value = values[i];
-			bonusCaption[i] = resources.getString(resources.getIdentifier("board_surface_bonus_" + value.name(), "string", "wisematches.client.android"));
-		}
-
-		boardSurface = new BoardSurface(boardCaption, bonusCaption);
-
 		setWillNotDraw(false);
 		setFocusable(true);
 		setFocusableInTouchMode(true);
 		setOnTouchListener(new TheOnTouchListener());
+
+		boardSurface = new BoardSurface(context.getResources());
 	}
 
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+		final int parentWidth = MeasureSpec.getSize(widthMeasureSpec);
+		final int parentHeight = MeasureSpec.getSize(heightMeasureSpec);
 
-		int parentWidth = MeasureSpec.getSize(widthMeasureSpec);
-		int parentHeight = MeasureSpec.getSize(heightMeasureSpec);
-
-		width = 356;//parentHeight / 2 - 25;
-		height = 370;//parentHeight / 2;
-		scale = 22;
-
-		boardSurface.setMeasuredDimension(width, height, scale);
-		this.setMeasuredDimension(width, height);
+		final Dimension dimension = boardSurface.onMeasure(parentWidth, parentHeight);
+		if (dimension != null) {
+			setMeasuredDimension(dimension.width, dimension.height);
+		} else {
+			super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+		}
 	}
 
-	public void initBoardView(ScribbleBoard board, BitmapFactory bitmapFactory) {
-		this.board = board;
-		this.bitmapFactory = bitmapFactory;
 
-		this.boardSurface.initBoardView(board.getScoreEngine());
+	public void initBoardView(ScribbleBoard board) {
+		this.board = board;
+
+		this.boardSurface.initScoreEngine(board.getScoreEngine());
 
 		for (ScribbleMove move : board.getMoves()) {
 			if (move instanceof ScribbleMove.Make) {
@@ -108,7 +85,7 @@ public class BoardView extends FrameLayout {
 				final ScribbleTile[] selectedTiles = word.getTiles();
 				for (ScribbleTile tile : selectedTiles) {
 					if (boardTileSurfaces[row][col] == null) {
-						boardTileSurfaces[row][col] = new TileSurface(tile, true, bitmapFactory);
+						boardTileSurfaces[row][col] = new TileSurface(tile, true, null);
 					}
 
 					if (direction == WordDirection.HORIZONTAL) {
@@ -125,25 +102,32 @@ public class BoardView extends FrameLayout {
 			for (int i = 0; i < handTiles.length; i++) {
 				ScribbleTile handTile = handTiles[i];
 				if (handTile != null) {
-					handTileSurfaces[i] = new TileSurface(handTile, false, bitmapFactory);
+					handTileSurfaces[i] = new TileSurface(handTile, false, null);
 				}
 			}
 		}
 		invalidate();
 	}
 
-
+	@Deprecated
 	public void setScribbleBoardListener(BoardViewListener listener) {
 		this.listeners.add(listener);
 	}
 
+	@Deprecated
 	public ScribbleBoard getBoard() {
 		return board;
 	}
 
+
 	public ScribbleWord getSelectedWord() {
 		return selectedWord;
 	}
+
+	public void setSelectWord(ScribbleWord word) {
+		throw new UnsupportedOperationException("TODO: Not implemented");
+	}
+
 
 	public Set<ScribbleTile> getSelectedTiles() {
 		return selectedTiles;
@@ -170,43 +154,6 @@ public class BoardView extends FrameLayout {
 		invalidate();
 	}
 
-	@Override
-	protected void onDraw(Canvas canvas) {
-		super.onDraw(canvas);
-
-		if (boardSurface != null) {
-			boardSurface.onDraw(canvas);
-
-			final Rect handRegion = boardSurface.getHandRegion();
-			final Rect boardRegion = boardSurface.getBoardRegion();
-
-			if (highlightMask != null && highlightPosition != null) {
-				Rect r = highlightPosition.rect;
-				canvas.drawBitmap(highlightMask, r.left + highlightPosition.col * scale, r.top + highlightPosition.row * scale, null);
-			}
-
-			for (int row = 0; row < boardTileSurfaces.length; row++) {
-				TileSurface[] boardTileSurface = boardTileSurfaces[row];
-				for (int col = 0; col < boardTileSurface.length; col++) {
-					TileSurface tileSurface = boardTileSurface[col];
-					if (tileSurface != null) {
-						tileSurface.onDraw(canvas, boardRegion.left + col * scale, boardRegion.top + row * scale);
-					}
-				}
-			}
-
-			for (int i = 0; i < handTileSurfaces.length; i++) {
-				TileSurface handTileSurface = handTileSurfaces[i];
-				if (handTileSurface != null) {
-					handTileSurface.onDraw(canvas, handRegion.left + i * scale, handRegion.top);
-				}
-			}
-
-			if (draggingTile != null) {
-				draggingTile.onDraw(canvas, draggingPosition.x - draggingOffset.x, draggingPosition.y - draggingOffset.y);
-			}
-		}
-	}
 
 	protected void processTouchEvent(MotionEvent event) {
 		final int x = (int) event.getX();
@@ -214,6 +161,7 @@ public class BoardView extends FrameLayout {
 
 		draggingPosition.set(x, y);
 
+		final int scale = boardSurface.getScale();
 		final Position tilePosition = getTilePosition(x, y);
 		switch (event.getAction()) {
 			case MotionEvent.ACTION_DOWN:
@@ -326,13 +274,54 @@ public class BoardView extends FrameLayout {
 	}
 
 
-	private void rollbackDragging() {
-		if (draggingAnchor.hand) {
-			draggingTile.setSelected(false);
-			handTileSurfaces[draggingAnchor.col] = draggingTile;
-		} else {
-			boardTileSurfaces[draggingAnchor.row][draggingAnchor.col] = draggingTile;
+	@Override
+	protected void onDraw(Canvas canvas) {
+		super.onDraw(canvas);
+
+		if (boardSurface != null) {
+			boardSurface.drawBackground(canvas);
+
+//			final int scale = boardSurface.getScale();
+//
+//			final Rect handRegion = boardSurface.getHandRegion();
+//			final Rect boardRegion = boardSurface.getBoardRegion();
+
+/*
+			if (draggingTile != null && highlightPosition != null) {
+				Rect r = highlightPosition.rect;
+				boardSurface.drawHighlighter(draggingTile, r.left + highlightPosition.col * scale, r.top + highlightPosition.row * scale);
+			}
+
+			for (int row = 0; row < boardTileSurfaces.length; row++) {
+				TileSurface[] boardTileSurface = boardTileSurfaces[row];
+				for (int col = 0; col < boardTileSurface.length; col++) {
+					TileSurface tileSurface = boardTileSurface[col];
+					if (tileSurface != null) {
+						tileSurface.onDraw(canvas, boardRegion.left + col * scale, boardRegion.top + row * scale, scale);
+					}
+				}
+			}
+
+			for (int i = 0; i < handTileSurfaces.length; i++) {
+				TileSurface handTileSurface = handTileSurfaces[i];
+				if (handTileSurface != null) {
+					handTileSurface.onDraw(canvas, handRegion.left + i * scale, handRegion.top, scale);
+				}
+			}
+
+			if (draggingTile != null) {
+				draggingTile.onDraw(canvas, draggingPosition.x - draggingOffset.x, draggingPosition.y - draggingOffset.y, scale);
+			}
+*/
 		}
+	}
+
+
+	private void beginDragging(TileSurface tileSurface, Position tilePosition) {
+		draggingTile = tileSurface;
+
+		draggingTile.setSelected(true);
+		draggingAnchor = highlightPosition = tilePosition;
 	}
 
 	private void finishDragging(Position tilePosition) {
@@ -361,20 +350,21 @@ public class BoardView extends FrameLayout {
 		draggingTile = null;
 		draggingAnchor = null;
 
-		highlightMask = null;
 		highlightPosition = null;
 	}
 
-	private void beginDragging(TileSurface tileSurface, Position tilePosition) {
-		draggingTile = tileSurface;
-
-		draggingTile.setSelected(true);
-
-		draggingAnchor = highlightPosition = tilePosition;
-		highlightMask = bitmapFactory.getHighlighter(draggingTile.getTile().getCost());
+	private void rollbackDragging() {
+		if (draggingAnchor.hand) {
+			draggingTile.setSelected(false);
+			handTileSurfaces[draggingAnchor.col] = draggingTile;
+		} else {
+			boardTileSurfaces[draggingAnchor.row][draggingAnchor.col] = draggingTile;
+		}
 	}
 
+
 	private Position getTilePosition(int x, int y) {
+		final int scale = boardSurface.getScale();
 		Rect region;
 		region = boardSurface.getBoardRegion();
 		if (region.contains(x, y)) {
@@ -392,6 +382,7 @@ public class BoardView extends FrameLayout {
 		return null;
 	}
 
+	@Deprecated
 	private static class Position {
 		public final int row;
 		public final int col;

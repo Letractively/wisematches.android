@@ -1,4 +1,4 @@
-package wisematches.client.android.graphics;
+package wisematches.client.android.app.playground.scribble.board.surface;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -7,7 +7,7 @@ import wisematches.client.android.R;
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
  */
-public final class BitmapFactory {
+final class BitmapFactory {
 	private Bitmap[] tilesHighlighters = new Bitmap[11];
 
 	private Bitmap[] tilesSelected = new Bitmap[11];

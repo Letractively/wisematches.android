@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="fill_parent"
+              android:layout_height="wrap_content">
+
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dip"
+            >
+
+        <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Ваш EMail адрес"
+                style="@style/TextAppearance.WM.Label"/>
+
+        <EditText
+                android:id="@id/accountFldEmail"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dip"
+                android:singleLine="true"
+                android:hint="@string/login.login.desc"
+                android:inputType="textEmailAddress"
+                android:focusable="true"/>
+
+        <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                style="@style/TextAppearance.WM.Label"
+                android:text="Имя пользователя"/>
+
+        <EditText
+                android:id="@id/accountFldNickname"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dip"
+                android:singleLine="true"
+                android:hint="Ваше имя в игре"
+                android:focusable="true"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:padding="10dp">
+
+        <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                style="@style/TextAppearance.WM.Label"
+                android:text="Введите пароль"/>
+
+        <EditText
+                android:id="@id/accountFldPwd"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dip"
+                android:inputType="textPassword"
+                android:singleLine="true"
+                android:password="true"
+                android:focusable="true"/>
+
+        <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                style="@style/TextAppearance.WM.Label"
+                android:text="Подтвердите пароль"/>
+
+        <EditText
+                android:id="@id/accountFldPwdCnf"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dip"
+                android:inputType="textPassword"
+                android:singleLine="true"
+                android:password="true"
+                android:focusable="true"/>
+    </LinearLayout>
+
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:padding="10dp">
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/TextAppearance.WM.Label"
+                android:text="Язык"
+                />
+
+        <Spinner
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@id/accountFldLanguage"
+                android:focusable="true"
+                />
+
+    </LinearLayout>
+
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp">
+
+        <TextView
+                android:id="@id/accountFldError"
+                style="@style/TextAppearance.WM.Error"
+                android:visibility="visible"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                />
+
+        <ProgressBar
+                style="@android:style/Widget.ProgressBar.Horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="3dp"
+                android:id="@id/accountFldProgress"
+                android:layout_gravity="center"
+                android:indeterminate="true"
+                android:indeterminateOnly="true"
+                android:visibility="invisible"/>
+
+        <TextView
+                android:id="@id/accountFldTerms"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                />
+
+        <Button
+                android:id="@id/accountBtnRegister"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dip"
+                android:text="Создать мой аккаунт"
+                android:padding="10dp"/>
+    </LinearLayout>
+</LinearLayout>

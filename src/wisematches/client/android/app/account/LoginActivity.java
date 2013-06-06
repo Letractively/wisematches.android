@@ -8,7 +8,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import com.actionbarsherlock.app.ActionBar;
 import wisematches.client.android.R;
+import wisematches.client.android.http.InfoWebView;
 
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
@@ -22,11 +24,21 @@ public class LoginActivity extends AuthenticationActivity {
 	private EditText passwordField;
 
 	public LoginActivity() {
-		super("Вход в аккаунт", R.layout.account_signin);
+		super("Вход с помощью Аккаунта WiseMatches", R.layout.account_signin);
 	}
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		final ActionBar supportActionBar = getSupportActionBar();
+		if (supportActionBar != null) {
+			supportActionBar.setDisplayShowHomeEnabled(false);
+		}
+
+		final InfoWebView webView = (InfoWebView) findViewById(R.id.infoWebView);
+		if (webView != null) {
+			webView.loadInfo("/info/general");
+		}
 
 		usernameField = (EditText) findViewById(R.id.accountFldEmail);
 		passwordField = (EditText) findViewById(R.id.accountFldPwd);
