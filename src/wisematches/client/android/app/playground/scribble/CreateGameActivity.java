@@ -123,7 +123,7 @@ public class CreateGameActivity extends WiseMatchesActivity implements ActionBar
 			}
 		}
 
-		getRequestManager().createNewGame(titleEditor.getText().toString(), (Language) languageEditor.getSelectedItem(),
+		getRequestManager().createBoard(titleEditor.getText().toString(), (Language) languageEditor.getSelectedItem(),
 				TIMEOUTS[timeoutEditor.getSelectedItemPosition()], createTab, robotType, opponentsCount, new DataRequestManager.DataResponse<Id>() {
 			@Override
 			public void onSuccess(Id data) {

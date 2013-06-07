@@ -11,10 +11,11 @@ import com.foxykeep.datadroid.service.RequestService;
 import wisematches.client.android.WiseMatchesApplication;
 import wisematches.client.android.data.service.operation.JSONOperation;
 import wisematches.client.android.data.service.operation.dict.LoadWordEntryOperation;
+import wisematches.client.android.data.service.operation.info.LoadInfoPageOperation;
 import wisematches.client.android.data.service.operation.person.RegisterPlayerOperation;
 import wisematches.client.android.data.service.operation.person.SignInPlayerOperation;
 import wisematches.client.android.data.service.operation.scribble.*;
-import wisematches.client.android.http.JSONConnection;
+import wisematches.client.android.http.WebConnection;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,9 +25,9 @@ import java.util.Map;
  * @author Sergey Klimenko (smklimenko@gmail.com)
  */
 public class JSONRequestService extends RequestService {
-	private JSONConnection jsonConnection;
+	private WebConnection jsonConnection;
 
-	private final Map<Integer, JSONResponseOperation> operationMap = new HashMap<>();
+	private final Map<Integer, Operation> operationMap = new HashMap<>();
 
 	public JSONRequestService() {
 		operationMap.put(JSONRequestManager.REQUEST_TYPE_AUTH, new JSONResponseOperation(new SignInPlayerOperation()));
@@ -42,13 +43,15 @@ public class JSONRequestService extends RequestService {
 		operationMap.put(JSONRequestManager.REQUEST_TYPE_BOARD_ACTION, new JSONResponseOperation(new BoardActionOperation()));
 
 		operationMap.put(JSONRequestManager.REQUEST_TYPE_DICT_WORD, new JSONResponseOperation(new LoadWordEntryOperation()));
+
+		operationMap.put(JSONRequestManager.REQUEST_TYPE_LOAD_INFO, new JSONResponseOperation(new LoadInfoPageOperation()));
 	}
 
 	@Override
 	public void onCreate() {
 		super.onCreate();
 
-		jsonConnection = new JSONConnection(((WiseMatchesApplication) getApplication()).getSecurityContext());
+		jsonConnection = new WebConnection(((WiseMatchesApplication) getApplication()).getSecurityContext());
 	}
 
 	@Override

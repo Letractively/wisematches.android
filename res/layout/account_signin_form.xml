@@ -75,7 +75,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dip"
                 android:text="Войти как игрок"
-                android:padding="10dp"/>
+                android:padding="10dp"
+                android:gravity="center"/>
 
     </LinearLayout>
 
@@ -93,7 +94,7 @@
                 android:layout_marginTop="5dp"
                 android:padding="10dp"
                 android:singleLine="false"
-                />
+                android:gravity="center"/>
 
         <Button
                 android:layout_width="fill_parent"
@@ -101,6 +102,7 @@
                 android:text="Войти как гость"
                 android:id="@id/accountBtnVisitor"
                 android:layout_marginTop="10dip"
-                android:padding="10dp"/>
+                android:padding="10dp"
+                android:gravity="center"/>
     </LinearLayout>
 </LinearLayout>

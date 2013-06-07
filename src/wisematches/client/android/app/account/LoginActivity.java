@@ -35,9 +35,9 @@ public class LoginActivity extends AuthenticationActivity {
 			supportActionBar.setDisplayShowHomeEnabled(false);
 		}
 
-		final InfoWebView webView = (InfoWebView) findViewById(R.id.infoWebView);
-		if (webView != null) {
-			webView.loadInfo("/info/general");
+		final InfoWebView infoTextView = (InfoWebView) findViewById(R.id.infoWebView);
+		if (infoTextView != null) {
+			infoTextView.showPage("general", getRequestManager());
 		}
 
 		usernameField = (EditText) findViewById(R.id.accountFldEmail);

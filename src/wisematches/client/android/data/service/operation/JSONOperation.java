@@ -7,8 +7,9 @@ import com.foxykeep.datadroid.exception.DataException;
 import com.foxykeep.datadroid.requestmanager.Request;
 import org.apache.http.HttpRequest;
 import org.json.JSONException;
+import org.json.JSONObject;
 import wisematches.client.android.data.service.RequestRejectedException;
-import wisematches.client.android.http.JSONConnection;
+import wisematches.client.android.http.WebConnection;
 
 import java.util.ArrayList;
 
@@ -19,24 +20,35 @@ public abstract class JSONOperation<P> {
 	private JSONOperation() {
 	}
 
-	public final P execute(Request request, JSONConnection connection) throws ConnectionException, DataException, CustomRequestException {
+	public final P execute(Request request, WebConnection connection) throws ConnectionException, DataException, CustomRequestException {
 		try {
-			final JSONConnection.Response response = connection.execute(createRequest(request));
-			if (!response.isSuccess()) {
-				throw new RequestRejectedException(response.getErrorCode(), response.getErrorMessage());
+			final String content = connection.execute(createRequest(request));
+			final Object data = parseResponseData(content);
+			if (data != null) {
+				return createResponse(data);
 			}
-			final Object data = response.getData();
-			return data == null ? null : createResponse(data);
+			return null;
 		} catch (JSONException ex) {
 			throw new DataException("Response can't be parsed: " + ex.getMessage(), ex);
 		}
 	}
 
-
 	protected abstract HttpRequest createRequest(Request request) throws DataException;
 
 	protected abstract P createResponse(Object data) throws JSONException;
 
+	protected Object parseResponseData(String content) throws JSONException, RequestRejectedException {
+		final JSONObject r = new JSONObject(content);
+		if (!r.getBoolean("success")) {
+			throw new RequestRejectedException(r.optString("code"), r.optString("message"));
+		}
+
+		Object data = r.opt("data");
+		if (data == JSONObject.NULL) {
+			return null;
+		}
+		return data;
+	}
 
 	public static abstract class List<P extends Parcelable> extends JSONOperation<ArrayList<P>> {
 		protected List() {

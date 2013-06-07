@@ -8,9 +8,11 @@ import com.foxykeep.datadroid.requestmanager.RequestManager;
 import wisematches.client.android.data.DataRequestManager;
 import wisematches.client.android.data.model.Id;
 import wisematches.client.android.data.model.Language;
+import wisematches.client.android.data.model.info.InfoPage;
 import wisematches.client.android.data.model.person.Personality;
 import wisematches.client.android.data.model.scribble.*;
 import wisematches.client.android.data.service.operation.dict.LoadWordEntryOperation;
+import wisematches.client.android.data.service.operation.info.LoadInfoPageOperation;
 import wisematches.client.android.data.service.operation.person.RegisterPlayerOperation;
 import wisematches.client.android.data.service.operation.person.SignInPlayerOperation;
 import wisematches.client.android.data.service.operation.scribble.*;
@@ -35,6 +37,8 @@ public class JSONRequestManager extends RequestManager implements DataRequestMan
 
 	public static final int REQUEST_TYPE_DICT_WORD = requestInIndex++;
 
+	public static final int REQUEST_TYPE_LOAD_INFO = requestInIndex++;
+
 	public static final String BUNDLE_EXTRA_RESPONSE_TYPE = "wisematches.client.extra.response.type";
 	public static final String BUNDLE_EXTRA_RESPONSE_TYPE_LIST = "wisematches.client.extra.response.type.list";
 	public static final String BUNDLE_EXTRA_RESPONSE_TYPE_PRIMITIVE = "wisematches.client.extra.response.type.primitive";
@@ -44,7 +48,7 @@ public class JSONRequestManager extends RequestManager implements DataRequestMan
 	}
 
 	@Override
-	public void authenticate(String username, String password, DataResponse<Personality> response) {
+	public void login(String username, String password, DataResponse<Personality> response) {
 		final Request request = new Request(REQUEST_TYPE_AUTH);
 		request.setMemoryCacheEnabled(false);
 		if (username == null && password == null) {
@@ -94,7 +98,7 @@ public class JSONRequestManager extends RequestManager implements DataRequestMan
 	}
 
 	@Override
-	public void createNewGame(String title, Language language, int timeout, String createTab, String robotType, int opponentsCount, DataResponse<Id> response) {
+	public void createBoard(String title, Language language, int timeout, String createTab, String robotType, int opponentsCount, DataResponse<Id> response) {
 		final Request request = new Request(REQUEST_TYPE_CREATE_GAME);
 		request.put(CreateGameOperation.PARAM_TITLE, title);
 		request.put(CreateGameOperation.PARAM_LANGUAGE, language.getCode());
@@ -157,6 +161,13 @@ public class JSONRequestManager extends RequestManager implements DataRequestMan
 		final Request request = new Request(REQUEST_TYPE_DICT_WORD);
 		request.put(LoadWordEntryOperation.PARAM_WORD, word);
 		request.put(LoadWordEntryOperation.PARAM_LANGUAGE, lang);
+		execute(request, new TheRequestListener<>(response));
+	}
+
+	@Override
+	public void loadInfoPage(String name, DataResponse<InfoPage> response) {
+		final Request request = new Request(REQUEST_TYPE_LOAD_INFO);
+		request.put(LoadInfoPageOperation.PARAM_PAGE, name);
 		execute(request, new TheRequestListener<>(response));
 	}
 

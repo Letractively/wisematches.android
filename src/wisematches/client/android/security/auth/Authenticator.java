@@ -134,7 +134,7 @@ public class Authenticator extends AbstractAccountAuthenticator {
 	}
 
 	public static void authenticate(final String username, final String password, DataRequestManager requestManager, final AuthenticationCallback callback) {
-		requestManager.authenticate(username, password, new DataRequestManager.DataResponse<Personality>() {
+		requestManager.login(username, password, new DataRequestManager.DataResponse<Personality>() {
 			@Override
 			public void onSuccess(Personality data) {
 				final Bundle b = createBundle();
