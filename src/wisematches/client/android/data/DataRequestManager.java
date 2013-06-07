@@ -2,6 +2,7 @@ package wisematches.client.android.data;
 
 import wisematches.client.android.data.model.Id;
 import wisematches.client.android.data.model.Language;
+import wisematches.client.android.data.model.info.InfoPage;
 import wisematches.client.android.data.model.person.Personality;
 import wisematches.client.android.data.model.scribble.*;
 
@@ -9,16 +10,12 @@ import wisematches.client.android.data.model.scribble.*;
  * @author Sergey Klimenko (smklimenko@gmail.com)
  */
 public interface DataRequestManager {
+	void login(String username, String password, DataResponse<Personality> response);
+
 	void register(String nickname, String email, String password, String confirm, String language, String timezone, DataResponse<Personality> response);
-
-	void authenticate(String username, String password, DataResponse<Personality> response);
-
-
-	void createNewGame(String title, Language language, int timeout, String createTab, String robotType, int opponentsCount, DataResponse<Id> response);
 
 
 	void getActiveGames(long pid, DataResponse<ActiveGames> response);
-
 
 	void getWaitingGames(DataResponse<WaitingGames> response);
 
@@ -26,6 +23,8 @@ public interface DataRequestManager {
 
 
 	void openBoard(long boardId, DataResponse<ScribbleBoard> response);
+
+	void createBoard(String title, Language language, int timeout, String createTab, String robotType, int opponentsCount, DataResponse<Id> response);
 
 
 	void passTurn(long boardId, DataResponse<ScribbleChanges> response);
@@ -38,6 +37,9 @@ public interface DataRequestManager {
 
 
 	void getWordEntry(String word, String lang, DataResponse<WordEntry> response);
+
+
+	void loadInfoPage(String name, DataResponse<InfoPage> response);
 
 
 	/**

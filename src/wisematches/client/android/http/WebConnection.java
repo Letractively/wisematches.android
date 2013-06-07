@@ -20,7 +20,6 @@ import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONException;
 import org.json.JSONObject;
 import wisematches.client.android.WiseMatchesApplication;
 import wisematches.client.android.security.SecurityContext;
@@ -31,14 +30,14 @@ import java.io.UnsupportedEncodingException;
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
  */
-public class JSONConnection {
+public class WebConnection {
 	private final DefaultHttpClient client;
 	private final BasicCookieStore cookieStore = new BasicCookieStore();
 	private final BasicHttpContext localContext = new BasicHttpContext();
 
 	private static final int DEFAULT_TIMEOUT = 10000;
 
-	public JSONConnection(SecurityContext securityContext) {
+	public WebConnection(SecurityContext securityContext) {
 		final HttpParams params = new BasicHttpParams();
 		params.setParameter(ClientPNames.ALLOW_CIRCULAR_REDIRECTS, true);
 		params.setParameter(CoreProtocolPNames.USER_AGENT, "Wisematches/1.0");
@@ -69,7 +68,7 @@ public class JSONConnection {
 		localContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
 	}
 
-	public Response execute(String url, Header[] headers, HttpParams params, JSONObject data) throws ConnectionException, DataException {
+	public String execute(String url, Header[] headers, HttpParams params, JSONObject data) throws ConnectionException, DataException {
 		final HttpPost request = new HttpPost(url);
 
 		if (params != null) {
@@ -91,7 +90,7 @@ public class JSONConnection {
 		return execute(request);
 	}
 
-	public Response execute(HttpRequest request) throws ConnectionException, DataException {
+	public String execute(HttpRequest request) throws ConnectionException, DataException {
 		try {
 			request.setHeader("Accept", "application/json");
 			if (request instanceof HttpPost) {
@@ -117,15 +116,7 @@ public class JSONConnection {
 			if (content == null || content.length() == 0) {
 				return null;
 			}
-
-			final JSONObject r = new JSONObject(content);
-			Object data = r.opt("data");
-			if (data == JSONObject.NULL) {
-				data = null;
-			}
-			return new Response(r.getBoolean("success"), data, r.optString("code"), r.optString("message"));
-		} catch (JSONException ex) {
-			throw new DataException(ex.getMessage(), ex);
+			return content;
 		} catch (IOException ex) {
 			throw new ConnectionException(ex.getMessage(), ex);
 		}
@@ -135,38 +126,5 @@ public class JSONConnection {
 		this.cookieStore.clear();
 
 		this.client.getConnectionManager().shutdown();
-	}
-
-	/**
-	 * @author Sergey Klimenko (smklimenko@gmail.com)
-	 */
-	public static class Response {
-		private final boolean success;
-		private final Object data;
-		private final String errorCode;
-		private final String errorMessage;
-
-		public Response(boolean success, Object data, String errorCode, String errorMessage) {
-			this.success = success;
-			this.data = data;
-			this.errorCode = errorCode;
-			this.errorMessage = errorMessage;
-		}
-
-		public boolean isSuccess() {
-			return success;
-		}
-
-		public Object getData() {
-			return data;
-		}
-
-		public String getErrorCode() {
-			return errorCode;
-		}
-
-		public String getErrorMessage() {
-			return errorMessage;
-		}
 	}
 }

@@ -14,10 +14,13 @@ import wisematches.client.android.R;
 import wisematches.client.android.WiseMatchesApplication;
 import wisematches.client.android.data.DataRequestManager;
 import wisematches.client.android.data.model.Language;
+import wisematches.client.android.data.model.info.InfoPage;
 import wisematches.client.android.data.model.person.Personality;
 import wisematches.client.android.http.InfoWebView;
 import wisematches.client.android.widget.LanguageAdapter;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.TimeZone;
 
 /**
@@ -32,7 +35,7 @@ public class RegisterActivity extends AuthenticationActivity {
 
 	private Button registerButton;
 
-	private InfoWebView infoWebView;
+	private TabHost tabHost;
 
 	private static final String INTENT_EXTRA_EMAIL = "ACCOUNT_EMAIL";
 	private static final String INTENT_EXTRA_NICKNAME = "ACCOUNT_NICKNAME";
@@ -49,15 +52,18 @@ public class RegisterActivity extends AuthenticationActivity {
 			supportActionBar.setDisplayShowHomeEnabled(false);
 		}
 
-		infoWebView = (InfoWebView) findViewById(R.id.infoWebView);
+		tabHost = (TabHost) findViewById(R.id.tabHost);
+		if (tabHost != null) {
+			tabHost.setup();
 
-		final TabHost host = (TabHost) findViewById(R.id.tabHost);
-		if (host != null) {
-			final TheTabContentFactory factory = new TheTabContentFactory();
+			final InfoWebView infoWebView = (InfoWebView) findViewById(R.id.infoWebView);
+			final TheTabChangeListener tabChangeListener = new TheTabChangeListener(infoWebView);
 
-			host.addTab(host.newTabSpec("terms").setIndicator("Условия Использования").setContent(factory));
-			host.addTab(host.newTabSpec("policy").setIndicator("Политика Конфиденциальности").setContent(factory));
-			host.addTab(host.newTabSpec("naming").setIndicator("Имя Пользователя").setContent(factory));
+			tabHost.setOnTabChangedListener(tabChangeListener);
+
+			tabHost.addTab(tabHost.newTabSpec("terms").setIndicator("Условия Использования").setContent(R.id.infoWebView));
+			tabHost.addTab(tabHost.newTabSpec("policy").setIndicator("Политика Конфиденциальности").setContent(R.id.infoWebView));
+			tabHost.addTab(tabHost.newTabSpec("naming").setIndicator("Имя Пользователя").setContent(R.id.infoWebView));
 		}
 
 		emailEditor = (EditText) findViewById(R.id.accountFldEmail);
@@ -160,12 +166,45 @@ public class RegisterActivity extends AuthenticationActivity {
 		return intent;
 	}
 
-	private class TheTabContentFactory implements TabHost.TabContentFactory {
+	private class TheTabChangeListener implements TabHost.OnTabChangeListener {
+		private final InfoWebView infoWebView;
+		private final Map<String, InfoPage> webView = new HashMap<>();
+
+		public TheTabChangeListener(InfoWebView infoWebView) {
+			this.infoWebView = infoWebView;
+		}
+
 		@Override
-		public View createTabContent(String tag) {
-			final InfoWebView webView = new InfoWebView(RegisterActivity.this);
-			webView.loadInfo("/info/" + tag);
-			return webView;
+		public void onTabChanged(final String tag) {
+			InfoPage page = webView.get(tag);
+			if (page == null) {
+				getRequestManager().loadInfoPage(tag, new DataRequestManager.DataResponse<InfoPage>() {
+					@Override
+					public void onSuccess(InfoPage data) {
+						webView.put(tag, data);
+
+						if (tag.equals(tabHost.getCurrentTabTag())) {
+							infoWebView.showInfoPage(data);
+							infoWebView.setVisibility(View.VISIBLE);
+						}
+					}
+
+					@Override
+					public void onFailure(String code, String message) {
+					}
+
+					@Override
+					public void onDataError() {
+					}
+
+					@Override
+					public void onConnectionError(int code) {
+					}
+				});
+			} else {
+				infoWebView.showInfoPage(page);
+				infoWebView.setVisibility(View.VISIBLE);
+			}
 		}
 	}
 }

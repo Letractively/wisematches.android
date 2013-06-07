@@ -2,15 +2,13 @@ package wisematches.client.android.http;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.KeyEvent;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import wisematches.client.android.R;
+import android.webkit.WebViewClient;
 import wisematches.client.android.WiseMatchesApplication;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import wisematches.client.android.data.DataRequestManager;
+import wisematches.client.android.data.model.info.InfoPage;
 
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
@@ -35,45 +33,50 @@ public class InfoWebView extends WebView {
 		if (!isInEditMode()) {
 			final WebSettings settings = getSettings();
 			settings.setSupportZoom(false);
-			settings.setJavaScriptEnabled(true);
+			settings.setJavaScriptEnabled(false);
 		}
+		setWebViewClient(new TheWebViewClient());
 		setBackgroundColor(0x00000000);
 	}
 
-	public void loadInfo(String uri) {
-		loadDataWithBaseURL("http://" + WiseMatchesApplication.WEB_HOST.toHostString(), "<html>" +
-				"<head><style>" + getStyleSheets() + "</style></head>" +
-				"<body><div id='Content'></div></body>\n" +
-				"<script type=\"application/javascript\">\n" +
-				"    req = new XMLHttpRequest();\n" +
-				"    req.onreadystatechange = function () {\n" +
-				"        if (req.readyState == 4) {\n" +
-				"            if (req.status == 200) {\n" +
-				"                document.getElementById('Content').innerHTML = req.responseText;\n" +
-				"            }\n" +
-				"        }\n" +
-				"    };\n" +
-				"    req.open('GET', '" + uri + "?plain=true', true);\n" +
-				"    req.send(null);\n" +
-				"</script>\n" +
-				"</html>", "text/html", "UTF-8", null);
+	public void showPage(String name, DataRequestManager requestManager) {
+		requestManager.loadInfoPage(name, new DataRequestManager.DataResponse<InfoPage>() {
+			@Override
+			public void onSuccess(InfoPage data) {
+				showInfoPage(data);
+			}
+
+			@Override
+			public void onFailure(String code, String message) {
+			}
+
+			@Override
+			public void onDataError() {
+			}
+
+			@Override
+			public void onConnectionError(int code) {
+			}
+		});
 	}
 
-	private String getStyleSheets() {
-		try {
-			final InputStream is = this.getResources().openRawResource(R.raw.web_view_styles);
-			final BufferedReader br = new BufferedReader(new InputStreamReader(is));
+	public void showInfoPage(InfoPage infoPage) {
+		final String styleSheets = WebUtils.getStyleSheets(this.getContext());
+		final String text = "<html><head><style>" + styleSheets + "</style></head><body>" + infoPage.getText() + "</body></html>";
+		loadDataWithBaseURL("http://" + WiseMatchesApplication.WEB_HOST.toHostString(), text, "text/html", "UTF-8", null);
+	}
 
-			String readLine = null;
-			final StringBuilder b = new StringBuilder();
-			while ((readLine = br.readLine()) != null) {
-				b.append(readLine).append("\n");
-			}
-			is.close();
-			br.close();
-			return b.toString();
-		} catch (IOException ex) {
-			return "";
+	private class TheWebViewClient extends WebViewClient {
+		@Override
+		public boolean shouldOverrideKeyEvent(WebView view, KeyEvent event) {
+			// Do something with the event here
+			return true;
+		}
+
+		@Override
+		public boolean shouldOverrideUrlLoading(WebView view, String url) {
+			// reject anything other
+			return true;
 		}
 	}
 }
