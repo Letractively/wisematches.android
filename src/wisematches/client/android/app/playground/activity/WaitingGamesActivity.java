@@ -1,4 +1,4 @@
-package wisematches.client.android.app.playground.scribble;
+package wisematches.client.android.app.playground.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,9 +11,9 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import wisematches.client.android.R;
 import wisematches.client.android.WiseMatchesActivity;
-import wisematches.client.android.app.MenuFactory;
-import wisematches.client.android.app.OnResultListener;
-import wisematches.client.android.app.playground.scribble.board.ScribbleBoardActivity;
+import wisematches.client.android.app.SignalProcessor;
+import wisematches.client.android.app.playground.MenuFactory;
+import wisematches.client.android.app.playground.widget.WaitingGamesAdapter;
 import wisematches.client.android.data.model.Id;
 import wisematches.client.android.data.model.scribble.CriterionViolation;
 import wisematches.client.android.data.model.scribble.ScribbleProposal;
@@ -65,12 +65,12 @@ public class WaitingGamesActivity extends WiseMatchesActivity {
 		proposalsList.setAdapter(new WaitingGamesAdapter(WaitingGamesActivity.this, proposals, globalViolations.length != 0, "Присоединиться",
 				new WaitingGamesAdapter.ProposalClickListener() {
 					@Override
-					public void onAccept(long id, OnResultListener<Boolean> resultListener) {
+					public void onAccept(long id, SignalProcessor<Boolean> resultListener) {
 						acceptWaitingGame(id, true, resultListener);
 					}
 
 					@Override
-					public void onReject(long id, OnResultListener<Boolean> resultListener) {
+					public void onReject(long id, SignalProcessor<Boolean> resultListener) {
 						acceptWaitingGame(id, false, resultListener);
 					}
 				}
@@ -85,12 +85,12 @@ public class WaitingGamesActivity extends WiseMatchesActivity {
 		}
 	}
 
-	private void acceptWaitingGame(final long proposalId, final boolean accept, final OnResultListener<Boolean> resultListener) {
+	private void acceptWaitingGame(final long proposalId, final boolean accept, final SignalProcessor<Boolean> resultListener) {
 		getRequestManager().processWaitingGame(proposalId, accept, new SmartDataResponse<Id>(this) {
 			@Override
 			protected void onData(Id data) {
 				if (data != null) {
-					startActivity(ScribbleBoardActivity.createIntent(WaitingGamesActivity.this, data.getId()));
+					startActivity(GameControllerActivity.createIntent(WaitingGamesActivity.this, data.getId()));
 				} else {
 					loadWaitingGames();
 				}

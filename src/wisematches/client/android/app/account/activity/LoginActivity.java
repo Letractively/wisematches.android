@@ -1,4 +1,4 @@
-package wisematches.client.android.app.account;
+package wisematches.client.android.app.account.activity;
 
 import android.accounts.AccountAuthenticatorResponse;
 import android.accounts.AccountManager;
@@ -101,7 +101,6 @@ public class LoginActivity extends AuthenticationActivity {
 				nickname = email.substring(0, i);
 			}
 		}
-
 		startActivity(RegisterActivity.createIntent(this, email, nickname, isInternalRegistrant(), authenticatorResponse));
 	}
 

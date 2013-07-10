@@ -1,4 +1,4 @@
-package wisematches.client.android.app.account;
+package wisematches.client.android.app.account.activity;
 
 import android.accounts.AccountAuthenticatorResponse;
 import android.accounts.AccountManager;

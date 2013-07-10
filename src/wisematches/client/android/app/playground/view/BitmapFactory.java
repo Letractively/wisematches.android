@@ -1,5 +1,6 @@
-package wisematches.client.android.app.playground.scribble.board.surface;
+package wisematches.client.android.app.playground.view;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import wisematches.client.android.R;
@@ -15,7 +16,9 @@ final class BitmapFactory {
 	private Bitmap[] tilesPinnedSelected = new Bitmap[11];
 	private Bitmap[] tilesPinnedUnselected = new Bitmap[11];
 
-	public BitmapFactory(Resources resources) {
+	private static BitmapFactory bitmapFactory;
+
+	private BitmapFactory(Resources resources) {
 		final Bitmap bitmap = android.graphics.BitmapFactory.decodeResource(resources, R.drawable.board_tiles);
 
 		final Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, 242, 110, true);
@@ -49,12 +52,10 @@ final class BitmapFactory {
 		return tilesPinnedSelected[cost];
 	}
 
-	public void terminate() {
-		tilesHighlighters = null;
-
-		tilesSelected = null;
-		tilesUnselected = null;
-		tilesPinnedSelected = null;
-		tilesPinnedUnselected = null;
+	public static BitmapFactory getBitmapFactory(Context context) {
+		if (bitmapFactory == null) {
+			bitmapFactory = new BitmapFactory(context.getResources());
+		}
+		return bitmapFactory;
 	}
 }

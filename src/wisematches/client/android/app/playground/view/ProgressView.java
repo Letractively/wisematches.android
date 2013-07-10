@@ -1,5 +1,6 @@
-package wisematches.client.android.app.playground.scribble.board.surface;
+package wisematches.client.android.app.playground.view;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -7,12 +8,16 @@ import android.graphics.Rect;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RectShape;
 import android.graphics.drawable.shapes.RoundRectShape;
+import android.util.AttributeSet;
+import android.view.View;
 import wisematches.client.android.R;
+import wisematches.client.android.data.model.scribble.ScribbleBank;
+import wisematches.client.android.data.model.scribble.ScribbleBoard;
 
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
  */
-public class ProgressSurface {
+public class ProgressView extends View {
 	private int handTiles = 0;
 	private int boardTiles = 0;
 	private int totalTiles = 0;
@@ -39,7 +44,10 @@ public class ProgressSurface {
 	private static final ShapeDrawable RIGHT = new ShapeDrawable(new RoundRectShape(new float[]{0, 0, RADII, RADII, RADII, RADII, 0, 0}, null, null));
 	private static final ShapeDrawable ALL = new ShapeDrawable(new RoundRectShape(new float[]{RADII, RADII, RADII, RADII, RADII, RADII, RADII, RADII}, null, null));
 
-	public ProgressSurface(Resources resources) {
+	public ProgressView(Context context, AttributeSet attrs) {
+		super(context, attrs);
+
+		final Resources resources = context.getResources();
 		densityMultiplier = resources.getDisplayMetrics().density;
 
 		handColor = new Clr(resources.getColor(R.color.progress_hand_border), resources.getColor(R.color.progress_hand_background));
@@ -49,7 +57,9 @@ public class ProgressSurface {
 		finishedColor = new Clr(resources.getColor(R.color.progress_no_border), resources.getColor(R.color.progress_no_background));
 	}
 
-	public void onDraw(Canvas canvas, int width, int height) {
+	protected void onDraw(Canvas canvas) {
+		final int width = getWidth();
+		final int height = getHeight();
 
 		if (state == State.FINISHED || state == State.WAITING) {
 			drawPart(canvas, ALL, new Rect(1, 1, width - 1, height - 1), finishedColor);
@@ -99,18 +109,26 @@ public class ProgressSurface {
 		}
 	}
 
-	public void finalizeProgress(String finalizationMessage) {
-		state = State.FINISHED;
+	public void updateProgress(ScribbleBoard board) {
+		if (board.isActive()) {
+			final ScribbleBank bank = board.getScribbleBank();
 
-		this.finalizationMessage = finalizationMessage;
-	}
+			final int totalTiles = bank.getLettersCount();
+			final int boardTiles = board.getBoardTilesCount();
 
-	public void updateProgress(int boardTiles, int handTiles, int totalTiles) {
-		state = State.PROGRESS;
+			int k = board.getPlayers().length * 7;
+			final int handTiles = (k <= totalTiles - boardTiles) ? k : totalTiles - boardTiles;
 
-		this.handTiles = handTiles;
-		this.boardTiles = boardTiles;
-		this.totalTiles = totalTiles;
+			state = State.PROGRESS;
+
+			this.handTiles = handTiles;
+			this.boardTiles = boardTiles;
+			this.totalTiles = totalTiles;
+		} else {
+			state = State.FINISHED;
+
+			this.finalizationMessage = finalizationMessage;
+		}
 	}
 
 	private void drawText(Canvas canvas, int width, int height, String text) {

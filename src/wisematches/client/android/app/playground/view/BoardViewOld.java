@@ -1,17 +1,13 @@
-package wisematches.client.android.app.playground.scribble.board;
+package wisematches.client.android.app.playground.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Point;
-import android.graphics.Rect;
-import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
-import wisematches.client.android.app.playground.scribble.board.surface.BoardSurface;
-import wisematches.client.android.app.playground.scribble.board.surface.TileSurface;
+import wisematches.client.android.app.playground.model.SelectionListener;
 import wisematches.client.android.data.model.scribble.*;
-import wisematches.client.android.graphics.Dimension;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -21,13 +17,16 @@ import java.util.Set;
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
  */
-public class BoardView extends FrameLayout {
+@Deprecated
+public class BoardViewOld extends FrameLayout {
+	//	private BoardSurface surface;
 	private ScribbleBoard board;
 
+/*
 	private Position draggingAnchor = null;
-	private TileSurface draggingTile = null;
 
 	private Position highlightPosition = null;
+*/
 
 	private ScribbleWord selectedWord = null;
 	private final Set<ScribbleTile> selectedTiles = new HashSet<>();
@@ -36,41 +35,25 @@ public class BoardView extends FrameLayout {
 	private final Point touchingPosition = new Point();
 	private final Point draggingPosition = new Point();
 
-	private final BoardSurface boardSurface;
+/*
+	private TileSurface draggingTile = null;
 	private final TileSurface[] handTileSurfaces = new TileSurface[7];
 	private final TileSurface[][] boardTileSurfaces = new TileSurface[15][15];
+*/
 
-	private final List<BoardViewListener> listeners = new ArrayList<>();
+	private final List<SelectionListener> listeners = new ArrayList<>();
 
-	public BoardView(Context context, AttributeSet attrs) {
-		super(context, attrs);
+	public BoardViewOld(ScribbleBoard board, Context context) {
+		super(context);
 
 		setWillNotDraw(false);
 		setFocusable(true);
 		setFocusableInTouchMode(true);
 		setOnTouchListener(new TheOnTouchListener());
 
-		boardSurface = new BoardSurface(context.getResources());
-	}
 
-	@Override
-	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-		final int parentWidth = MeasureSpec.getSize(widthMeasureSpec);
-		final int parentHeight = MeasureSpec.getSize(heightMeasureSpec);
-
-		final Dimension dimension = boardSurface.onMeasure(parentWidth, parentHeight);
-		if (dimension != null) {
-			setMeasuredDimension(dimension.width, dimension.height);
-		} else {
-			super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-		}
-	}
-
-
-	public void initBoardView(ScribbleBoard board) {
 		this.board = board;
-
-		this.boardSurface.initScoreEngine(board.getScoreEngine());
+//		this.surface = new BoardSurfaceOld(board, context.getResources(), 0);
 
 		for (ScribbleMove move : board.getMoves()) {
 			if (move instanceof ScribbleMove.Make) {
@@ -84,9 +67,11 @@ public class BoardView extends FrameLayout {
 
 				final ScribbleTile[] selectedTiles = word.getTiles();
 				for (ScribbleTile tile : selectedTiles) {
+/*
 					if (boardTileSurfaces[row][col] == null) {
 						boardTileSurfaces[row][col] = new TileSurface(tile, true, null);
 					}
+*/
 
 					if (direction == WordDirection.HORIZONTAL) {
 						col++;
@@ -102,21 +87,36 @@ public class BoardView extends FrameLayout {
 			for (int i = 0; i < handTiles.length; i++) {
 				ScribbleTile handTile = handTiles[i];
 				if (handTile != null) {
-					handTileSurfaces[i] = new TileSurface(handTile, false, null);
+//					handTileSurfaces[i] = new TileSurface(handTile, false, null);
 				}
 			}
 		}
-		invalidate();
 	}
 
-	@Deprecated
-	public void setScribbleBoardListener(BoardViewListener listener) {
-		this.listeners.add(listener);
+	@Override
+	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+		final int parentWidth = MeasureSpec.getSize(widthMeasureSpec);
+		final int parentHeight = MeasureSpec.getSize(heightMeasureSpec);
+
+/*
+		final Dimension dimension = surface.onMeasure(parentWidth, parentHeight);
+		if (dimension != null) {
+			setMeasuredDimension(dimension.width, dimension.height);
+		} else {
+			super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+		}
+*/
 	}
+
 
 	@Deprecated
 	public ScribbleBoard getBoard() {
 		return board;
+	}
+
+	@Deprecated
+	public void setScribbleBoardListener(SelectionListener listener) {
+		this.listeners.add(listener);
 	}
 
 
@@ -124,16 +124,16 @@ public class BoardView extends FrameLayout {
 		return selectedWord;
 	}
 
-	public void setSelectWord(ScribbleWord word) {
-		throw new UnsupportedOperationException("TODO: Not implemented");
-	}
-
-
 	public Set<ScribbleTile> getSelectedTiles() {
 		return selectedTiles;
 	}
 
+	public void selectWord(ScribbleWord word) {
+		throw new UnsupportedOperationException("TODO: Not implemented");
+	}
+
 	public void clearSelection() {
+/*
 		for (int i = 0; i < boardTileSurfaces.length; i++) {
 			for (int j = 0; j < boardTileSurfaces.length; j++) {
 				TileSurface tileSurface = boardTileSurfaces[i][j];
@@ -151,6 +151,7 @@ public class BoardView extends FrameLayout {
 				}
 			}
 		}
+*/
 		invalidate();
 	}
 
@@ -161,7 +162,7 @@ public class BoardView extends FrameLayout {
 
 		draggingPosition.set(x, y);
 
-		final int scale = boardSurface.getScale();
+/*		final int scale = surface.getScale();
 		final Position tilePosition = getTilePosition(x, y);
 		switch (event.getAction()) {
 			case MotionEvent.ACTION_DOWN:
@@ -202,10 +203,11 @@ public class BoardView extends FrameLayout {
 					}
 				}
 				break;
-		}
+		}*/
 		invalidate();
 	}
 
+/*
 	protected void changeTileSelected(TileSurface tileSurface, boolean selected) {
 		tileSurface.setSelected(selected);
 
@@ -215,7 +217,7 @@ public class BoardView extends FrameLayout {
 			selectedTiles.remove(tileSurface.getTile());
 		}
 
-		for (BoardViewListener selectionListener : listeners) {
+		for (SelectionListener selectionListener : listeners) {
 			selectionListener.onTileSelected(tileSurface.getTile(), selected, selectedTiles);
 		}
 
@@ -262,34 +264,34 @@ public class BoardView extends FrameLayout {
 
 		if (word != null) {
 			selectedWord = word;
-			for (BoardViewListener selectionListener : listeners) {
+			for (SelectionListener selectionListener : listeners) {
 				selectionListener.onWordSelected(selectedWord);
 			}
 		} else if (selectedWord != null) {
 			selectedWord = null;
-			for (BoardViewListener selectionListener : listeners) {
+			for (SelectionListener selectionListener : listeners) {
 				selectionListener.onWordSelected(selectedWord);
 			}
 		}
 	}
 
+*/
 
 	@Override
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
 
-		if (boardSurface != null) {
-			boardSurface.drawBackground(canvas);
+//		surface.draw(canvas);
 
-//			final int scale = boardSurface.getScale();
+//			final int scale = surface.getScale();
 //
-//			final Rect handRegion = boardSurface.getHandRegion();
-//			final Rect boardRegion = boardSurface.getBoardRegion();
+//			final Rect handRegion = surface.getHandRegion();
+//			final Rect boardRegion = surface.getBoardRegion();
 
 /*
 			if (draggingTile != null && highlightPosition != null) {
 				Rect r = highlightPosition.rect;
-				boardSurface.drawHighlighter(draggingTile, r.left + highlightPosition.col * scale, r.top + highlightPosition.row * scale);
+				surface.drawHighlighter(draggingTile, r.left + highlightPosition.col * scale, r.top + highlightPosition.row * scale);
 			}
 
 			for (int row = 0; row < boardTileSurfaces.length; row++) {
@@ -313,9 +315,9 @@ public class BoardView extends FrameLayout {
 				draggingTile.onDraw(canvas, draggingPosition.x - draggingOffset.x, draggingPosition.y - draggingOffset.y, scale);
 			}
 */
-		}
 	}
 
+/*
 
 	private void beginDragging(TileSurface tileSurface, Position tilePosition) {
 		draggingTile = tileSurface;
@@ -362,40 +364,7 @@ public class BoardView extends FrameLayout {
 		}
 	}
 
-
-	private Position getTilePosition(int x, int y) {
-		final int scale = boardSurface.getScale();
-		Rect region;
-		region = boardSurface.getBoardRegion();
-		if (region.contains(x, y)) {
-			final int row = (y - region.top) / scale;
-			final int col = (x - region.left) / scale;
-			return new Position(row, col, region, false);
-		}
-
-		region = boardSurface.getHandRegion();
-		if (region.contains(x, y)) {
-			final int row = (y - region.top) / scale;
-			final int col = (x - region.left) / scale;
-			return new Position(row, col, region, true);
-		}
-		return null;
-	}
-
-	@Deprecated
-	private static class Position {
-		public final int row;
-		public final int col;
-		public final Rect rect;
-		public final boolean hand;
-
-		public Position(int row, int col, Rect rect, boolean hand) {
-			this.row = row;
-			this.col = col;
-			this.rect = rect;
-			this.hand = hand;
-		}
-	}
+*/
 
 	private class TheOnTouchListener implements OnTouchListener {
 		@Override

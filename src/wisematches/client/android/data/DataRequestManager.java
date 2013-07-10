@@ -22,10 +22,10 @@ public interface DataRequestManager {
 	void processWaitingGame(long proposalId, boolean accept, DataResponse<Id> response);
 
 
-	void openBoard(long boardId, DataResponse<ScribbleBoard> response);
-
 	void createBoard(String title, Language language, int timeout, String createTab, String robotType, int opponentsCount, DataResponse<Id> response);
 
+
+	void openBoard(long boardId, DataResponse<ScribbleBoard> response);
 
 	void passTurn(long boardId, DataResponse<ScribbleChanges> response);
 

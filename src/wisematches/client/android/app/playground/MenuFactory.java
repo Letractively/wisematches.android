@@ -1,4 +1,4 @@
-package wisematches.client.android.app;
+package wisematches.client.android.app.playground;
 
 import android.app.Activity;
 import android.content.Context;
@@ -6,9 +6,9 @@ import android.content.Intent;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import wisematches.client.android.R;
-import wisematches.client.android.app.playground.scribble.ActiveGamesActivity;
-import wisematches.client.android.app.playground.scribble.CreateGameActivity;
-import wisematches.client.android.app.playground.scribble.WaitingGamesActivity;
+import wisematches.client.android.app.playground.activity.ActiveGamesActivity;
+import wisematches.client.android.app.playground.activity.CreateGameActivity;
+import wisematches.client.android.app.playground.activity.WaitingGamesActivity;
 
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)

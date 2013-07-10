@@ -1,9 +1,9 @@
-package wisematches.client.android.app.account;
+package wisematches.client.android.app.account.activity;
 
 import android.os.Bundle;
 import wisematches.client.android.R;
 import wisematches.client.android.WiseMatchesActivity;
-import wisematches.client.android.app.playground.scribble.ActiveGamesActivity;
+import wisematches.client.android.app.playground.activity.ActiveGamesActivity;
 import wisematches.client.android.data.model.person.Personality;
 import wisematches.client.android.security.SecurityContext;
 

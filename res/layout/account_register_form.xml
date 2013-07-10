@@ -147,4 +147,29 @@
                 android:padding="10dp"
                 android:gravity="center"/>
     </LinearLayout>
+
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:padding="10dp">
+
+        <Button
+                android:id="@id/accountBtnSignIn"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dip"
+                android:text="Войти как игрок"
+                android:padding="10dp"
+                android:gravity="center"/>
+
+        <Button
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Войти как гость"
+                android:id="@id/accountBtnVisitor"
+                android:layout_marginTop="10dip"
+                android:padding="10dp"
+                android:gravity="center"/>
+    </LinearLayout>
 </LinearLayout>
