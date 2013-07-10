@@ -1,4 +1,4 @@
-package wisematches.client.android.app.account;
+package wisematches.client.android.app.account.activity;
 
 import android.accounts.AccountAuthenticatorResponse;
 import android.accounts.AccountManager;
@@ -33,6 +33,8 @@ public class RegisterActivity extends AuthenticationActivity {
 	private EditText passwordEditor;
 	private EditText confirmationEditor;
 
+	private Button signInButton;
+	private Button visitorButton;
 	private Button registerButton;
 
 	private TabHost tabHost;
@@ -92,12 +94,30 @@ public class RegisterActivity extends AuthenticationActivity {
 			nicknameEditor.setText(nickname);
 		}
 
+		signInButton = (Button) findViewById(R.id.accountBtnSignIn);
+		visitorButton = (Button) findViewById(R.id.accountBtnVisitor);
 		registerButton = (Button) findViewById(R.id.accountBtnRegister);
+
 		registerButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				setControlsEnabled(false);
 				performRegistration();
+			}
+		});
+
+		signInButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				performLogin();
+			}
+		});
+
+		visitorButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				setControlsEnabled(false);
+				performAuthentication(null, null);
 			}
 		});
 	}
@@ -113,6 +133,11 @@ public class RegisterActivity extends AuthenticationActivity {
 		confirmationEditor.setEnabled(enabled);
 
 		registerButton.setEnabled(enabled);
+	}
+
+	private void performLogin() {
+		final String username = emailEditor.getText().toString();
+		startActivity(LoginActivity.createIntent(this, username, true, authenticatorResponse));
 	}
 
 	private void performRegistration() {

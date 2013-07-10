@@ -48,7 +48,7 @@
 
         <!-- Entry point -->
         <activity
-                android:name=".app.account.EntryPointActivity"
+                android:name=".app.account.activity.EntryPointActivity"
                 android:theme="@style/Theme.Wisematches.NoActionBar"
                 android:noHistory="true">
             <intent-filter>
@@ -59,22 +59,22 @@
 
         <!-- Account activities -->
         <activity
-                android:name=".app.account.LoginActivity"
+                android:name=".app.account.activity.LoginActivity"
                 android:noHistory="true"/>
 
         <activity
-                android:name=".app.account.RegisterActivity"
+                android:name=".app.account.activity.RegisterActivity"
                 android:noHistory="true"/>
 
         <!-- Playground activities -->
-        <activity android:name=".app.playground.scribble.ActiveGamesActivity"/>
+        <activity android:name=".app.playground.activity.ActiveGamesActivity"/>
 
-        <activity android:name=".app.playground.scribble.CreateGameActivity"/>
+        <activity android:name=".app.playground.activity.CreateGameActivity"/>
 
-        <activity android:name=".app.playground.scribble.WaitingGamesActivity"/>
+        <activity android:name=".app.playground.activity.WaitingGamesActivity"/>
 
         <activity
-                android:name=".app.playground.scribble.board.ScribbleBoardActivity"
+                android:name=".app.playground.activity.GameControllerActivity"
                 android:screenOrientation="landscape"/>
     </application>
 </manifest> 

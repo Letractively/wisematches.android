@@ -1,4 +1,4 @@
-package wisematches.client.android.app.playground.scribble;
+package wisematches.client.android.app.playground.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,9 +12,10 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import wisematches.client.android.R;
 import wisematches.client.android.WiseMatchesActivity;
-import wisematches.client.android.app.MenuFactory;
-import wisematches.client.android.app.OnResultListener;
-import wisematches.client.android.app.playground.scribble.board.ScribbleBoardActivity;
+import wisematches.client.android.app.SignalProcessor;
+import wisematches.client.android.app.playground.MenuFactory;
+import wisematches.client.android.app.playground.widget.ActiveGamesAdapter;
+import wisematches.client.android.app.playground.widget.WaitingGamesAdapter;
 import wisematches.client.android.data.model.Id;
 import wisematches.client.android.data.model.scribble.ActiveGames;
 import wisematches.client.android.data.model.scribble.ScribbleDescriptor;
@@ -41,7 +42,7 @@ public class ActiveGamesActivity extends WiseMatchesActivity {
 			public void onItemClick(AdapterView<?> adapterView, View view, int position, long arg) {
 				final ScribbleDescriptor desc = (ScribbleDescriptor) adapterView.getItemAtPosition(position);
 				if (desc != null) {
-					startActivity(ScribbleBoardActivity.createIntent(ActiveGamesActivity.this, desc.getId()));
+					startActivity(GameControllerActivity.createIntent(ActiveGamesActivity.this, desc.getId()));
 				}
 			}
 		});
@@ -87,7 +88,7 @@ public class ActiveGamesActivity extends WiseMatchesActivity {
 	}
 
 
-	private void cancelWaitingGame(final long proposalId, final OnResultListener<Boolean> listener) {
+	private void cancelWaitingGame(final long proposalId, final SignalProcessor<Boolean> listener) {
 		getRequestManager().processWaitingGame(proposalId, false, new SmartDataResponse<Id>(this) {
 			@Override
 			protected void onData(Id data) {
@@ -115,12 +116,12 @@ public class ActiveGamesActivity extends WiseMatchesActivity {
 			activeGamesAdapter = new ActiveGamesAdapter(context, descriptors);
 			waitingGamesAdapter = new WaitingGamesAdapter(context, proposals, false, "Отказаться", new WaitingGamesAdapter.ProposalClickListener() {
 				@Override
-				public void onAccept(long id, OnResultListener<Boolean> listener) {
+				public void onAccept(long id, SignalProcessor<Boolean> listener) {
 					cancelWaitingGame(id, listener);
 				}
 
 				@Override
-				public void onReject(long id, OnResultListener<Boolean> listener) {
+				public void onReject(long id, SignalProcessor<Boolean> listener) {
 				}
 			});
 		}

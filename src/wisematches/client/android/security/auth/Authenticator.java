@@ -4,7 +4,7 @@ import android.accounts.*;
 import android.app.Activity;
 import android.os.Bundle;
 import wisematches.client.android.WiseMatchesApplication;
-import wisematches.client.android.app.account.LoginActivity;
+import wisematches.client.android.app.account.activity.LoginActivity;
 import wisematches.client.android.data.DataRequestManager;
 import wisematches.client.android.data.model.person.Personality;
 

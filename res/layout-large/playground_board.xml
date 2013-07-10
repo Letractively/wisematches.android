@@ -6,6 +6,76 @@
               android:layout_height="match_parent"
         >
 
+    <ScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/scrollView2"
+            android:layout_weight="1">
+
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+            <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                <RelativeLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp">
+
+                    <ImageView
+                            android:layout_width="fill_parent"
+                            android:layout_height="1dp"
+                            android:background="?android:attr/listDivider"
+                            android:layout_centerVertical="true"/>
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            style="@style/TextAppearance.WiseMatches.BoardWidgetCaption"
+                            android:text="История ходов"/>
+                </RelativeLayout>
+
+                <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/ui.board.widget.padding"
+                        android:layout_marginRight="@dimen/ui.board.widget.padding">
+
+
+                    <TableLayout
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/scribbleBoardMovesHistory">
+                    </TableLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent">
+
+        <ImageView
+                android:layout_width="1dp"
+                android:layout_height="fill_parent"
+                android:background="?android:attr/listDivider"
+                android:layout_centerVertical="true"
+                android:layout_gravity="right"
+                android:baselineAlignBottom="false"
+                android:adjustViewBounds="false"
+                android:cropToPadding="false"
+                android:id="@+id/imageView"/>
+    </LinearLayout>
+
     <LinearLayout
             android:orientation="horizontal"
             android:layout_width="wrap_content"
@@ -138,7 +208,8 @@
     <ScrollView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/scrollView">
+            android:id="@+id/scrollView"
+            android:layout_weight="1">
 
         <LinearLayout
                 android:orientation="vertical"
@@ -356,46 +427,6 @@
                             android:singleLine="true"
                             />
                 </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content">
-
-                <RelativeLayout
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp">
-
-                    <ImageView
-                            android:layout_width="fill_parent"
-                            android:layout_height="1dp"
-                            android:background="?android:attr/listDivider"
-                            android:layout_centerVertical="true"/>
-
-                    <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            style="@style/TextAppearance.WiseMatches.BoardWidgetCaption"
-                            android:text="История ходов"/>
-                </RelativeLayout>
-
-                <LinearLayout
-                        android:orientation="vertical"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/ui.board.widget.padding"
-                        android:layout_marginRight="@dimen/ui.board.widget.padding">
-
-
-                    <TableLayout
-                            android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/scribbleBoardMovesHistory">
-                    </TableLayout>
-                </LinearLayout>
-
             </LinearLayout>
 
         </LinearLayout>

@@ -1,4 +1,4 @@
-package wisematches.client.android.app.playground.scribble;
+package wisematches.client.android.app.playground.widget;
 
 import android.content.Context;
 import android.view.View;
@@ -6,7 +6,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import wisematches.client.android.R;
-import wisematches.client.android.app.OnResultListener;
+import wisematches.client.android.app.SignalProcessor;
 import wisematches.client.android.app.account.view.PersonalityView;
 import wisematches.client.android.data.model.person.Personality;
 import wisematches.client.android.data.model.scribble.CriterionViolation;
@@ -49,7 +49,7 @@ public class WaitingGamesAdapter extends ArrayAdapter<ScribbleProposal> {
 				@Override
 				public void onClick(final View v) {
 					v.setEnabled(false);
-					callback.onAccept((long) v.getTag(), new OnResultListener<Boolean>() {
+					callback.onAccept((long) v.getTag(), new SignalProcessor<Boolean>() {
 						@Override
 						public void onResult(Boolean result) {
 							if (!result) {
@@ -122,8 +122,8 @@ public class WaitingGamesAdapter extends ArrayAdapter<ScribbleProposal> {
 	}
 
 	public interface ProposalClickListener {
-		void onAccept(long id, OnResultListener<Boolean> listener);
+		void onAccept(long id, SignalProcessor<Boolean> listener);
 
-		void onReject(long id, OnResultListener<Boolean> listener);
+		void onReject(long id, SignalProcessor<Boolean> listener);
 	}
 }

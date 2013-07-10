@@ -1,4 +1,4 @@
-package wisematches.client.android.app.playground.scribble;
+package wisematches.client.android.app.playground.widget;
 
 import android.content.Context;
 import android.view.View;

@@ -1,4 +1,4 @@
-package wisematches.client.android.app.playground.scribble;
+package wisematches.client.android.app.playground.activity;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -17,8 +17,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import wisematches.client.android.R;
 import wisematches.client.android.WiseMatchesActivity;
-import wisematches.client.android.app.MenuFactory;
-import wisematches.client.android.app.playground.scribble.board.ScribbleBoardActivity;
+import wisematches.client.android.app.playground.MenuFactory;
 import wisematches.client.android.data.DataRequestManager;
 import wisematches.client.android.data.model.Id;
 import wisematches.client.android.data.model.Language;
@@ -130,7 +129,7 @@ public class CreateGameActivity extends WiseMatchesActivity implements ActionBar
 				if (data == null) {
 					startActivity(ActiveGamesActivity.createIntent(CreateGameActivity.this));
 				} else {
-					startActivity(ScribbleBoardActivity.createIntent(CreateGameActivity.this, data.getId()));
+					startActivity(GameControllerActivity.createIntent(CreateGameActivity.this, data.getId()));
 				}
 			}
 
