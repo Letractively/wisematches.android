@@ -1,37 +1,48 @@
 package wisematches.client.android.app.playground.view;
 
 import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.*;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Point;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.FrameLayout;
-import wisematches.client.android.R;
 import wisematches.client.android.app.playground.model.ScribbleController;
 import wisematches.client.android.app.playground.model.ScribbleWidget;
+import wisematches.client.android.app.playground.model.SelectionListener;
+import wisematches.client.android.app.playground.view.theme.BoardSurface;
 import wisematches.client.android.data.model.scribble.*;
+import wisematches.client.android.graphics.Dimension;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+
+import static wisematches.client.android.app.playground.view.theme.BoardSurface.Place;
+import static wisematches.client.android.app.playground.view.theme.BoardSurface.Placement;
 
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
  */
 public class BoardView extends FrameLayout implements ScribbleWidget {
+	private Bitmap boardBackground;
+	private BoardSurface boardSurface;
 
 	private ScribbleController controller;
 
-	private int scale = 0;
-	private Bitmap boardBackground;
+	private ScribbleTile draggingTile = null;
+	private final Point draggingOffset = new Point();
+	private final Placement draggingAnchor = new Placement();
+	private final Placement draggingPosition = new Placement();
+	private final Placement draggingHighlighter = new Placement();
 
-	private final Rect handRegion = new Rect();
-	private final Rect boardRegion = new Rect();
+	private final Placement reusablePlacement = new Placement();
 
 	private final ScribbleTile[] handTiles = new ScribbleTile[7];
-	private final ScribbleTile[][] pinnedTiles = new ScribbleTile[15][15];
+	private final ScribbleTile[][] boardTiles = new ScribbleTile[15][15];
 
-	private static final int MAGIC_COEF = 8;
-	private static final int BORDER_SIZE = 3;
-	private static final float MAGIC_TEXT_COEF = 0.6f;
+	private final Map<ScribbleTile, Placement> placedTiles = new HashMap<>();
+
+	private final TheSelectionListener selectionListener = new TheSelectionListener();
 
 	public BoardView(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -39,20 +50,23 @@ public class BoardView extends FrameLayout implements ScribbleWidget {
 		setWillNotDraw(false);
 		setFocusable(true);
 		setFocusableInTouchMode(true);
+		setOnTouchListener(new TheOnTouchListener());
+
+		boardSurface = new BoardSurface(context.getResources());
 	}
 
 	@Override
 	public void controllerInitialized(ScribbleController controller) {
 		this.controller = controller;
 
+		controller.addSelectionListener(selectionListener);
+
 		Arrays.fill(handTiles, null);
-		for (ScribbleTile[] pinnedTile : pinnedTiles) {
+		for (ScribbleTile[] pinnedTile : boardTiles) {
 			Arrays.fill(pinnedTile, null);
 		}
 
-		final List<ScribbleMove> moves = controller.getScribbleMoves();
-
-		for (ScribbleMove move : moves) {
+		for (ScribbleMove move : controller.getScribbleMoves()) {
 			if (move instanceof ScribbleMove.Make) {
 				final ScribbleMove.Make make = (ScribbleMove.Make) move;
 
@@ -64,8 +78,8 @@ public class BoardView extends FrameLayout implements ScribbleWidget {
 
 				final ScribbleTile[] selectedTiles = word.getTiles();
 				for (ScribbleTile tile : selectedTiles) {
-					if (pinnedTiles[row][col] == null) {
-						pinnedTiles[row][col] = tile;
+					if (boardTiles[row][col] == null) {
+						boardTiles[row][col] = tile;
 					}
 
 					if (direction == WordDirection.HORIZONTAL) {
@@ -77,36 +91,17 @@ public class BoardView extends FrameLayout implements ScribbleWidget {
 			}
 		}
 
+		final ScribbleTile[] ht = controller.getHandTiles();
+		System.arraycopy(ht, 0, this.handTiles, 0, ht.length);
+
 		invalidateBackground();
-/*
-		ScribbleTile[] handTiles = board.getHandTiles();
-		if (handTiles != null) {
-			for (int i = 0; i < handTiles.length; i++) {
-				ScribbleTile handTile = handTiles[i];
-				if (handTile != null) {
-//					handTileSurfaces[i] = new TileSurface(handTile, false, null);
-				}
-			}
-		}
-*/
 	}
 
 	@Override
-	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-		final int parentHeight = MeasureSpec.getSize(heightMeasureSpec);
+	public void controllerTerminated(ScribbleController controller) {
+		controller.removeSelectionListener(selectionListener);
 
-		if (parentHeight != 0) {
-			scale = (parentHeight - 8) / 17;
-			if (scale % 2 != 0) {
-				scale -= 1;
-			}
-			final int width = (BORDER_SIZE + scale / 2) * 2 + scale * 15;
-			final int height = BORDER_SIZE + scale / 2 + scale * 15 + scale + BORDER_SIZE;
-			setMeasuredDimension(width, height);
-		} else {
-			super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-		}
-		invalidateBackground();
+		this.controller = null;
 	}
 
 	@Override
@@ -118,12 +113,42 @@ public class BoardView extends FrameLayout implements ScribbleWidget {
 		}
 
 		canvas.drawBitmap(boardBackground, 0, 0, null);
+
+		for (int i = 0, handTilesLength = handTiles.length; i < handTilesLength; i++) {
+			final ScribbleTile tile = handTiles[i];
+			if (tile != null) {
+				reusablePlacement.set(i, 0, Place.HAND);
+				boardSurface.drawScribbleTile(canvas, tile, reusablePlacement, false, false);
+			}
+		}
+
+		if (!draggingHighlighter.isEmpty()) {
+			boardSurface.drawHighlighter(canvas, draggingTile, draggingHighlighter);
+		}
+
+		for (Map.Entry<ScribbleTile, Placement> entry : placedTiles.entrySet()) {
+			final ScribbleTile key = entry.getKey();
+			final Placement value = entry.getValue();
+			boardSurface.drawScribbleTile(canvas, key, value, true, getBoardTile(value) != null);
+		}
+
+		if (draggingTile != null) {
+			boardSurface.drawScribbleTile(canvas, draggingTile, draggingPosition, true, false);
+		}
 	}
 
-
 	@Override
-	public void controllerTerminated(ScribbleController controller) {
-		this.controller = null;
+	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+		final int parentWidth = MeasureSpec.getSize(widthMeasureSpec);
+		final int parentHeight = MeasureSpec.getSize(heightMeasureSpec);
+
+		if (parentHeight != 0) {
+			final Dimension dimension = boardSurface.initialize(parentWidth, parentHeight);
+			setMeasuredDimension(dimension.width, dimension.height);
+		} else {
+			super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+		}
+		invalidateBackground();
 	}
 
 	private void invalidateBackground() {
@@ -132,7 +157,7 @@ public class BoardView extends FrameLayout implements ScribbleWidget {
 		final int width = getMeasuredWidth();
 		final int height = getMeasuredHeight();
 
-		if (height == 0 || width == 0) {
+		if (height == 0 || width == 0 || controller == null || boardSurface == null) {
 			return;
 		}
 
@@ -143,190 +168,285 @@ public class BoardView extends FrameLayout implements ScribbleWidget {
 		boardBackground = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
 
 		final Canvas canvas = new Canvas(boardBackground);
-		drawBoardBackground(canvas);
+		boardSurface.drawBackground(canvas, controller.getScoreEngine());
 
-		for (int row = 0; row < pinnedTiles.length; row++) {
-			final ScribbleTile[] pinnedTile = pinnedTiles[row];
+		for (int row = 0; row < boardTiles.length; row++) {
+			final ScribbleTile[] pinnedTile = boardTiles[row];
 			for (int col = 0; col < pinnedTile.length; col++) {
 				final ScribbleTile tile = pinnedTile[col];
 				if (tile != null) {
-					drawScribbleTile(canvas, tile, col, row, Place.BOARD, false, true);
+					reusablePlacement.set(col, row, Place.BOARD);
+					boardSurface.drawScribbleTile(canvas, tile, reusablePlacement, false, true);
 				}
 			}
 		}
 	}
 
-	private void drawScribbleTile(Canvas canvas, ScribbleTile tile, int x, int y, Place place, boolean selected, boolean pinned) {
-		Bitmap bitmap;
-		final BitmapFactory bitmapFactory = BitmapFactory.getBitmapFactory(getContext());
-		if (selected && pinned) {
-			bitmap = bitmapFactory.getTilePinnedSelectedIcon(tile.getCost());
-		} else if (selected) {
-			bitmap = bitmapFactory.getTileSelectedIcon(tile.getCost());
-		} else if (pinned) {
-			bitmap = bitmapFactory.getTilePinnedIcon(tile.getCost());
+	private void updateTileState(ScribbleTile tile, Placement placement) {
+		if (placement == null) {
+			placedTiles.remove(tile);
 		} else {
-			bitmap = bitmapFactory.getTileIcon(tile.getCost());
+			placedTiles.put(tile, placement);
 		}
 
-		final Paint paint = new Paint();
-		paint.setTextSize(scale * MAGIC_TEXT_COEF);
-		paint.setTextAlign(Paint.Align.CENTER);
-		paint.setFakeBoldText(selected);
-
-		bitmap = Bitmap.createScaledBitmap(bitmap, scale, scale, false);
-
-		switch (place) {
-			case BOARD:
-				y = boardRegion.top + scale * y;
-				x = boardRegion.left + scale * x;
-				break;
-			case HAND:
-				y = 0;
-				x = handRegion.left + scale * x;
-				break;
+		selectionListener.selectionChangeStarted();
+		try {
+			controller.selectWord(getSelectedWord());
+		} finally {
+			selectionListener.selectionChangeFinished();
 		}
-
-		canvas.drawBitmap(bitmap, x, y, paint);
-
-		paint.setAntiAlias(true);
-		if (tile.isWildcard()) {
-			paint.setColor(Color.BLACK);
-		} else {
-			paint.setColor(Color.WHITE);
-		}
-
-		canvas.drawText(tile.getLetter(), x + scale / 2, y + (scale - paint.ascent()) / 2 - 1, paint);
-		paint.setAntiAlias(false);
 	}
 
-	private void drawBoardBackground(Canvas canvas) {
-		final int border = scale / 2;
-		final ScoreEngine scoreEngine = controller.getScoreEngine();
-		final Resources resources = getResources();
-		final ScoreBonus.Type[] values = ScoreBonus.Type.values();
-		final String[] bonusCaptions = new String[values.length];
-		final String boardCaption = resources.getString(R.string.board_surface_captions);
-		for (int i = 0; i < values.length; i++) {
-			final ScoreBonus.Type value = values[i];
-			try {
-				bonusCaptions[i] = resources.getString(resources.getIdentifier("board_surface_bonus_" + value.name(), "string", "wisematches.client.android"));
-			} catch (Exception ignore) {
+
+	private void clearSelection() {
+		for (Map.Entry<ScribbleTile, Placement> entry : placedTiles.entrySet()) {
+			final Placement placement = entry.getValue();
+
+			if (getBoardTile(placement) == null) {
+				for (int i = 0, handTilesLength = handTiles.length; i < handTilesLength; i++) {
+					if (handTiles[i] == null) {
+						handTiles[i] = entry.getKey();
+						break;
+					}
+				}
 			}
 		}
+		placedTiles.clear();
+	}
 
-		final Paint paint = new Paint();
-		paint.setStrokeWidth(1f);
+	private void selectWord(ScribbleWord word) {
+		clearSelection();
 
-		final Rect rect = new Rect(0, 0, getMeasuredWidth(), getMeasuredHeight());
-		paint.setARGB(0xff, 0xca, 0xdb, 0xe1);
-		canvas.drawRect(rect, paint);
+		for (ScribbleWord.IteratorItem item : word) {
+			final int row = item.getRow();
+			final int column = item.getColumn();
+			final ScribbleTile tile = item.getTile();
 
-		rect.inset(1, 1);
-		paint.setARGB(0xff, 0xda, 0xec, 0xf2);
-		canvas.drawRect(rect, paint);
+			final ScribbleTile bt = boardTiles[row][column];
+			if (bt != null) {
+				if (!bt.equals(tile)) {
+					clearSelection();
+					return;
+				}
+				placedTiles.put(tile, new Placement(column, row, Place.BOARD));
+			} else {
+				int index = 0;
+				final int handTilesLength = handTiles.length;
+				for (; index < handTilesLength; index++) {
+					final ScribbleTile ht = handTiles[index];
+					if (ht.equals(tile)) {
+						break;
+					}
+				}
 
-		rect.inset(border, border);
-		paint.setARGB(0xff, 0x00, 0x00, 0x00);
-		canvas.drawRect(rect, paint);
+				if (index == handTilesLength) {
+					clearSelection();
+					return;
+				}
 
-		rect.inset(1, 1);
-		paint.setARGB(0xff, 0xff, 0xff, 0xff);
-		canvas.drawRect(rect, paint);
-
-		rect.inset(1, 1);
-		final Paint p = new Paint();
-		p.setShader(new LinearGradient(rect.left, rect.top, rect.right, rect.bottom, 0xFF1947d2, 0xFF75b0f1, Shader.TileMode.CLAMP));
-		canvas.drawRect(rect, p);
-
-		paint.setTextSize(border);
-		paint.setAntiAlias(true);
-		paint.setTextAlign(Paint.Align.CENTER);
-		paint.setARGB(0xff, 0x00, 0x00, 0x00);
-
-		final char[] letters = boardCaption.toCharArray();
-		for (int i = 0; i < 15; i++) {
-			canvas.drawText(String.valueOf(letters[i]), rect.left - border + scale / MAGIC_COEF, rect.top + border + (border - BORDER_SIZE) / 2 + scale * i, paint);
-			canvas.drawText(String.valueOf(i + 1), rect.left + border + scale * i, border - 1, paint);
-			canvas.drawText(String.valueOf(letters[i]), rect.right + border - scale / MAGIC_COEF - 1, rect.top + border + (border - BORDER_SIZE) / 2 + scale * i, paint);
-			canvas.drawText(String.valueOf(i + 1), rect.left + border + scale * i, rect.bottom + border, paint);
+				placedTiles.put(handTiles[index], new Placement(column, row, Place.BOARD));
+				handTiles[index] = null;
+			}
 		}
+		invalidate();
+	}
 
-		paint.setAntiAlias(false);
-		paint.setTextSize(border);
-		paint.setTextAlign(Paint.Align.CENTER);
-
-		boardRegion.set(rect);
-
-		paint.setColor(Color.WHITE);
-		for (int i = 0; i < 15; i++) {
-			canvas.drawLine(rect.left + border + scale * i, rect.top, rect.left + border + scale * i, rect.bottom, paint);
-			canvas.drawLine(rect.left, rect.top + border + scale * i, rect.right, rect.top + border + scale * i, paint);
+	private void processActionDown(Placement placement) {
+		if (placement != null) {
+			if (placement.in(Place.HAND)) {
+				final ScribbleTile handTile = handTiles[placement.getX()];
+				if (handTile != null) {
+					handTiles[placement.getX()] = null;
+					beginDragging(handTile, placement);
+				}
+			} else {
+				final ScribbleTile tile = getPlacedTile(placement);
+				if (tile != null && getBoardTile(placement) == null) {
+					beginDragging(tile, placement);
+					updateTileState(tile, null);
+				}
+			}
 		}
+	}
 
-		for (int i = 0; i < 15; i++) {
-			for (int j = 0; j < 15; j++) {
-				final ScoreBonus bonus = scoreEngine.getScoreBonus(i, j);
+	private void processActionMove(Placement placement) {
+		if (draggingTile != null) {
+			draggingHighlighter.set(placement);
+		}
+	}
 
-				int px = rect.left + border;
-				int py = rect.right - border;
-				if (bonus != null) {
-					paint.setAntiAlias(true);
-					int r = bonus.getRow();
-					int c = bonus.getColumn();
-
-					final float radius = border - 2;
-					paint.setColor(bonus.getType().getColor());
-					canvas.drawCircle(px + scale * r, px + scale * c, radius, paint);
-					canvas.drawCircle(py - scale * r, py - scale * c, radius, paint);
-					canvas.drawCircle(px + scale * r, py - scale * c, radius, paint);
-					canvas.drawCircle(py - scale * r, px + scale * c, radius, paint);
-
-					paint.setColor(Color.BLACK);
-
-					final String caption = bonusCaptions[bonus.getType().ordinal()];
-					canvas.drawText(caption, px + scale * r, px + 4 + scale * c, paint);
-					canvas.drawText(caption, py - scale * r, py + 5 - scale * c, paint);
-					canvas.drawText(caption, px + scale * r, py + 5 - scale * c, paint);
-					canvas.drawText(caption, py - scale * r, px + 4 + scale * c, paint);
-					paint.setAntiAlias(false);
+	private void processActionUp(Placement placement) {
+		if (draggingTile != null) {
+			finishDragging(placement);
+		} else if (placement != null && placement.in(Place.BOARD)) {
+			final ScribbleTile tile = getBoardTile(placement);
+			if (tile != null) {
+				if (getPlacedTile(placement) != null) {
+					updateTileState(tile, null);
 				} else {
-					paint.setColor(Color.WHITE);
-					canvas.drawLine((px + scale * i) - 2, (px + scale * j) - 1, (px + scale * i) + BORDER_SIZE, (px + scale * j) - 1, paint);
-					canvas.drawLine((px + scale * i) - 1, (px + scale * j) - 2, (px + scale * i) + 2, (px + scale * j) - 2, paint);
-					canvas.drawLine((px + scale * i) - 2, (px + scale * j) + 1, (px + scale * i) + BORDER_SIZE, (px + scale * j) + 1, paint);
-					canvas.drawLine((px + scale * i) - 1, (px + scale * j) + 2, (px + scale * i) + 2, (px + scale * j) + 2, paint);
+					updateTileState(tile, placement);
 				}
 			}
 		}
-		paint.setAntiAlias(false);
-
-		handRegion.set(rect.left + scale * 4, rect.bottom + 1, rect.right - scale * 4, rect.bottom + scale + 1);
-
-		final Path path = new Path();
-		path.moveTo(handRegion.left - scale / 2, handRegion.top);
-		path.lineTo(handRegion.left, handRegion.bottom);
-		path.lineTo(handRegion.right, handRegion.bottom);
-		path.lineTo(handRegion.right + scale / 2, handRegion.top);
-		path.close();
-
-		paint.setARGB(0xFF, 0x55, 0x8b, 0xe7);
-		canvas.drawPath(path, paint);
-
-		paint.setColor(Color.BLACK);
-		canvas.drawLine(handRegion.left - scale / 2, handRegion.top, handRegion.left, handRegion.bottom, paint);
-		canvas.drawLine(handRegion.left, handRegion.bottom, handRegion.right, handRegion.bottom, paint);
-		canvas.drawLine(handRegion.right, handRegion.bottom, handRegion.right + scale / 2, handRegion.top, paint);
-
-		paint.setColor(Color.WHITE);
-		canvas.drawLine(handRegion.left - scale / 2 + 1, handRegion.top, handRegion.left + 1, handRegion.bottom - 1, paint);
-		canvas.drawLine(handRegion.left + 1, handRegion.bottom - 1, handRegion.right - 1, handRegion.bottom - 1, paint);
-		canvas.drawLine(handRegion.right - 1, handRegion.bottom - 1, handRegion.right + scale / 2 - 1, handRegion.top, paint);
 	}
 
-	private static enum Place {
-		HAND,
-		BOARD,
-		RELATIVE
+	private void beginDragging(ScribbleTile tile, Placement placement) {
+		draggingTile = tile;
+		draggingAnchor.set(placement);
+		draggingHighlighter.set(placement);
+	}
+
+	private void finishDragging(Placement placement) {
+		if (placement == null) {
+			rollbackDragging();
+		} else {
+			if (placement.in(Place.HAND)) {
+				final ScribbleTile handTile = handTiles[placement.getX()];
+				if (handTile == null) {
+					handTiles[placement.getX()] = draggingTile;
+					updateTileState(draggingTile, null);
+				} else {
+					rollbackDragging();
+				}
+			} else {
+				if (getBoardTile(placement) == null && getPlacedTile(placement) == null) {
+					updateTileState(draggingTile, placement);
+				} else {
+					rollbackDragging();
+				}
+			}
+		}
+
+		draggingTile = null;
+		draggingAnchor.clear();
+		draggingHighlighter.clear();
+	}
+
+	private void rollbackDragging() {
+		if (draggingAnchor.in(Place.HAND)) {
+			handTiles[draggingAnchor.getX()] = draggingTile;
+			updateTileState(draggingTile, null);
+		} else {
+			updateTileState(draggingTile, new Placement(draggingAnchor));
+		}
+	}
+
+
+	private ScribbleTile getBoardTile(Placement placement) {
+		return boardTiles[placement.getY()][placement.getX()];
+	}
+
+	private ScribbleTile getPlacedTile(Placement placement) {
+		for (Map.Entry<ScribbleTile, Placement> entry : placedTiles.entrySet()) {
+			final Placement value = entry.getValue();
+			if (value.equals(placement)) {
+				return entry.getKey();
+			}
+		}
+		return null;
+	}
+
+	private ScribbleWord getSelectedWord() {
+		if (placedTiles.size() < 2) {
+			return null;
+		}
+
+		final Set<Map.Entry<ScribbleTile, Placement>> set = new TreeSet<>(new Comparator<Map.Entry<ScribbleTile, Placement>>() {
+			@Override
+			public int compare(Map.Entry<ScribbleTile, Placement> lhs, Map.Entry<ScribbleTile, Placement> rhs) {
+				if (lhs.getValue().getX() == rhs.getValue().getY()) {
+					return lhs.getValue().getY() - rhs.getValue().getY();
+				}
+				if (lhs.getValue().getY() == rhs.getValue().getY()) {
+					return lhs.getValue().getX() - rhs.getValue().getX();
+				}
+				return 0;
+			}
+		});
+		set.addAll(placedTiles.entrySet());
+
+		WordDirection direction = null;
+		Map.Entry<ScribbleTile, Placement> first = null;
+		for (Map.Entry<ScribbleTile, Placement> entry : set) {
+			if (first == null) {
+				first = entry;
+				continue;
+			}
+
+			WordDirection d = null;
+			if (first.getValue().getX() == entry.getValue().getX()) {
+				d = WordDirection.HORIZONTAL;
+			} else if (first.getValue().getY() == entry.getValue().getY()) {
+				d = WordDirection.VERTICAL;
+			}
+
+			if (direction == null) {
+				direction = d;
+			}
+
+			if (direction != d) {
+				return null;
+			}
+		}
+		if (first == null) {
+			return null;
+		}
+
+		int index = 0;
+		ScribbleTile[] tiles = new ScribbleTile[set.size()];
+		for (Map.Entry<ScribbleTile, Placement> entry : set) {
+			tiles[index++] = entry.getKey();
+		}
+		return new ScribbleWord(first.getValue().getY(), first.getValue().getX(), direction, tiles);
+	}
+
+
+	private class TheOnTouchListener implements OnTouchListener {
+		@Override
+		public boolean onTouch(View view, MotionEvent event) {
+			final int x = (int) event.getX();
+			final int y = (int) event.getY();
+			final Placement placement = boardSurface.getPlacement(x, y);
+
+			switch (event.getAction()) {
+				case MotionEvent.ACTION_DOWN:
+					processActionDown(placement);
+					boardSurface.fillRelativePosition(placement, draggingOffset);
+					draggingOffset.set(x - draggingOffset.x, y - draggingOffset.y);
+					draggingPosition.set(x - draggingOffset.x, y - draggingOffset.y, Place.RELATIVE);
+					break;
+				case MotionEvent.ACTION_MOVE:
+					processActionMove(placement);
+					draggingPosition.set(x - draggingOffset.x, y - draggingOffset.y, Place.RELATIVE);
+					break;
+				case MotionEvent.ACTION_UP:
+					processActionUp(placement);
+					draggingOffset.set(0, 0);
+					draggingPosition.clear();
+					break;
+			}
+
+			invalidate();
+			return true;
+		}
+	}
+
+	private class TheSelectionListener implements SelectionListener {
+		private boolean updateSelection;
+
+		@Override
+		public void onSelectionChanged(ScribbleWord word, ScoreCalculation score, Collection<ScribbleTile> tiles) {
+			if (!updateSelection) {
+				selectWord(word);
+			}
+		}
+
+		public void selectionChangeStarted() {
+			updateSelection = true;
+		}
+
+		public void selectionChangeFinished() {
+			updateSelection = false;
+		}
 	}
 }

@@ -17,7 +17,7 @@ import wisematches.client.android.data.model.scribble.ScribbleBoard;
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
  */
-public class ProgressView extends View {
+public class ProgressWidget extends View {
 	private int handTiles = 0;
 	private int boardTiles = 0;
 	private int totalTiles = 0;
@@ -44,17 +44,25 @@ public class ProgressView extends View {
 	private static final ShapeDrawable RIGHT = new ShapeDrawable(new RoundRectShape(new float[]{0, 0, RADII, RADII, RADII, RADII, 0, 0}, null, null));
 	private static final ShapeDrawable ALL = new ShapeDrawable(new RoundRectShape(new float[]{RADII, RADII, RADII, RADII, RADII, RADII, RADII, RADII}, null, null));
 
-	public ProgressView(Context context, AttributeSet attrs) {
+	public ProgressWidget(Context context, AttributeSet attrs) {
 		super(context, attrs);
 
 		final Resources resources = context.getResources();
 		densityMultiplier = resources.getDisplayMetrics().density;
 
-		handColor = new Clr(resources.getColor(R.color.progress_hand_border), resources.getColor(R.color.progress_hand_background));
-		bankColor = new Clr(resources.getColor(R.color.progress_bank_border), resources.getColor(R.color.progress_bank_background));
-		boardColor = new Clr(resources.getColor(R.color.progress_board_border), resources.getColor(R.color.progress_board_background));
+		if (isInEditMode()) {
+			handColor = new Clr(0xff000000, 0xffff0000);
+			bankColor = new Clr(0xff000000, 0xffff0000);
+			boardColor = new Clr(0xff000000, 0xffff0000);
 
-		finishedColor = new Clr(resources.getColor(R.color.progress_no_border), resources.getColor(R.color.progress_no_background));
+			finishedColor = new Clr(0xff000000, 0xffff0000);
+		} else {
+			handColor = new Clr(resources.getColor(R.color.progress_hand_border), resources.getColor(R.color.progress_hand_background));
+			bankColor = new Clr(resources.getColor(R.color.progress_bank_border), resources.getColor(R.color.progress_bank_background));
+			boardColor = new Clr(resources.getColor(R.color.progress_board_border), resources.getColor(R.color.progress_board_background));
+
+			finishedColor = new Clr(resources.getColor(R.color.progress_no_border), resources.getColor(R.color.progress_no_background));
+		}
 	}
 
 	protected void onDraw(Canvas canvas) {

@@ -1,5 +1,6 @@
 package wisematches.client.android.app.playground.model;
 
+import wisematches.client.android.data.model.person.Personality;
 import wisematches.client.android.data.model.scribble.*;
 
 import java.util.List;
@@ -18,6 +19,16 @@ public interface ScribbleController {
 
 	ScribbleSettings getSettings();
 
+
+	Personality getPlayerTurn();
+
+	List<Personality> getPlayers();
+
+	Personality getPlayer(long player);
+
+
+	ScribbleTile[] getHandTiles();
+
 	List<ScribbleMove> getScribbleMoves();
 
 
@@ -32,13 +43,10 @@ public interface ScribbleController {
 
 	ScribbleWord getSelectedWord();
 
-	void setSelectWord(ScribbleWord word);
-
-
 	Set<ScribbleTile> getSelectedTiles();
 
-	void setSelectedTiles(Set<ScribbleTile> tiles);
 
+	void selectWord(ScribbleWord word);
 
 	void clearSelection();
 }
