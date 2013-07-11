@@ -264,7 +264,7 @@
                     <view
                             android:layout_width="fill_parent"
                             android:layout_height="16dp"
-                            class="wisematches.client.android.app.playground.view.ProgressView"
+                            class="wisematches.client.android.app.playground.view.ProgressWidget"
                             android:id="@+id/scribbleBoardProgressView"
                             android:text="dsfasfdasdf asdf"
                             android:layout_gravity="center"
@@ -319,85 +319,15 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <LinearLayout
-                    android:orientation="vertical"
+            <view
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    class="wisematches.client.android.app.playground.view.SelectionWidget"/>
 
-                <RelativeLayout
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp">
-
-                    <ImageView
-                            android:layout_width="fill_parent"
-                            android:layout_height="1dp"
-                            android:background="?android:attr/listDivider"
-                            android:layout_centerVertical="true"/>
-
-                    <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Баллы за выделенное слово"
-                            style="@style/TextAppearance.WiseMatches.BoardWidgetCaption"/>
-                </RelativeLayout>
-
-                <LinearLayout
-                        android:orientation="vertical"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/ui.board.widget.padding"
-                        android:layout_marginRight="@dimen/ui.board.widget.padding">
-
-                    <TextView
-                            android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/scribbleBoardFltPoints"
-                            android:singleLine="true"
-                            />
-                </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                    android:orientation="vertical"
+            <view
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content">
-
-                <RelativeLayout
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp">
-
-                    <ImageView
-                            android:layout_width="fill_parent"
-                            android:layout_height="1dp"
-                            android:background="?android:attr/listDivider"
-                            android:layout_centerVertical="true"/>
-
-                    <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            style="@style/TextAppearance.WiseMatches.BoardWidgetCaption"
-                            android:text="История ходов"/>
-                </RelativeLayout>
-
-                <LinearLayout
-                        android:orientation="vertical"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/ui.board.widget.padding"
-                        android:layout_marginRight="@dimen/ui.board.widget.padding">
-
-
-                    <TableLayout
-                            android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/scribbleBoardMovesHistory">
-                    </TableLayout>
-                </LinearLayout>
-
-            </LinearLayout>
-
+                    android:layout_height="wrap_content"
+                    class="wisematches.client.android.app.playground.view.MovesWidget"/>
         </LinearLayout>
     </ScrollView>
 

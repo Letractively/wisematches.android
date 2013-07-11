@@ -1,15 +1,14 @@
 package wisematches.client.android.app.playground.model;
 
+import wisematches.client.android.data.model.scribble.ScoreCalculation;
 import wisematches.client.android.data.model.scribble.ScribbleTile;
 import wisematches.client.android.data.model.scribble.ScribbleWord;
 
-import java.util.Set;
+import java.util.Collection;
 
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
  */
 public interface SelectionListener {
-	void onWordSelected(ScribbleWord word);
-
-	void onTileSelected(ScribbleTile tile, boolean selected, Set<ScribbleTile> selectedTiles);
+	void onSelectionChanged(ScribbleWord word, ScoreCalculation score, Collection<ScribbleTile> tiles);
 }

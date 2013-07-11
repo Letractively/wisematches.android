@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="fill_parent"
+              android:layout_height="wrap_content">
+
+    <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp">
+
+        <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider"
+                android:layout_centerVertical="true"/>
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/TextAppearance.WiseMatches.BoardWidgetCaption"
+                android:id="@+id/playgroundBoardWidgetTitle"/>
+    </RelativeLayout>
+
+    <LinearLayout
+            android:id="@+id/playgroundBoardWidgetContent"
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/ui.board.widget.padding"
+            android:layout_marginRight="@dimen/ui.board.widget.padding">
+    </LinearLayout>
+
+</LinearLayout>

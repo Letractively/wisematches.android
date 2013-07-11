@@ -40,6 +40,20 @@ public class ScribbleTile implements Parcelable {
 	}
 
 	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof ScribbleTile)) return false;
+
+		ScribbleTile that = (ScribbleTile) o;
+		return number == that.number;
+	}
+
+	@Override
+	public int hashCode() {
+		return number;
+	}
+
+	@Override
 	public String toString() {
 		final StringBuilder sb = new StringBuilder("ScribbleTile{");
 		sb.append("cost=").append(cost);

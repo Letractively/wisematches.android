@@ -12,12 +12,10 @@ import wisematches.client.android.app.playground.model.ScribbleController;
 import wisematches.client.android.app.playground.model.ScribbleWidget;
 import wisematches.client.android.app.playground.model.SelectionListener;
 import wisematches.client.android.data.DataRequestManager;
+import wisematches.client.android.data.model.person.Personality;
 import wisematches.client.android.data.model.scribble.*;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
@@ -151,6 +149,26 @@ public class GameControllerActivity extends WiseMatchesActivity implements Scrib
 	}
 
 	@Override
+	public Personality getPlayerTurn() {
+		throw new UnsupportedOperationException("TODO: Not implemented");
+	}
+
+	@Override
+	public List<Personality> getPlayers() {
+		throw new UnsupportedOperationException("TODO: Not implemented");
+	}
+
+	@Override
+	public Personality getPlayer(long player) {
+		return board.getPlayer(player).getPlayer();
+	}
+
+	@Override
+	public ScribbleTile[] getHandTiles() {
+		return board.getHandTiles();
+	}
+
+	@Override
 	public List<ScribbleMove> getScribbleMoves() {
 		return scribbleMoves;
 	}
@@ -161,16 +179,22 @@ public class GameControllerActivity extends WiseMatchesActivity implements Scrib
 	}
 
 	@Override
-	public void setSelectWord(ScribbleWord word) {
+	public void selectWord(ScribbleWord word) {
+		ScoreCalculation calculation = null;
+		Collection<ScribbleTile> tiles = null;
+		if (word != null) {
+			calculation = board.getScoreEngine().calculateWordScore(board, word);
+			tiles = Arrays.asList(word.getTiles());
+		}
+
+		for (SelectionListener selectionListener : selectionListeners) {
+			selectionListener.onSelectionChanged(word, calculation, tiles);
+		}
 	}
 
 	@Override
 	public Set<ScribbleTile> getSelectedTiles() {
 		return null;
-	}
-
-	@Override
-	public void setSelectedTiles(Set<ScribbleTile> tiles) {
 	}
 
 	@Override
