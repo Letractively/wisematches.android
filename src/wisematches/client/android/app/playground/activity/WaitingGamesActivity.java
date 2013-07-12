@@ -40,7 +40,7 @@ public class WaitingGamesActivity extends WiseMatchesActivity {
 	}
 
 	private void loadWaitingGames() {
-		getRequestManager().getWaitingGames(new SmartDataResponse<WaitingGames>(this) {
+		getRequestManager().getWaitingGames(new SmartDataResponse<WaitingGames>() {
 			@Override
 			protected void onData(WaitingGames data) {
 				validateWaitingGames(data);
@@ -86,7 +86,7 @@ public class WaitingGamesActivity extends WiseMatchesActivity {
 	}
 
 	private void acceptWaitingGame(final long proposalId, final boolean accept, final SignalProcessor<Boolean> resultListener) {
-		getRequestManager().processWaitingGame(proposalId, accept, new SmartDataResponse<Id>(this) {
+		getRequestManager().processWaitingGame(proposalId, accept, new SmartDataResponse<Id>() {
 			@Override
 			protected void onData(Id data) {
 				if (data != null) {

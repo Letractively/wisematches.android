@@ -1,7 +1,6 @@
 package wisematches.client.android;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Html;
@@ -69,7 +68,7 @@ public abstract class WiseMatchesActivity extends SherlockActivity {
 		return MenuFactory.startMenuActivity(this, item);
 	}
 
-	protected Personality getPersonality(boolean safe) {
+	public Personality getPersonality(boolean safe) {
 		Personality personality = getSecurityContext().getPersonality();
 		if (safe && personality == null) {
 			startActivity(LoginActivity.createIntent(this, null, true, null));
@@ -77,11 +76,11 @@ public abstract class WiseMatchesActivity extends SherlockActivity {
 		return personality;
 	}
 
-	protected SecurityContext getSecurityContext() {
+	public SecurityContext getSecurityContext() {
 		return ((WiseMatchesApplication) getApplication()).getSecurityContext();
 	}
 
-	protected DataRequestManager getRequestManager() {
+	public DataRequestManager getRequestManager() {
 		return ((WiseMatchesApplication) getApplication()).getRequestManager();
 	}
 
@@ -96,10 +95,7 @@ public abstract class WiseMatchesActivity extends SherlockActivity {
 	}
 
 	protected abstract class SmartDataResponse<T> implements DataRequestManager.DataResponse<T> {
-		private final Context context;
-
-		protected SmartDataResponse(Context context) {
-			this.context = context;
+		protected SmartDataResponse() {
 		}
 
 		protected abstract void onData(T data);
@@ -131,7 +127,7 @@ public abstract class WiseMatchesActivity extends SherlockActivity {
 		}
 
 		protected void showErrorDialog(String message, boolean retry) {
-			final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+			final AlertDialog.Builder builder = new AlertDialog.Builder(WiseMatchesActivity.this);
 			builder.setMessage(Html.fromHtml(message));
 			if (retry) {
 				builder.setPositiveButton("Повторить", new DialogInterface.OnClickListener() {

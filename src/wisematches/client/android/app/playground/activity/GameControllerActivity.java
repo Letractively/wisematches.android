@@ -15,7 +15,10 @@ import wisematches.client.android.data.DataRequestManager;
 import wisematches.client.android.data.model.person.Personality;
 import wisematches.client.android.data.model.scribble.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
@@ -44,7 +47,7 @@ public class GameControllerActivity extends WiseMatchesActivity implements Scrib
 		if (boardId == 0) {
 			finish();
 		} else {
-			requestManager.openBoard(boardId, new SmartDataResponse<ScribbleBoard>(this) {
+			requestManager.openBoard(boardId, new SmartDataResponse<ScribbleBoard>() {
 				@Override
 				protected void onData(ScribbleBoard board) {
 					initializeController(board);
@@ -110,7 +113,7 @@ public class GameControllerActivity extends WiseMatchesActivity implements Scrib
 
 	@Override
 	public void resign() {
-		requestManager.resignGame(board.getId(), new SmartDataResponse<ScribbleChanges>(getBaseContext()) {
+		requestManager.resignGame(board.getId(), new SmartDataResponse<ScribbleChanges>() {
 			@Override
 			protected void onData(ScribbleChanges data) {
 			}
@@ -155,7 +158,11 @@ public class GameControllerActivity extends WiseMatchesActivity implements Scrib
 
 	@Override
 	public List<Personality> getPlayers() {
-		throw new UnsupportedOperationException("TODO: Not implemented");
+		List<Personality> res = new ArrayList<>();
+		for (ScribbleHand scribbleHand : board.getPlayers()) {
+			res.add(scribbleHand.getPlayer());
+		}
+		return res;
 	}
 
 	@Override
@@ -181,24 +188,28 @@ public class GameControllerActivity extends WiseMatchesActivity implements Scrib
 	@Override
 	public void selectWord(ScribbleWord word) {
 		ScoreCalculation calculation = null;
-		Collection<ScribbleTile> tiles = null;
 		if (word != null) {
 			calculation = board.getScoreEngine().calculateWordScore(board, word);
-			tiles = Arrays.asList(word.getTiles());
 		}
 
 		for (SelectionListener selectionListener : selectionListeners) {
-			selectionListener.onSelectionChanged(word, calculation, tiles);
+			selectionListener.onSelectionChanged(word, calculation);
 		}
 	}
 
 	@Override
-	public Set<ScribbleTile> getSelectedTiles() {
-		return null;
+	public ScribbleBank getScribbleBank() {
+		return board.getScribbleBank();
 	}
 
 	@Override
-	public void clearSelection() {
+	public boolean isActive() {
+		return true;
+	}
+
+	@Override
+	public int getBoardTilesCount() {
+		return 13;
 	}
 
 	public static Intent createIntent(Context context, long boardId) {
