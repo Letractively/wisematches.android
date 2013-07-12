@@ -42,8 +42,8 @@ public class SelectedWordWidget extends AbstractBoardWidget {
 				selectedTilesView.setScribbleTiles(word.getTiles());
 				pointsCalculationFld.setText(score.getFormula() + "=" + score.getPoints());
 			} else {
+				pointsCalculationFld.setText("");
 				selectedTilesView.setScribbleTiles(null);
-				pointsCalculationFld.setText("Составьте слово");
 			}
 		}
 	}

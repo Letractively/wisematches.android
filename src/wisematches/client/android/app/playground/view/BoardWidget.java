@@ -66,7 +66,7 @@ public class BoardWidget extends FrameLayout implements ScribbleWidget {
 			Arrays.fill(pinnedTile, null);
 		}
 
-		for (ScribbleMove move : controller.getScribbleMoves()) {
+		for (ScribbleMove move : controller.getScribbleBoard().getMoves()) {
 			if (move instanceof ScribbleMove.Make) {
 				final ScribbleMove.Make make = (ScribbleMove.Make) move;
 
@@ -91,7 +91,7 @@ public class BoardWidget extends FrameLayout implements ScribbleWidget {
 			}
 		}
 
-		final ScribbleTile[] ht = controller.getHandTiles();
+		final ScribbleTile[] ht = controller.getScribbleBoard().getHandTiles();
 		System.arraycopy(ht, 0, this.handTiles, 0, ht.length);
 
 		invalidateBackground();
@@ -168,7 +168,7 @@ public class BoardWidget extends FrameLayout implements ScribbleWidget {
 		boardBackground = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
 
 		final Canvas canvas = new Canvas(boardBackground);
-		boardSurface.drawBackground(canvas, controller.getScoreEngine());
+		boardSurface.drawBackground(canvas, controller.getScribbleBoard().getScoreEngine());
 
 		for (int row = 0; row < boardTiles.length; row++) {
 			final ScribbleTile[] pinnedTile = boardTiles[row];
@@ -217,35 +217,37 @@ public class BoardWidget extends FrameLayout implements ScribbleWidget {
 	private void selectWord(ScribbleWord word) {
 		clearSelection();
 
-		for (ScribbleWord.IteratorItem item : word) {
-			final int row = item.getRow();
-			final int column = item.getColumn();
-			final ScribbleTile tile = item.getTile();
+		if (word != null) {
+			for (ScribbleWord.IteratorItem item : word) {
+				final int row = item.getRow();
+				final int column = item.getColumn();
+				final ScribbleTile tile = item.getTile();
 
-			final ScribbleTile bt = boardTiles[row][column];
-			if (bt != null) {
-				if (!bt.equals(tile)) {
-					clearSelection();
-					return;
-				}
-				placedTiles.put(tile, new Placement(column, row, Place.BOARD));
-			} else {
-				int index = 0;
-				final int handTilesLength = handTiles.length;
-				for (; index < handTilesLength; index++) {
-					final ScribbleTile ht = handTiles[index];
-					if (ht.equals(tile)) {
-						break;
+				final ScribbleTile bt = boardTiles[row][column];
+				if (bt != null) {
+					if (!bt.equals(tile)) {
+						clearSelection();
+						return;
 					}
-				}
+					placedTiles.put(tile, new Placement(column, row, Place.BOARD));
+				} else {
+					int index = 0;
+					final int handTilesLength = handTiles.length;
+					for (; index < handTilesLength; index++) {
+						final ScribbleTile ht = handTiles[index];
+						if (ht.equals(tile)) {
+							break;
+						}
+					}
 
-				if (index == handTilesLength) {
-					clearSelection();
-					return;
-				}
+					if (index == handTilesLength) {
+						clearSelection();
+						return;
+					}
 
-				placedTiles.put(handTiles[index], new Placement(column, row, Place.BOARD));
-				handTiles[index] = null;
+					placedTiles.put(handTiles[index], new Placement(column, row, Place.BOARD));
+					handTiles[index] = null;
+				}
 			}
 		}
 		invalidate();

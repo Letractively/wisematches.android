@@ -101,7 +101,7 @@ public class DictionaryWidget extends AbstractBoardWidget {
 
 	@Override
 	public void controllerInitialized(ScribbleController controller) {
-		language = controller.getSettings().getLanguage();
+		language = controller.getScribbleBoard().getSettings().getLanguage();
 
 		controller.addSelectionListener(selectionListener);
 	}

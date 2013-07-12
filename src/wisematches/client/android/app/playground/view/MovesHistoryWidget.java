@@ -43,7 +43,7 @@ public class MovesHistoryWidget extends AbstractBoardWidget {
 		}
 		movesHistoryView.addView(header);
 
-		List<ScribbleMove> moves = controller.getScribbleMoves();
+		List<ScribbleMove> moves = controller.getScribbleBoard().getMoves();
 		final ListIterator<ScribbleMove> movesIterator = moves.listIterator(moves.size());
 		while (movesIterator.hasPrevious()) {
 			registerMove(movesIterator.previous());
@@ -89,7 +89,7 @@ public class MovesHistoryWidget extends AbstractBoardWidget {
 
 		moveNumberView.setText(String.valueOf(move.getNumber() + 1));
 		movePointsView.setText(String.valueOf(move.getPoints()));
-		movePlayerView.setText(controller.getPlayer(move.getPlayer()).getNickname());
+		movePlayerView.setText(controller.getScribbleBoard().getPlayer(move.getPlayer()).getPlayer().getNickname());
 
 		movesHistoryView.addView(row);
 	}

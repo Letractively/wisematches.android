@@ -1,9 +1,9 @@
 package wisematches.client.android.app.playground.model;
 
-import wisematches.client.android.data.model.person.Personality;
-import wisematches.client.android.data.model.scribble.*;
+import wisematches.client.android.data.model.scribble.ScribbleBoard;
+import wisematches.client.android.data.model.scribble.ScribbleTile;
+import wisematches.client.android.data.model.scribble.ScribbleWord;
 
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -14,24 +14,9 @@ public interface ScribbleController {
 
 	void removeSelectionListener(SelectionListener l);
 
+	void addGameMoveListener(GameMoveListener l);
 
-	ScoreEngine getScoreEngine();
-
-	ScribbleSettings getSettings();
-
-	ScribbleBank getScribbleBank();
-
-
-	Personality getPlayerTurn();
-
-	List<Personality> getPlayers();
-
-	Personality getPlayer(long player);
-
-
-	ScribbleTile[] getHandTiles();
-
-	List<ScribbleMove> getScribbleMoves();
+	void removeGameMoveListener(GameMoveListener l);
 
 
 	void resign();
@@ -45,11 +30,8 @@ public interface ScribbleController {
 
 	ScribbleWord getSelectedWord();
 
-
 	void selectWord(ScribbleWord word);
 
 
-	boolean isActive();
-
-	int getBoardTilesCount();
+	ScribbleBoard getScribbleBoard();
 }
