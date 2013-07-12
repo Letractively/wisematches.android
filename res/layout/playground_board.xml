@@ -231,93 +231,15 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <LinearLayout
-                    android:orientation="vertical"
+            <view
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    class="wisematches.client.android.app.playground.view.ProgressWidget"/>
 
-                <RelativeLayout
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp">
-
-                    <ImageView
-                            android:layout_width="fill_parent"
-                            android:layout_height="1dp"
-                            android:background="?android:attr/listDivider"
-                            android:layout_centerVertical="true"/>
-
-                    <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Прогресс"
-                            style="@style/TextAppearance.WiseMatches.BoardWidgetCaption"/>
-                </RelativeLayout>
-
-                <LinearLayout
-                        android:orientation="vertical"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/ui.board.widget.padding"
-                        android:layout_marginRight="@dimen/ui.board.widget.padding">
-
-                    <view
-                            android:layout_width="fill_parent"
-                            android:layout_height="16dp"
-                            class="wisematches.client.android.app.playground.view.ProgressView"
-                            android:id="@+id/scribbleBoardProgressView"
-                            android:text="dsfasfdasdf asdf"
-                            android:layout_gravity="center"
-                            android:layout_weight="1"/>
-
-                    <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="фишек на доске/банке/руках"
-                            android:id="@+id/scribbleBoardProgressText"
-                            android:textSize="8dp"
-                            android:layout_gravity="right"/>
-                </LinearLayout>
-            </LinearLayout>
-
-
-            <LinearLayout
-                    android:orientation="vertical"
+            <view
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content">
-
-                <RelativeLayout
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp">
-
-                    <ImageView
-                            android:layout_width="fill_parent"
-                            android:layout_height="1dp"
-                            android:background="?android:attr/listDivider"
-                            android:layout_centerVertical="true"/>
-
-                    <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Словарь"
-                            style="@style/TextAppearance.WiseMatches.BoardWidgetCaption"/>
-                </RelativeLayout>
-
-                <LinearLayout
-                        android:orientation="vertical"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/ui.board.widget.padding"
-                        android:layout_marginRight="@dimen/ui.board.widget.padding">
-
-
-                    <include
-                            android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                            layout="@layout/playground_board_dict"/>
-                </LinearLayout>
-            </LinearLayout>
+                    android:layout_height="wrap_content"
+                    class="wisematches.client.android.app.playground.view.DictionaryWidget"/>
 
             <view
                     android:layout_width="fill_parent"

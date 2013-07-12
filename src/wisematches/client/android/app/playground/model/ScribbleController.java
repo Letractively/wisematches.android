@@ -19,6 +19,8 @@ public interface ScribbleController {
 
 	ScribbleSettings getSettings();
 
+	ScribbleBank getScribbleBank();
+
 
 	Personality getPlayerTurn();
 
@@ -43,10 +45,11 @@ public interface ScribbleController {
 
 	ScribbleWord getSelectedWord();
 
-	Set<ScribbleTile> getSelectedTiles();
-
 
 	void selectWord(ScribbleWord word);
 
-	void clearSelection();
+
+	boolean isActive();
+
+	int getBoardTilesCount();
 }

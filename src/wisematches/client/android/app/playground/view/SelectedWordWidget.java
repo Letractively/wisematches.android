@@ -7,10 +7,7 @@ import wisematches.client.android.R;
 import wisematches.client.android.app.playground.model.ScribbleController;
 import wisematches.client.android.app.playground.model.SelectionListener;
 import wisematches.client.android.data.model.scribble.ScoreCalculation;
-import wisematches.client.android.data.model.scribble.ScribbleTile;
 import wisematches.client.android.data.model.scribble.ScribbleWord;
-
-import java.util.Collection;
 
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
@@ -40,7 +37,7 @@ public class SelectedWordWidget extends AbstractBoardWidget {
 
 	private class TheSelectionListener implements SelectionListener {
 		@Override
-		public void onSelectionChanged(ScribbleWord word, ScoreCalculation score, Collection<ScribbleTile> tiles) {
+		public void onSelectionChanged(ScribbleWord word, ScoreCalculation score) {
 			if (score != null) {
 				selectedTilesView.setScribbleTiles(word.getTiles());
 				pointsCalculationFld.setText(score.getFormula() + "=" + score.getPoints());

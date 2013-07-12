@@ -444,7 +444,7 @@ public class BoardWidget extends FrameLayout implements ScribbleWidget {
 		private boolean updateSelection;
 
 		@Override
-		public void onSelectionChanged(ScribbleWord word, ScoreCalculation score, Collection<ScribbleTile> tiles) {
+		public void onSelectionChanged(ScribbleWord word, ScoreCalculation score) {
 			if (!updateSelection) {
 				selectWord(word);
 			}

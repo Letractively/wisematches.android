@@ -11,8 +11,8 @@ import android.graphics.drawable.shapes.RoundRectShape;
 import android.util.AttributeSet;
 import android.view.View;
 import wisematches.client.android.R;
+import wisematches.client.android.app.playground.model.ScribbleController;
 import wisematches.client.android.data.model.scribble.ScribbleBank;
-import wisematches.client.android.data.model.scribble.ScribbleBoard;
 
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
@@ -117,14 +117,14 @@ public class ProgressView extends View {
 		}
 	}
 
-	public void updateProgress(ScribbleBoard board) {
+	public void updateProgress(ScribbleController board) {
 		if (board.isActive()) {
 			final ScribbleBank bank = board.getScribbleBank();
 
 			final int totalTiles = bank.getLettersCount();
 			final int boardTiles = board.getBoardTilesCount();
 
-			int k = board.getPlayers().length * 7;
+			int k = board.getPlayers().size() * 7;
 			final int handTiles = (k <= totalTiles - boardTiles) ? k : totalTiles - boardTiles;
 
 			state = State.PROGRESS;

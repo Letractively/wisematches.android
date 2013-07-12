@@ -51,7 +51,7 @@ public class ActiveGamesActivity extends WiseMatchesActivity {
 	}
 
 	private void loadActiveGames() {
-		getRequestManager().getActiveGames(getPersonality(true).getId(), new SmartDataResponse<ActiveGames>(this) {
+		getRequestManager().getActiveGames(getPersonality(true).getId(), new SmartDataResponse<ActiveGames>() {
 			@Override
 			protected void onData(ActiveGames data) {
 				gamesListView.setAdapter(new GamesListAdapter(ActiveGamesActivity.this, data.getDescriptors(), data.getProposals()));
@@ -89,7 +89,7 @@ public class ActiveGamesActivity extends WiseMatchesActivity {
 
 
 	private void cancelWaitingGame(final long proposalId, final SignalProcessor<Boolean> listener) {
-		getRequestManager().processWaitingGame(proposalId, false, new SmartDataResponse<Id>(this) {
+		getRequestManager().processWaitingGame(proposalId, false, new SmartDataResponse<Id>() {
 			@Override
 			protected void onData(Id data) {
 				loadActiveGames();
