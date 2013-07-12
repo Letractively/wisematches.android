@@ -43,12 +43,12 @@ public class BoardSurface {
 	}
 
 	public Dimension initialize(int width, int height) {
-		scale = (height - 8) / 17;
+		scale = (int) ((height - BORDER_SIZE * 2) / 16.5);
 		if (scale % 2 != 0) {
 			scale -= 1;
 		}
 		final int w = (BORDER_SIZE + scale / 2) * 2 + scale * 15;
-		final int h = BORDER_SIZE + scale / 2 + scale * 15 + scale + BORDER_SIZE;
+		final int h = BORDER_SIZE + scale / 2 + scale * 16 + BORDER_SIZE;
 		dimension.set(w, h);
 		return dimension;
 	}

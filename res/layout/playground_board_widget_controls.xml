@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="wrap_content"
+              android:layout_height="fill_parent">
+
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/scribbleBoardBtnMake"
+            android:enabled="false"
+            android:singleLine="false"
+            android:padding="0dp"
+            android:drawableLeft="@drawable/ic_board_make"
+            />
+
+    <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="5dp"
+            android:orientation="horizontal">
+    </LinearLayout>
+
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/scribbleBoardBtnExchange"
+            android:enabled="false"
+            android:singleLine="false"
+            android:padding="0dp"
+            android:drawableLeft="@drawable/ic_board_exchange"/>
+
+    <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="5dp"
+            android:orientation="horizontal"
+            >
+    </LinearLayout>
+
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/scribbleBoardBtnPass"
+            android:enabled="false"
+            android:padding="0dp"
+            android:drawableLeft="@drawable/ic_board_pass"/>
+
+    <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="5dp"
+            android:orientation="horizontal"
+            >
+    </LinearLayout>
+
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:id="@+id/scribbleBoardBtnDeselect"
+            android:padding="0dp"
+            android:drawableLeft="@drawable/ic_board_deselect"
+            android:layout_gravity="center"
+            android:layout_weight="1"/>
+
+</LinearLayout>
