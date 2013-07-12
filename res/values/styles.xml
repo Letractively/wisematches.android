@@ -82,7 +82,11 @@
         <item name="android:paddingLeft">2dp</item>
         <item name="android:paddingRight">2dp</item>
         <item name="android:shadowColor">#ffff0000</item>
-        <item name="android:textSize">10dp</item>
+        <item name="android:textSize">10sp</item>
+    </style>
+
+    <style name="TextAppearance.WiseMatches.Small">
+        <item name="android:textSize">10sp</item>
     </style>
 
     <style name="TextAppearance.WiseMatches.Move">
@@ -97,6 +101,10 @@
     <style name="TextAppearance.WiseMatches.Move.Empty">
         <item name="android:textStyle">italic</item>
         <item name="android:textColor">@color/state.disabled.color</item>
+    </style>
+
+    <style name="TextAppearance.WiseMatches.Move.Link">
+        <item name="android:textColor">@color/state.hover.color</item>
     </style>
 
     <style name="TextAppearance.WM" parent="android:TextAppearance.DeviceDefault.Small">

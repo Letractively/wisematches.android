@@ -20,31 +20,15 @@ public class BoardSurface {
 	private final Rect handRegion = new Rect();
 	private final Rect boardRegion = new Rect();
 
+	private final TileSurface tileSurface;
+
 	private final Dimension dimension = new Dimension();
-
-	private final Bitmap[] tilesSelected = new Bitmap[11];
-	private final Bitmap[] tilesUnselected = new Bitmap[11];
-	private final Bitmap[] tilesPinnedSelected = new Bitmap[11];
-	private final Bitmap[] tilesPinnedUnselected = new Bitmap[11];
-
-	private final Bitmap[] tilesHighlighters = new Bitmap[11];
 
 	private static final int MAGIC_COEF = 8;
 	private static final int BORDER_SIZE = 3;
-	private static final float MAGIC_TEXT_COEF = 0.6f;
 
 	public BoardSurface(Resources resources) {
-		final Bitmap bitmap = android.graphics.BitmapFactory.decodeResource(resources, R.drawable.board_tiles);
-
-		final Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, 242, 110, true);
-		for (int i = 0; i < 11; i++) {
-			tilesHighlighters[i] = Bitmap.createBitmap(scaledBitmap, 22 * i, 88, 22, 22);
-
-			tilesSelected[i] = Bitmap.createBitmap(scaledBitmap, 22 * i, 22, 22, 22);
-			tilesUnselected[i] = Bitmap.createBitmap(scaledBitmap, 22 * i, 0, 22, 22);
-			tilesPinnedSelected[i] = Bitmap.createBitmap(scaledBitmap, 22 * i, 66, 22, 22);
-			tilesPinnedUnselected[i] = Bitmap.createBitmap(scaledBitmap, 22 * i, 44, 22, 22);
-		}
+		tileSurface = new TileSurface(resources);
 
 		final ScoreBonus.Type[] values = ScoreBonus.Type.values();
 		bonusCaptions = new String[values.length];
@@ -186,8 +170,6 @@ public class BoardSurface {
 			return;
 		}
 
-		final Bitmap bitmap = Bitmap.createScaledBitmap(tilesHighlighters[tile.getCost()], scale, scale, false);
-
 		int x = placement.x;
 		int y = placement.y;
 		switch (placement.place) {
@@ -200,29 +182,10 @@ public class BoardSurface {
 				x = handRegion.left + scale * x;
 				break;
 		}
-
-		canvas.drawBitmap(bitmap, x, y, null);
+		tileSurface.drawHighlighter(canvas, tile, x, y, scale);
 	}
 
 	public void drawScribbleTile(Canvas canvas, ScribbleTile tile, Placement placement, boolean selected, boolean pinned) {
-		Bitmap bitmap;
-		if (selected && pinned) {
-			bitmap = tilesPinnedSelected[tile.getCost()];
-		} else if (selected) {
-			bitmap = tilesSelected[tile.getCost()];
-		} else if (pinned) {
-			bitmap = tilesPinnedUnselected[tile.getCost()];
-		} else {
-			bitmap = tilesUnselected[tile.getCost()];
-		}
-
-		final Paint paint = new Paint();
-		paint.setTextSize(scale * MAGIC_TEXT_COEF);
-		paint.setTextAlign(Paint.Align.CENTER);
-		paint.setFakeBoldText(selected);
-
-		bitmap = Bitmap.createScaledBitmap(bitmap, scale, scale, false);
-
 		int x = placement.x;
 		int y = placement.y;
 		switch (placement.place) {
@@ -235,18 +198,7 @@ public class BoardSurface {
 				x = handRegion.left + scale * x;
 				break;
 		}
-
-		canvas.drawBitmap(bitmap, x, y, paint);
-
-		paint.setAntiAlias(true);
-		if (tile.isWildcard()) {
-			paint.setColor(Color.BLACK);
-		} else {
-			paint.setColor(Color.WHITE);
-		}
-
-		canvas.drawText(tile.getLetter(), x + scale / 2, y + (scale - paint.ascent()) / 2 - 1, paint);
-		paint.setAntiAlias(false);
+		tileSurface.drawScribbleTile(canvas, tile, x, y, scale, selected, pinned);
 	}
 
 	public Placement getPlacement(int x, int y) {
@@ -357,6 +309,12 @@ public class BoardSurface {
 			result = 31 * result + y;
 			result = 31 * result + (place != null ? place.hashCode() : 0);
 			return result;
+		}
+
+
+		@Override
+		public String toString() {
+			return "Placement{" + place + "@" + x + "," + y + '}';
 		}
 	}
 }

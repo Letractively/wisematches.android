@@ -15,14 +15,16 @@ import java.util.Collection;
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
  */
-public class SelectionWidget extends ScribbleWidgetView {
+public class SelectedWordWidget extends AbstractBoardWidget {
 	private TextView pointsCalculationFld;
+	private SelectedWordView selectedTilesView;
 
 	private final TheSelectionListener selectionListener = new TheSelectionListener();
 
-	public SelectionWidget(Context context, AttributeSet attrs) {
-		super(context, attrs, R.layout.playground_board_widget_selection, "Баллы за выделенное слово");
+	public SelectedWordWidget(Context context, AttributeSet attrs) {
+		super(context, attrs, R.layout.playground_board_widget_selection, "Выделенное слово");
 
+		selectedTilesView = (SelectedWordView) findViewById(R.id.scribbleBoardFltTiles);
 		pointsCalculationFld = (TextView) findViewById(R.id.scribbleBoardFltPoints);
 	}
 
@@ -40,8 +42,10 @@ public class SelectionWidget extends ScribbleWidgetView {
 		@Override
 		public void onSelectionChanged(ScribbleWord word, ScoreCalculation score, Collection<ScribbleTile> tiles) {
 			if (score != null) {
-				pointsCalculationFld.setText(score.getPoints() + " = " + score.getFormula());
+				selectedTilesView.setScribbleTiles(word.getTiles());
+				pointsCalculationFld.setText(score.getFormula() + "=" + score.getPoints());
 			} else {
+				selectedTilesView.setScribbleTiles(null);
 				pointsCalculationFld.setText("Составьте слово");
 			}
 		}

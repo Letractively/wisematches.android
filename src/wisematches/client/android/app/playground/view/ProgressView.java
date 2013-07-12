@@ -17,7 +17,7 @@ import wisematches.client.android.data.model.scribble.ScribbleBoard;
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
  */
-public class ProgressWidget extends View {
+public class ProgressView extends View {
 	private int handTiles = 0;
 	private int boardTiles = 0;
 	private int totalTiles = 0;
@@ -44,7 +44,7 @@ public class ProgressWidget extends View {
 	private static final ShapeDrawable RIGHT = new ShapeDrawable(new RoundRectShape(new float[]{0, 0, RADII, RADII, RADII, RADII, 0, 0}, null, null));
 	private static final ShapeDrawable ALL = new ShapeDrawable(new RoundRectShape(new float[]{RADII, RADII, RADII, RADII, RADII, RADII, RADII, RADII}, null, null));
 
-	public ProgressWidget(Context context, AttributeSet attrs) {
+	public ProgressView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 
 		final Resources resources = context.getResources();
