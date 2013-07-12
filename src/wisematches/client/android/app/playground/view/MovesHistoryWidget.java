@@ -1,6 +1,7 @@
 package wisematches.client.android.app.playground.view;
 
 import android.content.Context;
+import android.text.Html;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TableLayout;
@@ -17,14 +18,14 @@ import java.util.ListIterator;
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
  */
-public class MovesWidget extends ScribbleWidgetView {
+public class MovesHistoryWidget extends AbstractBoardWidget {
 	private TableLayout movesHistoryView;
 
 	private ScribbleController controller;
 
 	private final TheOnClickListener clickListener = new TheOnClickListener();
 
-	public MovesWidget(Context context, AttributeSet attrs) {
+	public MovesHistoryWidget(Context context, AttributeSet attrs) {
 		super(context, attrs, R.layout.playground_board_widget_moves, "История ходов");
 
 		movesHistoryView = (TableLayout) findViewById(R.id.scribbleBoardMovesHistory);
@@ -73,7 +74,8 @@ public class MovesWidget extends ScribbleWidgetView {
 		MoveType moveType = move.getMoveType();
 		switch (moveType) {
 			case MAKE:
-				moveInfoView.setText(((ScribbleMove.Make) move).getWord().getText());
+				moveInfoView.setText(Html.fromHtml("<u>" + ((ScribbleMove.Make) move).getWord().getText() + "</u>"));
+				moveInfoView.setTextAppearance(context, R.style.TextAppearance_WiseMatches_Move_Link);
 				break;
 			case PASS:
 				moveInfoView.setText("пропуск");

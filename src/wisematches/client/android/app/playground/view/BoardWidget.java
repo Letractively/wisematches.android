@@ -23,7 +23,7 @@ import static wisematches.client.android.app.playground.view.theme.BoardSurface.
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
  */
-public class BoardView extends FrameLayout implements ScribbleWidget {
+public class BoardWidget extends FrameLayout implements ScribbleWidget {
 	private Bitmap boardBackground;
 	private BoardSurface boardSurface;
 
@@ -44,7 +44,7 @@ public class BoardView extends FrameLayout implements ScribbleWidget {
 
 	private final TheSelectionListener selectionListener = new TheSelectionListener();
 
-	public BoardView(Context context, AttributeSet attrs) {
+	public BoardWidget(Context context, AttributeSet attrs) {
 		super(context, attrs);
 
 		setWillNotDraw(false);
@@ -354,7 +354,7 @@ public class BoardView extends FrameLayout implements ScribbleWidget {
 		final Set<Map.Entry<ScribbleTile, Placement>> set = new TreeSet<>(new Comparator<Map.Entry<ScribbleTile, Placement>>() {
 			@Override
 			public int compare(Map.Entry<ScribbleTile, Placement> lhs, Map.Entry<ScribbleTile, Placement> rhs) {
-				if (lhs.getValue().getX() == rhs.getValue().getY()) {
+				if (lhs.getValue().getX() == rhs.getValue().getX()) {
 					return lhs.getValue().getY() - rhs.getValue().getY();
 				}
 				if (lhs.getValue().getY() == rhs.getValue().getY()) {
@@ -365,19 +365,30 @@ public class BoardView extends FrameLayout implements ScribbleWidget {
 		});
 		set.addAll(placedTiles.entrySet());
 
-		WordDirection direction = null;
-		Map.Entry<ScribbleTile, Placement> first = null;
-		for (Map.Entry<ScribbleTile, Placement> entry : set) {
-			if (first == null) {
-				first = entry;
-				continue;
-			}
+		if (placedTiles.size() != set.size()) { // some elements were lost - incorrect order.
+			return null;
+		}
 
+		final Iterator<Map.Entry<ScribbleTile, Placement>> iterator = set.iterator();
+
+		WordDirection direction = null;
+		final Map.Entry<ScribbleTile, Placement> first = iterator.next();
+		for (Placement prev = first.getValue(); iterator.hasNext(); ) {
+			final Map.Entry<ScribbleTile, Placement> next = iterator.next();
 			WordDirection d = null;
-			if (first.getValue().getX() == entry.getValue().getX()) {
-				d = WordDirection.HORIZONTAL;
-			} else if (first.getValue().getY() == entry.getValue().getY()) {
-				d = WordDirection.VERTICAL;
+			final Placement np = next.getValue();
+			if (prev.getX() == np.getX()) {
+				if (prev.getY() + 1 != np.getY()) {
+					return null;
+				} else {
+					d = WordDirection.HORIZONTAL;
+				}
+			} else if (prev.getY() == np.getY()) {
+				if (prev.getX() + 1 != np.getX()) {
+					return null;
+				} else {
+					d = WordDirection.VERTICAL;
+				}
 			}
 
 			if (direction == null) {
@@ -387,9 +398,7 @@ public class BoardView extends FrameLayout implements ScribbleWidget {
 			if (direction != d) {
 				return null;
 			}
-		}
-		if (first == null) {
-			return null;
+			prev = next.getValue();
 		}
 
 		int index = 0;

@@ -99,11 +99,11 @@ public class ScoreEngine implements Parcelable {
 			index++;
 		}
 
-		final String multsString = mults.toString(); // In GWT sometimes exception is thrown...
-		if (multsString.length() != 0) {
+		final String multString = mults.toString(); // In GWT sometimes exception is thrown...
+		if (multString.length() != 0) {
 			formula.insert(0, '(');
 			formula.append(')');
-			formula.append(multsString);
+			formula.append(multString);
 		}
 		points *= mult;
 

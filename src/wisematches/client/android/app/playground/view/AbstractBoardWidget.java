@@ -11,8 +11,8 @@ import wisematches.client.android.app.playground.model.ScribbleWidget;
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
  */
-public abstract class ScribbleWidgetView extends FrameLayout implements ScribbleWidget {
-	public ScribbleWidgetView(Context context, AttributeSet attrs, int resource, String title) {
+public abstract class AbstractBoardWidget extends FrameLayout implements ScribbleWidget {
+	public AbstractBoardWidget(Context context, AttributeSet attrs, int resource, String title) {
 		super(context, attrs);
 
 		initView(context, resource, title);
