@@ -53,8 +53,32 @@
             android:baselineAlignBottom="false"
             android:adjustViewBounds="false"
             android:cropToPadding="false"
-            android:layout_weight="0"
-            android:layout_marginRight="2dp"/>
+            android:layout_weight="0"/>
+
+    <view
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            class="wisematches.client.android.app.playground.view.BoardWidget"
+            android:id="@+id/scribbleBoardView"
+            android:background="@android:color/transparent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignWithParentIfMissing="false"
+            android:layout_alignParentRight="false"
+            android:layout_alignParentBottom="false"
+            android:layout_margin="2dp"
+            android:layout_gravity="center"/>
+
+    <ImageView
+            android:layout_width="1dp"
+            android:layout_height="fill_parent"
+            android:background="?android:attr/listDivider"
+            android:layout_centerVertical="true"
+            android:layout_gravity="right"
+            android:baselineAlignBottom="false"
+            android:adjustViewBounds="false"
+            android:cropToPadding="false"
+            android:layout_weight="0"/>
 
     <view
             android:layout_width="wrap_content"
@@ -62,19 +86,5 @@
             class="wisematches.client.android.app.playground.view.ControlsWidget"
             android:layout_weight="0"
             android:layout_margin="2dp"/>
-
-    <view
-            android:layout_width="0dp"
-            android:layout_height="fill_parent"
-            class="wisematches.client.android.app.playground.view.BoardWidget"
-            android:id="@+id/scribbleBoardView"
-            android:layout_gravity="left|top"
-            android:background="@android:color/transparent"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:layout_alignWithParentIfMissing="false"
-            android:layout_alignParentRight="false"
-            android:layout_alignParentBottom="false"
-            android:layout_marginTop="2dp"/>
 
 </LinearLayout>
