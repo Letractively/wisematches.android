@@ -174,12 +174,12 @@ public class BoardSurface {
 		int y = placement.y;
 		switch (placement.place) {
 			case BOARD:
-				y = boardRegion.top + scale * y;
-				x = boardRegion.left + scale * x;
+				y = boardRegion.top + scale * y - 1;
+				x = boardRegion.left + scale * x - 1;
 				break;
 			case HAND:
-				y = handRegion.top;
-				x = handRegion.left + scale * x;
+				y = handRegion.top - 1;
+				x = handRegion.left + scale * x - 1;
 				break;
 		}
 		tileSurface.drawHighlighter(canvas, tile, x, y, scale);
@@ -190,12 +190,12 @@ public class BoardSurface {
 		int y = placement.y;
 		switch (placement.place) {
 			case BOARD:
-				y = boardRegion.top + scale * y;
-				x = boardRegion.left + scale * x;
+				y = boardRegion.top + scale * y - 1;
+				x = boardRegion.left + scale * x - 1;
 				break;
 			case HAND:
-				y = handRegion.top;
-				x = handRegion.left + scale * x;
+				y = handRegion.top - 1;
+				x = handRegion.left + scale * x - 1;
 				break;
 		}
 		tileSurface.drawScribbleTile(canvas, tile, x, y, scale, selected, pinned);
