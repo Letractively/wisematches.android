@@ -8,25 +8,25 @@ import wisematches.client.android.data.model.person.Personality;
  * @author Sergey Klimenko (smklimenko@gmail.com)
  */
 public class ScribbleHand implements Parcelable {
-	private final Personality player;
+	private final Personality personality;
 	private final ScribbleScore scores;
 
-	public ScribbleHand(Personality player, ScribbleScore scores) {
-		this.player = player;
+	public ScribbleHand(Personality personality, ScribbleScore scores) {
+		this.personality = personality;
 		this.scores = scores;
 	}
 
 	public ScribbleHand(Parcel in) {
-		player = in.readParcelable(getClass().getClassLoader());
+		personality = in.readParcelable(getClass().getClassLoader());
 		scores = in.readParcelable(getClass().getClassLoader());
-	}
-
-	public Personality getPlayer() {
-		return player;
 	}
 
 	public ScribbleScore getScores() {
 		return scores;
+	}
+
+	public Personality getPersonality() {
+		return personality;
 	}
 
 	@Override
@@ -36,7 +36,7 @@ public class ScribbleHand implements Parcelable {
 
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
-		dest.writeParcelable(player, flags);
+		dest.writeParcelable(personality, flags);
 		dest.writeParcelable(scores, flags);
 	}
 

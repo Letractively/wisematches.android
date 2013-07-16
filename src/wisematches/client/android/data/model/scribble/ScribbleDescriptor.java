@@ -64,7 +64,7 @@ public class ScribbleDescriptor implements Parcelable {
 
 	public ScribbleHand getPlayer(long player) {
 		for (ScribbleHand scribbleHand : players) {
-			if (scribbleHand.getPlayer().getId() == player) {
+			if (scribbleHand.getPersonality().getId() == player) {
 				return scribbleHand;
 			}
 		}
@@ -105,10 +105,6 @@ public class ScribbleDescriptor implements Parcelable {
 
 	public long getLastChange() {
 		return lastChange;
-	}
-
-	public static Creator<ScribbleDescriptor> getCreator() {
-		return CREATOR;
 	}
 
 	@Override

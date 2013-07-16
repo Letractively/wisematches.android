@@ -8,26 +8,23 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
-import wisematches.client.android.app.playground.model.ScribbleController;
-import wisematches.client.android.app.playground.model.ScribbleWidget;
-import wisematches.client.android.app.playground.model.SelectionListener;
-import wisematches.client.android.app.playground.view.theme.BoardSurface;
+import wisematches.client.android.app.playground.view.theme.BoardSurfaceHorz;
 import wisematches.client.android.data.model.scribble.*;
 import wisematches.client.android.graphics.Dimension;
 
 import java.util.*;
 
-import static wisematches.client.android.app.playground.view.theme.BoardSurface.Place;
-import static wisematches.client.android.app.playground.view.theme.BoardSurface.Placement;
+import static wisematches.client.android.app.playground.view.theme.BoardSurfaceHorz.Place;
+import static wisematches.client.android.app.playground.view.theme.BoardSurfaceHorz.Placement;
 
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
  */
 public class BoardWidget extends FrameLayout implements ScribbleWidget {
 	private Bitmap boardBackground;
-	private BoardSurface boardSurface;
+	private BoardSurfaceHorz boardSurface;
 
-	private ScribbleController controller;
+	private ScribbleBoard board;
 
 	private ScribbleTile draggingTile = null;
 	private final Point draggingOffset = new Point();
@@ -52,21 +49,20 @@ public class BoardWidget extends FrameLayout implements ScribbleWidget {
 		setFocusableInTouchMode(true);
 		setOnTouchListener(new TheOnTouchListener());
 
-		boardSurface = new BoardSurface(context.getResources());
+		boardSurface = new BoardSurfaceHorz(context.getResources());
 	}
 
 	@Override
-	public void controllerInitialized(ScribbleController controller) {
-		this.controller = controller;
-
-		controller.addSelectionListener(selectionListener);
+	public void boardInitialized(ScribbleBoard board) {
+		this.board = board;
+		this.board.addSelectionListener(selectionListener);
 
 		Arrays.fill(handTiles, null);
 		for (ScribbleTile[] pinnedTile : boardTiles) {
 			Arrays.fill(pinnedTile, null);
 		}
 
-		for (ScribbleMove move : controller.getScribbleBoard().getMoves()) {
+		for (ScribbleMove move : this.board.getMoves()) {
 			if (move instanceof ScribbleMove.Make) {
 				final ScribbleMove.Make make = (ScribbleMove.Make) move;
 
@@ -91,17 +87,17 @@ public class BoardWidget extends FrameLayout implements ScribbleWidget {
 			}
 		}
 
-		final ScribbleTile[] ht = controller.getScribbleBoard().getHandTiles();
+		final ScribbleTile[] ht = this.board.getHandTiles();
 		System.arraycopy(ht, 0, this.handTiles, 0, ht.length);
 
 		invalidateBackground();
 	}
 
 	@Override
-	public void controllerTerminated(ScribbleController controller) {
-		controller.removeSelectionListener(selectionListener);
+	public void boardTerminated(ScribbleBoard board) {
+		board.removeSelectionListener(selectionListener);
 
-		this.controller = null;
+		this.board = null;
 	}
 
 	@Override
@@ -157,7 +153,7 @@ public class BoardWidget extends FrameLayout implements ScribbleWidget {
 		final int width = getMeasuredWidth();
 		final int height = getMeasuredHeight();
 
-		if (height == 0 || width == 0 || controller == null || boardSurface == null) {
+		if (height == 0 || width == 0 || board == null || boardSurface == null) {
 			return;
 		}
 
@@ -168,7 +164,7 @@ public class BoardWidget extends FrameLayout implements ScribbleWidget {
 		boardBackground = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
 
 		final Canvas canvas = new Canvas(boardBackground);
-		boardSurface.drawBackground(canvas, controller.getScribbleBoard().getScoreEngine());
+		boardSurface.drawBackground(canvas, board.getScoreEngine());
 
 		for (int row = 0; row < boardTiles.length; row++) {
 			final ScribbleTile[] pinnedTile = boardTiles[row];
@@ -191,7 +187,18 @@ public class BoardWidget extends FrameLayout implements ScribbleWidget {
 
 		selectionListener.selectionChangeStarted();
 		try {
-			controller.selectWord(getSelectedWord());
+			final SelectionModel selectionModel = board.getSelectionModel();
+
+			if (placedTiles.size() == 0) {
+				selectionModel.clearSelection();
+			} else {
+				final ScribbleWord selectedWord = getSelectedWord();
+				if (selectedWord != null) {
+					selectionModel.setSelection(selectedWord);
+				} else {
+					selectionModel.setSelection(placedTiles.keySet());
+				}
+			}
 		} finally {
 			selectionListener.selectionChangeFinished();
 		}
@@ -418,6 +425,9 @@ public class BoardWidget extends FrameLayout implements ScribbleWidget {
 			final int x = (int) event.getX();
 			final int y = (int) event.getY();
 			final Placement placement = boardSurface.getPlacement(x, y);
+			if (placement == null) {
+				return true;
+			}
 
 			switch (event.getAction()) {
 				case MotionEvent.ACTION_DOWN:
@@ -446,7 +456,7 @@ public class BoardWidget extends FrameLayout implements ScribbleWidget {
 		private boolean updateSelection;
 
 		@Override
-		public void onSelectionChanged(ScribbleWord word, ScoreCalculation score) {
+		public void onSelectionChanged(ScribbleWord word, ScribbleTile[] tiles) {
 			if (!updateSelection) {
 				selectWord(word);
 			}

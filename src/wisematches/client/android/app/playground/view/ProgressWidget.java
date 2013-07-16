@@ -3,18 +3,17 @@ package wisematches.client.android.app.playground.view;
 import android.content.Context;
 import android.util.AttributeSet;
 import wisematches.client.android.R;
-import wisematches.client.android.app.playground.model.GameMoveListener;
-import wisematches.client.android.app.playground.model.ScribbleController;
-import wisematches.client.android.data.model.scribble.ScribbleMove;
+import wisematches.client.android.data.model.scribble.BoardStateListener;
+import wisematches.client.android.data.model.scribble.ScribbleBoard;
 
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
  */
 public class ProgressWidget extends AbstractBoardWidget {
 	private ProgressView progressView;
-	private ScribbleController controller;
+	private ScribbleBoard scribbleBoard;
 
-	private final TheGameMoveListener gameMoveListener = new TheGameMoveListener();
+	private final TheBoardStateListener boardStateListener = new TheBoardStateListener();
 
 	public ProgressWidget(Context context, AttributeSet attrs) {
 		super(context, attrs, R.layout.playground_board_widget_progress, "Прогресс");
@@ -23,22 +22,26 @@ public class ProgressWidget extends AbstractBoardWidget {
 	}
 
 	@Override
-	public void controllerInitialized(ScribbleController controller) {
-		this.controller = controller;
-		controller.addGameMoveListener(gameMoveListener);
+	public void boardInitialized(ScribbleBoard board) {
+		this.scribbleBoard = board;
+		board.addBoardStateListener(boardStateListener);
 
-		progressView.updateProgress(controller.getScribbleBoard());
+		progressView.updateProgress(scribbleBoard);
 	}
 
 	@Override
-	public void controllerTerminated(ScribbleController controller) {
-		controller.removeGameMoveListener(gameMoveListener);
+	public void boardTerminated(ScribbleBoard board) {
+		board.removeBoardStateListener(boardStateListener);
 	}
 
-	private class TheGameMoveListener implements GameMoveListener {
+	private class TheBoardStateListener implements BoardStateListener {
 		@Override
-		public void onMoveDone(ScribbleMove move) {
-			progressView.updateProgress(controller.getScribbleBoard());
+		public void gameStateChanged() {
+			progressView.updateProgress(scribbleBoard);
+		}
+
+		@Override
+		public void gameStateValidated() {
 		}
 	}
 }

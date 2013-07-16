@@ -17,6 +17,8 @@ import wisematches.client.android.data.service.operation.person.RegisterPlayerOp
 import wisematches.client.android.data.service.operation.person.SignInPlayerOperation;
 import wisematches.client.android.data.service.operation.scribble.*;
 
+import java.util.Set;
+
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
  */
@@ -111,7 +113,7 @@ public class JSONRequestManager extends RequestManager implements DataRequestMan
 	}
 
 	@Override
-	public void openBoard(long boardId, DataResponse<ScribbleBoard> response) {
+	public void openBoard(long boardId, DataResponse<ScribbleSnapshot> response) {
 		final Request request = new Request(REQUEST_TYPE_OPEN_GAME);
 		request.put(OpenBoardOperation.PARAM_BOARD_ID, boardId);
 		execute(request, new TheRequestListener<>(response));
@@ -144,13 +146,14 @@ public class JSONRequestManager extends RequestManager implements DataRequestMan
 	}
 
 	@Override
-	public void exchangeTiles(long boardId, ScribbleTile[] tiles, DataResponse<ScribbleChanges> response) {
+	public void exchangeTiles(final long boardId, Set<ScribbleTile> tiles, DataResponse<ScribbleChanges> response) {
 		final Request request = new Request(REQUEST_TYPE_BOARD_ACTION);
-		request.put(BoardActionOperation.PARAM_TILES_COUNT, tiles.length);
-		for (int i = 0; i < tiles.length; i++) {
-			request.put(BoardActionOperation.PARAM_TILE_ITEM + "_" + i, tiles[i]);
-		}
+		request.put(BoardActionOperation.PARAM_TILES_COUNT, tiles.size());
 
+		int i = 0;
+		for (ScribbleTile tile : tiles) {
+			request.put(BoardActionOperation.PARAM_TILE_ITEM + "_" + (i++), tile);
+		}
 		request.put(BoardActionOperation.PARAM_BOARD_ID, boardId);
 		request.put(BoardActionOperation.PARAM_ACTION_TYPE, BoardActionOperation.ACTION_TYPE_EXCHANGE);
 		execute(request, new TheRequestListener<>(response));

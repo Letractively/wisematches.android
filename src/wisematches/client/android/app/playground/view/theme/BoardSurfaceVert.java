@@ -11,7 +11,7 @@ import wisematches.client.android.graphics.Dimension;
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
  */
-public class BoardSurface {
+public class BoardSurfaceVert {
 	private int scale;
 
 	private final String boardCaption;
@@ -27,7 +27,7 @@ public class BoardSurface {
 	private static final int MAGIC_COEF = 8;
 	private static final int BORDER_SIZE = 3;
 
-	public BoardSurface(Resources resources) {
+	public BoardSurfaceVert(Resources resources) {
 		tileSurface = new TileSurface(resources);
 
 		final ScoreBonus.Type[] values = ScoreBonus.Type.values();

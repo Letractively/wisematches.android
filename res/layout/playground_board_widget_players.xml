@@ -1,61 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="fill_parent"
-              android:layout_height="wrap_content">
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:id="@+id/scribbleBoardPlayers"
+             android:orientation="horizontal"
+             android:layout_width="fill_parent"
+             android:layout_height="wrap_content"
+             android:baselineAligned="false">
 
-    <TableLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:stretchColumns="0"
-            android:longClickable="false"
-            android:id="@+id/scribbleBoardPlayers">
-
-        <TableRow
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
-
-            <view
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    class="wisematches.client.android.app.account.view.PersonalityView"
-                    android:layout_column="0"
-                    android:longClickable="false"/>
-
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    />
-
-        </TableRow>
-
-        <TableRow
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
-
-            <view
-                    class="wisematches.client.android.app.account.view.PersonalityView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_column="0"/>
-
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    />
-        </TableRow>
-
-        <TableRow
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:visibility="gone">
-        </TableRow>
-
-        <TableRow
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:visibility="gone">
-        </TableRow>
-    </TableLayout>
-</LinearLayout>
+</TableLayout>
