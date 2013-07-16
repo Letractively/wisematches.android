@@ -6,14 +6,14 @@ import org.apache.http.HttpRequest;
 import org.apache.http.client.methods.HttpPost;
 import org.json.JSONException;
 import org.json.JSONObject;
-import wisematches.client.android.data.model.scribble.ScribbleBoard;
+import wisematches.client.android.data.model.scribble.ScribbleSnapshot;
 import wisematches.client.android.data.service.operation.JSONOperation;
 import wisematches.client.android.data.service.parser.scribble.ScribbleBoardParser;
 
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
  */
-public class OpenBoardOperation extends JSONOperation.Primitive<ScribbleBoard> {
+public class OpenBoardOperation extends JSONOperation.Primitive<ScribbleSnapshot> {
 	public static final String PARAM_BOARD_ID = "PARAM_BOARD_ID";
 
 	@Override
@@ -23,7 +23,7 @@ public class OpenBoardOperation extends JSONOperation.Primitive<ScribbleBoard> {
 	}
 
 	@Override
-	protected ScribbleBoard createResponse(Object data) throws JSONException {
+	protected ScribbleSnapshot createResponse(Object data) throws JSONException {
 		return ScribbleBoardParser.parseGame((JSONObject) data);
 	}
 }

@@ -6,6 +6,8 @@ import wisematches.client.android.data.model.info.InfoPage;
 import wisematches.client.android.data.model.person.Personality;
 import wisematches.client.android.data.model.scribble.*;
 
+import java.util.Set;
+
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
  */
@@ -25,7 +27,7 @@ public interface DataRequestManager {
 	void createBoard(String title, Language language, int timeout, String createTab, String robotType, int opponentsCount, DataResponse<Id> response);
 
 
-	void openBoard(long boardId, DataResponse<ScribbleBoard> response);
+	void openBoard(long boardId, DataResponse<ScribbleSnapshot> response);
 
 	void passTurn(long boardId, DataResponse<ScribbleChanges> response);
 
@@ -33,7 +35,7 @@ public interface DataRequestManager {
 
 	void makeTurn(long boardId, ScribbleWord word, DataResponse<ScribbleChanges> response);
 
-	void exchangeTiles(long boardId, ScribbleTile[] tiles, DataResponse<ScribbleChanges> response);
+	void exchangeTiles(long boardId, Set<ScribbleTile> tiles, DataResponse<ScribbleChanges> response);
 
 
 	void getWordEntry(String word, String lang, DataResponse<WordEntry> response);

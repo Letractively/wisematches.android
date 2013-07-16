@@ -6,11 +6,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import wisematches.client.android.R;
-import wisematches.client.android.app.playground.model.ScribbleController;
-import wisematches.client.android.app.playground.model.ScribbleWidget;
-import wisematches.client.android.app.playground.model.SelectionListener;
-import wisematches.client.android.data.model.scribble.ScoreCalculation;
-import wisematches.client.android.data.model.scribble.ScribbleWord;
+import wisematches.client.android.data.model.scribble.*;
 
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
@@ -22,7 +18,7 @@ public class ControlsWidget extends FrameLayout implements ScribbleWidget {
 
 	private Button clearSelection;
 
-	private ScribbleController controller;
+	private ScribbleBoard scribbleBoard;
 
 	private final TheSelectionListener selectionListener = new TheSelectionListener();
 
@@ -39,26 +35,26 @@ public class ControlsWidget extends FrameLayout implements ScribbleWidget {
 		clearSelection.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				controller.selectWord(null);
+				scribbleBoard.getSelectionModel().clearSelection();
 			}
 		});
 	}
 
 	@Override
-	public void controllerInitialized(ScribbleController controller) {
-		this.controller = controller;
-		controller.addSelectionListener(selectionListener);
+	public void boardInitialized(ScribbleBoard board) {
+		this.scribbleBoard = board;
+		board.addSelectionListener(selectionListener);
 	}
 
 	@Override
-	public void controllerTerminated(ScribbleController controller) {
-		controller.removeSelectionListener(selectionListener);
-		this.controller = null;
+	public void boardTerminated(ScribbleBoard board) {
+		board.removeSelectionListener(selectionListener);
+		this.scribbleBoard = null;
 	}
 
 	private class TheSelectionListener implements SelectionListener {
 		@Override
-		public void onSelectionChanged(ScribbleWord word, ScoreCalculation score) {
+		public void onSelectionChanged(ScribbleWord word, ScribbleTile[] tiles) {
 			if (word != null) {
 				clearSelection.setEnabled(true);
 			} else {

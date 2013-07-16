@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import wisematches.client.android.R;
-import wisematches.client.android.app.playground.model.ScribbleWidget;
+import wisematches.client.android.data.model.scribble.ScribbleWidget;
 
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)

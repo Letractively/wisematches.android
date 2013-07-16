@@ -20,7 +20,7 @@
             <view
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    class="wisematches.client.android.app.playground.view.PlayersWidget"/>
+                    class="wisematches.client.android.app.playground.view.PlayerWidget"/>
 
             <view
                     android:layout_width="fill_parent"
@@ -40,7 +40,7 @@
             <view
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    class="wisematches.client.android.app.playground.view.MovesHistoryWidget"/>
+                    class="wisematches.client.android.app.playground.view.MovesWidget"/>
         </LinearLayout>
     </ScrollView>
 

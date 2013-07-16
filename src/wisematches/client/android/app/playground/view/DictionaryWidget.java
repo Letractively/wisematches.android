@@ -12,13 +12,9 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import wisematches.client.android.R;
 import wisematches.client.android.WiseMatchesActivity;
-import wisematches.client.android.app.playground.model.ScribbleController;
-import wisematches.client.android.app.playground.model.SelectionListener;
 import wisematches.client.android.data.DataRequestManager;
 import wisematches.client.android.data.model.Language;
-import wisematches.client.android.data.model.scribble.ScoreCalculation;
-import wisematches.client.android.data.model.scribble.ScribbleWord;
-import wisematches.client.android.data.model.scribble.WordEntry;
+import wisematches.client.android.data.model.scribble.*;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -100,15 +96,15 @@ public class DictionaryWidget extends AbstractBoardWidget {
 	}
 
 	@Override
-	public void controllerInitialized(ScribbleController controller) {
-		language = controller.getScribbleBoard().getSettings().getLanguage();
+	public void boardInitialized(ScribbleBoard board) {
+		language = board.getSettings().getLanguage();
 
-		controller.addSelectionListener(selectionListener);
+		board.addSelectionListener(selectionListener);
 	}
 
 	@Override
-	public void controllerTerminated(ScribbleController controller) {
-		controller.removeSelectionListener(selectionListener);
+	public void boardTerminated(ScribbleBoard board) {
+		board.removeSelectionListener(selectionListener);
 		language = null;
 	}
 
@@ -166,7 +162,7 @@ public class DictionaryWidget extends AbstractBoardWidget {
 
 	private class TheSelectionListener implements SelectionListener {
 		@Override
-		public void onSelectionChanged(ScribbleWord word, ScoreCalculation score) {
+		public void onSelectionChanged(ScribbleWord word, ScribbleTile[] tiles) {
 			processSelectionChange(word);
 		}
 	}

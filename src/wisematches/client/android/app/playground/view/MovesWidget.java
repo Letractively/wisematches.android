@@ -8,8 +8,8 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import wisematches.client.android.R;
-import wisematches.client.android.app.playground.model.ScribbleController;
 import wisematches.client.android.data.model.scribble.MoveType;
+import wisematches.client.android.data.model.scribble.ScribbleBoard;
 import wisematches.client.android.data.model.scribble.ScribbleMove;
 
 import java.util.List;
@@ -18,22 +18,22 @@ import java.util.ListIterator;
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
  */
-public class MovesHistoryWidget extends AbstractBoardWidget {
+public class MovesWidget extends AbstractBoardWidget {
 	private TableLayout movesHistoryView;
 
-	private ScribbleController controller;
+	private ScribbleBoard scribbleBoard;
 
 	private final TheOnClickListener clickListener = new TheOnClickListener();
 
-	public MovesHistoryWidget(Context context, AttributeSet attrs) {
+	public MovesWidget(Context context, AttributeSet attrs) {
 		super(context, attrs, R.layout.playground_board_widget_moves, "История ходов");
 
 		movesHistoryView = (TableLayout) findViewById(R.id.scribbleBoardMovesHistory);
 	}
 
 	@Override
-	public void controllerInitialized(ScribbleController controller) {
-		this.controller = controller;
+	public void boardInitialized(ScribbleBoard board) {
+		this.scribbleBoard = board;
 
 		final Context context = getContext();
 		final TableRow header = (TableRow) inflate(context, R.layout.playground_board_move, null);
@@ -43,7 +43,7 @@ public class MovesHistoryWidget extends AbstractBoardWidget {
 		}
 		movesHistoryView.addView(header);
 
-		List<ScribbleMove> moves = controller.getScribbleBoard().getMoves();
+		List<ScribbleMove> moves = board.getMoves();
 		final ListIterator<ScribbleMove> movesIterator = moves.listIterator(moves.size());
 		while (movesIterator.hasPrevious()) {
 			registerMove(movesIterator.previous());
@@ -53,10 +53,10 @@ public class MovesHistoryWidget extends AbstractBoardWidget {
 	}
 
 	@Override
-	public void controllerTerminated(ScribbleController controller) {
+	public void boardTerminated(ScribbleBoard board) {
 		movesHistoryView.removeAllViews();
 
-		this.controller = null;
+		this.scribbleBoard = null;
 	}
 
 	private void registerMove(ScribbleMove move) {
@@ -89,7 +89,7 @@ public class MovesHistoryWidget extends AbstractBoardWidget {
 
 		moveNumberView.setText(String.valueOf(move.getNumber() + 1));
 		movePointsView.setText(String.valueOf(move.getPoints()));
-		movePlayerView.setText(controller.getScribbleBoard().getPlayer(move.getPlayer()).getPlayer().getNickname());
+		movePlayerView.setText(scribbleBoard.getPlayer(move.getPlayer()).getPersonality().getNickname());
 
 		movesHistoryView.addView(row);
 	}
@@ -99,7 +99,7 @@ public class MovesHistoryWidget extends AbstractBoardWidget {
 		public void onClick(View v) {
 			final ScribbleMove move = (ScribbleMove) v.getTag();
 			if (move instanceof ScribbleMove.Make) {
-				controller.selectWord(((ScribbleMove.Make) move).getWord());
+				scribbleBoard.getSelectionModel().setSelection(((ScribbleMove.Make) move).getWord());
 			}
 		}
 	}

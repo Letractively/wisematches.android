@@ -13,7 +13,7 @@ import java.util.List;
  * @author Sergey Klimenko (smklimenko@gmail.com)
  */
 public final class ScribbleBoardParser {
-	public static ScribbleBoard parseGame(JSONObject data) throws JSONException {
+	public static ScribbleSnapshot parseGame(JSONObject data) throws JSONException {
 		final ScribbleDescriptor descriptor = ScribbleDescriptorParser.parse(data);
 
 		final int allHandBonus = data.getInt("allHandBonus");
@@ -83,6 +83,6 @@ public final class ScribbleBoardParser {
 			}
 		}
 
-		return new ScribbleBoard(descriptor, scoreEngine, scribbleBank, moves, handTiles);
+		return new ScribbleSnapshot(descriptor, scoreEngine, scribbleBank, moves, handTiles);
 	}
 }

@@ -11,7 +11,6 @@ import android.graphics.drawable.shapes.RoundRectShape;
 import android.util.AttributeSet;
 import android.view.View;
 import wisematches.client.android.R;
-import wisematches.client.android.data.model.scribble.ScribbleBank;
 import wisematches.client.android.data.model.scribble.ScribbleBoard;
 
 /**
@@ -120,6 +119,7 @@ public class ProgressView extends View {
 	}
 
 	public void updateProgress(ScribbleBoard board) {
+/*
 		if (board.isActive()) {
 			final ScribbleBank bank = board.getScribbleBank();
 
@@ -139,6 +139,7 @@ public class ProgressView extends View {
 
 			this.finalizationMessage = finalizationMessage;
 		}
+*/
 	}
 
 	private void drawText(Canvas canvas, int width, int height, String text) {

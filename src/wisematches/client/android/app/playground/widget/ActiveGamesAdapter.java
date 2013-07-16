@@ -48,7 +48,7 @@ public class ActiveGamesAdapter extends ArrayAdapter<ScribbleDescriptor> {
 
 
 			final PersonalityView player = (PersonalityView) row.findViewById(R.id.dashboardPlayerView);
-			player.setPersonality(hand.getPlayer());
+			player.setPersonality(hand.getPersonality());
 
 			final TextView points = (TextView) row.findViewById(R.id.dashboardPlayerPoints);
 			points.setText(String.valueOf(hand.getScores().getPoints()));

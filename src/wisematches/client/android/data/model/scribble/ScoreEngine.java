@@ -44,7 +44,7 @@ public class ScoreEngine implements Parcelable {
 		return bonusesMatrix[row < 8 ? row : 14 - row][col < 8 ? col : 14 - col];
 	}
 
-	public ScoreCalculation calculateWordScore(ScribbleBoard board, ScribbleWord word) {
+	public ScoreCalculation calculateScore(ScribbleBoard board, ScribbleWord word) {
 		ScoreBonus.Type[] bonuses = new ScoreBonus.Type[word.length()];
 
 		StringBuilder formula = new StringBuilder();

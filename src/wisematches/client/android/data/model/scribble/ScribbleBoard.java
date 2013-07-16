@@ -1,8 +1,6 @@
 package wisematches.client.android.data.model.scribble;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -10,52 +8,96 @@ import java.util.Set;
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
  */
-public class ScribbleBoard extends ScribbleDescriptor {
+public class ScribbleBoard implements BoardValidator {
+	private final long id;
 	private final ScoreEngine scoreEngine;
-	private final ScribbleBank scribbleBank;
-	private final List<ScribbleMove> moves;
-
+	private final ScribbleSettings settings;
+	private final ScribbleHand[] players;
 	private final ScribbleTile[] handTiles = new ScribbleTile[7];
+	private final List<ScribbleMove> moves = new ArrayList<>();
 
 	private final Set<Integer> placedTiles = new HashSet<>();
 
-	public ScribbleBoard(ScribbleDescriptor descriptor, ScoreEngine scoreEngine, ScribbleBank scribbleBank, List<ScribbleMove> moves, ScribbleTile[] handTiles) {
-		super(descriptor.getId(), descriptor.getSettings(), descriptor.getPlayers(), descriptor.isActive(),
-				descriptor.getResolution(), descriptor.getPlayerTurnIndex(),
-				descriptor.getSpentTime(), descriptor.getStartedTime(), descriptor.getFinishedTime(),
-				descriptor.getRemainedTime(), descriptor.getLastChange());
-		this.scoreEngine = scoreEngine;
-		this.scribbleBank = scribbleBank;
-		this.moves = moves;
+	private final ScribbleController controller;
 
-		for (ScribbleMove move : moves) {
-			if (move instanceof ScribbleMove.Make) {
-				final ScribbleMove.Make make = (ScribbleMove.Make) move;
-				for (ScribbleTile tile : make.getWord().getTiles()) {
-					placedTiles.add(tile.getNumber());
-				}
-			}
+	private final SelectionModel selectionModel = new SelectionModel();
+	private final List<BoardMoveListener> moveListeners = new ArrayList<>();
+	private final List<BoardStateListener> stateListeners = new ArrayList<>();
+
+	public ScribbleBoard(ScribbleController controller, ScribbleSnapshot snapshot) {
+		this.controller = controller;
+
+		id = snapshot.getDescriptor().getId();
+		final ScribbleDescriptor descriptor = snapshot.getDescriptor();
+
+		players = descriptor.getPlayers();
+		settings = descriptor.getSettings();
+		scoreEngine = snapshot.getScoreEngine();
+
+		for (ScribbleMove move : snapshot.getMoves()) {
+			registerGameMove(move);
 		}
 
-		System.arraycopy(handTiles, 0, this.handTiles, 0, handTiles.length);
+		final ScribbleTile[] hd = snapshot.getHandTiles();
+		System.arraycopy(hd, 0, handTiles, 0, hd.length);
 	}
 
-	@SuppressWarnings("unchecked")
-	public ScribbleBoard(Parcel in) {
-		super(in);
-		ClassLoader classLoader = getClass().getClassLoader();
-		this.scoreEngine = in.readParcelable(classLoader);
-		this.scribbleBank = in.readParcelable(classLoader);
-		this.moves = in.readArrayList(classLoader);
+
+	public void addSelectionListener(SelectionListener l) {
+		selectionModel.addSelectionListener(l);
 	}
 
-	@Deprecated
-	public int getBoardTilesCount() {
-		return placedTiles.size();
+	public void removeSelectionListener(SelectionListener l) {
+		selectionModel.removeSelectionListener(l);
+	}
+
+	public void addBoardMoveListener(BoardMoveListener l) {
+		if (l != null) {
+			moveListeners.add(l);
+		}
+	}
+
+	public void removeBoardMoveListener(BoardMoveListener l) {
+		if (l != null) {
+			moveListeners.remove(l);
+		}
+	}
+
+	public void addBoardStateListener(BoardStateListener l) {
+		if (l != null) {
+			stateListeners.add(l);
+		}
+	}
+
+	public void removeBoardStateListener(BoardStateListener l) {
+		if (l != null) {
+			stateListeners.remove(l);
+		}
+	}
+
+	public long getId() {
+		return id;
 	}
 
 	public ScoreEngine getScoreEngine() {
 		return scoreEngine;
+	}
+
+	public ScribbleSettings getSettings() {
+		return settings;
+	}
+
+	public ScribbleHand getPlayer(long id) {
+		for (ScribbleHand player : players) {
+			if (player.getPersonality().getId() == id) {
+				return player;
+			}
+		}
+		return null;
+	}
+
+	public ScribbleHand[] getPlayers() {
+		return players;
 	}
 
 	public List<ScribbleMove> getMoves() {
@@ -66,30 +108,55 @@ public class ScribbleBoard extends ScribbleDescriptor {
 		return handTiles;
 	}
 
-	public ScribbleBank getScribbleBank() {
-		return scribbleBank;
-	}
 
 	public boolean isBoardTile(int number) {
 		return placedTiles.contains(number);
 	}
 
-	@Override
-	public void writeToParcel(Parcel dest, int flags) {
-		super.writeToParcel(dest, flags);
 
-		dest.writeParcelable(scoreEngine, flags);
-		dest.writeParcelable(scribbleBank, flags);
-		dest.writeList(moves);
+	public void resign() {
+		controller.resign(this);
 	}
 
-	public static final Parcelable.Creator<ScribbleBoard> CREATOR = new Parcelable.Creator<ScribbleBoard>() {
-		public ScribbleBoard createFromParcel(Parcel in) {
-			return new ScribbleBoard(in);
+	public void passTurn() {
+		controller.passTurn(this);
+	}
+
+	public void makeTurn(ScribbleWord word) {
+		controller.makeTurn(word, this);
+	}
+
+	public void exchange(Set<ScribbleTile> tiles) {
+		controller.exchange(tiles, this);
+	}
+
+	@Override
+	public void validateBoard(ScribbleChanges changes) {
+
+	}
+
+
+	public SelectionModel getSelectionModel() {
+		return selectionModel;
+	}
+
+	public ScoreCalculation calculateScore(ScribbleWord word) {
+		return scoreEngine.calculateScore(this, word);
+	}
+
+
+	private void registerGameMove(ScribbleMove move) {
+		moves.add(move);
+
+		if (move instanceof ScribbleMove.Make) {
+			ScribbleMove.Make make = (ScribbleMove.Make) move;
+			for (ScribbleTile tile : make.getWord().getTiles()) {
+				placedTiles.add(tile.getNumber());
+			}
 		}
 
-		public ScribbleBoard[] newArray(int size) {
-			return new ScribbleBoard[size];
+		for (BoardMoveListener moveListener : moveListeners) {
+			moveListener.gameMoveDone(move);
 		}
-	};
+	}
 }

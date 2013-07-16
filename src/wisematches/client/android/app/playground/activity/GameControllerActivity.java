@@ -8,16 +8,10 @@ import android.view.ViewGroup;
 import com.actionbarsherlock.app.ActionBar;
 import wisematches.client.android.R;
 import wisematches.client.android.WiseMatchesActivity;
-import wisematches.client.android.app.playground.model.GameMoveListener;
-import wisematches.client.android.app.playground.model.ScribbleController;
-import wisematches.client.android.app.playground.model.ScribbleWidget;
-import wisematches.client.android.app.playground.model.SelectionListener;
 import wisematches.client.android.data.DataRequestManager;
 import wisematches.client.android.data.model.scribble.*;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -26,9 +20,6 @@ import java.util.Set;
 public class GameControllerActivity extends WiseMatchesActivity implements ScribbleController {
 	private ScribbleBoard board;
 	private DataRequestManager requestManager;
-
-	private final List<GameMoveListener> gameMoveListeners = new ArrayList<>();
-	private final List<SelectionListener> selectionListeners = new ArrayList<>();
 
 	private static final String INTENT_EXTRA_BOARD_ID = "INTENT_EXTRA_BOARD_ID";
 
@@ -46,9 +37,9 @@ public class GameControllerActivity extends WiseMatchesActivity implements Scrib
 		if (boardId == 0) {
 			finish();
 		} else {
-			requestManager.openBoard(boardId, new SmartDataResponse<ScribbleBoard>() {
+			requestManager.openBoard(boardId, new SmartDataResponse<ScribbleSnapshot>() {
 				@Override
-				protected void onData(ScribbleBoard board) {
+				protected void onData(ScribbleSnapshot board) {
 					initializeController(board);
 				}
 
@@ -64,8 +55,8 @@ public class GameControllerActivity extends WiseMatchesActivity implements Scrib
 		}
 	}
 
-	private void initializeController(ScribbleBoard board) {
-		this.board = board;
+	private void initializeController(ScribbleSnapshot snapshot) {
+		this.board = new ScribbleBoard(this, snapshot);
 
 		final ActionBar actionBar = getSupportActionBar();
 		if (actionBar != null) {
@@ -76,7 +67,7 @@ public class GameControllerActivity extends WiseMatchesActivity implements Scrib
 		findScribbleWidgets(getWindow().getDecorView(), widgets);
 
 		for (ScribbleWidget widget : widgets) {
-			widget.controllerInitialized(this);
+			widget.boardInitialized(board);
 		}
 	}
 
@@ -95,38 +86,11 @@ public class GameControllerActivity extends WiseMatchesActivity implements Scrib
 	}
 
 	@Override
-	public void addSelectionListener(SelectionListener l) {
-		if (l != null) {
-			selectionListeners.add(l);
-		}
-	}
-
-	@Override
-	public void removeSelectionListener(SelectionListener l) {
-		if (l != null) {
-			selectionListeners.remove(l);
-		}
-	}
-
-	@Override
-	public void addGameMoveListener(GameMoveListener l) {
-		if (l != null) {
-			gameMoveListeners.add(l);
-		}
-	}
-
-	@Override
-	public void removeGameMoveListener(GameMoveListener l) {
-		if (l != null) {
-			gameMoveListeners.remove(l);
-		}
-	}
-
-	@Override
-	public void resign() {
+	public void resign(final BoardValidator validator) {
 		requestManager.resignGame(board.getId(), new SmartDataResponse<ScribbleChanges>() {
 			@Override
 			protected void onData(ScribbleChanges data) {
+				validator.validateBoard(data);
 			}
 
 			@Override
@@ -141,38 +105,60 @@ public class GameControllerActivity extends WiseMatchesActivity implements Scrib
 	}
 
 	@Override
-	public void passTurn() {
+	public void passTurn(final BoardValidator validator) {
+		requestManager.passTurn(board.getId(), new SmartDataResponse<ScribbleChanges>() {
+			@Override
+			protected void onData(ScribbleChanges data) {
+				validator.validateBoard(data);
+			}
+
+			@Override
+			protected void onRetry() {
+				requestManager.passTurn(board.getId(), this);
+			}
+
+			@Override
+			protected void onCancel() {
+			}
+		});
 	}
 
 	@Override
-	public void makeTurn(ScribbleWord word) {
+	public void makeTurn(final ScribbleWord word, final BoardValidator validator) {
+		requestManager.makeTurn(board.getId(), word, new SmartDataResponse<ScribbleChanges>() {
+			@Override
+			protected void onData(ScribbleChanges data) {
+				validator.validateBoard(data);
+			}
+
+			@Override
+			protected void onRetry() {
+				requestManager.makeTurn(board.getId(), word, this);
+			}
+
+			@Override
+			protected void onCancel() {
+			}
+		});
 	}
 
 	@Override
-	public void exchange(Set<ScribbleTile> tiles) {
-	}
+	public void exchange(final Set<ScribbleTile> tiles, final BoardValidator validator) {
+		requestManager.exchangeTiles(board.getId(), tiles, new SmartDataResponse<ScribbleChanges>() {
+			@Override
+			protected void onData(ScribbleChanges data) {
+				validator.validateBoard(data);
+			}
 
+			@Override
+			protected void onRetry() {
+				requestManager.exchangeTiles(board.getId(), tiles, this);
+			}
 
-	@Override
-	public ScribbleWord getSelectedWord() {
-		return null;
-	}
-
-	@Override
-	public void selectWord(ScribbleWord word) {
-		ScoreCalculation calculation = null;
-		if (word != null) {
-			calculation = board.getScoreEngine().calculateWordScore(board, word);
-		}
-
-		for (SelectionListener selectionListener : selectionListeners) {
-			selectionListener.onSelectionChanged(word, calculation);
-		}
-	}
-
-	@Override
-	public ScribbleBoard getScribbleBoard() {
-		return board;
+			@Override
+			protected void onCancel() {
+			}
+		});
 	}
 
 	public static Intent createIntent(Context context, long boardId) {
