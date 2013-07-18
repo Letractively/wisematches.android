@@ -1,5 +1,7 @@
 package wisematches.client.android.data.model.scribble;
 
+import wisematches.client.android.data.model.Time;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -9,6 +11,13 @@ import java.util.Set;
  * @author Sergey Klimenko (smklimenko@gmail.com)
  */
 public class ScribbleBoard implements BoardValidator {
+	private Time spentTime;
+	private Time startedTime;
+	private Time finishedTime;
+	private Time remainedTime;
+
+	private ScribbleHand playerTurn;
+
 	private final long id;
 	private final ScoreEngine scoreEngine;
 	private final ScribbleSettings settings;
@@ -30,6 +39,11 @@ public class ScribbleBoard implements BoardValidator {
 		id = snapshot.getDescriptor().getId();
 		final ScribbleDescriptor descriptor = snapshot.getDescriptor();
 
+		spentTime = descriptor.getSpentTime();
+		startedTime = descriptor.getStartedTime();
+		finishedTime = descriptor.getFinishedTime();
+		remainedTime = descriptor.getRemainedTime();
+
 		players = descriptor.getPlayers();
 		settings = descriptor.getSettings();
 		scoreEngine = snapshot.getScoreEngine();
@@ -40,6 +54,11 @@ public class ScribbleBoard implements BoardValidator {
 
 		final ScribbleTile[] hd = snapshot.getHandTiles();
 		System.arraycopy(hd, 0, handTiles, 0, hd.length);
+
+		final int playerTurnIndex = snapshot.getDescriptor().getPlayerTurnIndex();
+		if (playerTurnIndex >= 0) {
+			playerTurn = players[playerTurnIndex];
+		}
 	}
 
 
@@ -85,6 +104,26 @@ public class ScribbleBoard implements BoardValidator {
 
 	public ScribbleSettings getSettings() {
 		return settings;
+	}
+
+	public Time getSpentTime() {
+		return spentTime;
+	}
+
+	public Time getStartedTime() {
+		return startedTime;
+	}
+
+	public Time getFinishedTime() {
+		return finishedTime;
+	}
+
+	public Time getRemainedTime() {
+		return remainedTime;
+	}
+
+	public ScribbleHand getPlayerTurn() {
+		return playerTurn;
 	}
 
 	public ScribbleHand getPlayer(long id) {
@@ -134,7 +173,6 @@ public class ScribbleBoard implements BoardValidator {
 	public void validateBoard(ScribbleChanges changes) {
 
 	}
-
 
 	public SelectionModel getSelectionModel() {
 		return selectionModel;

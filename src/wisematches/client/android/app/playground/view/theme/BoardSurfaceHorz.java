@@ -14,6 +14,9 @@ import wisematches.client.android.graphics.Dimension;
 public class BoardSurfaceHorz {
 	private int scale;
 
+	private int boardScale;
+	private Point boardPosition = new Point(0, 0);
+
 	private final String boardCaption;
 	private final String[] bonusCaptions;
 
@@ -58,10 +61,15 @@ public class BoardSurfaceHorz {
 	public void drawBackground(Canvas canvas, ScoreEngine scoreEngine) {
 		final int border = scale / 2;
 
+		final int backgroundScale = scale;
+
 		final Paint paint = new Paint();
 		paint.setStrokeWidth(1f);
 
+		canvas.save();
 		final Rect rect = new Rect(0, 0, dimension.height, dimension.height);
+//		canvas.clipRect(rect);
+
 		if (drawCaptions) {
 			paint.setARGB(0xff, 0xca, 0xdb, 0xe1);
 			canvas.drawRect(rect, paint);
@@ -72,7 +80,6 @@ public class BoardSurfaceHorz {
 
 			rect.inset(border, border);
 		}
-
 		paint.setARGB(0xff, 0x00, 0x00, 0x00);
 		canvas.drawRect(rect, paint);
 
@@ -95,10 +102,10 @@ public class BoardSurfaceHorz {
 
 			final char[] letters = boardCaption.toCharArray();
 			for (int i = 0; i < 15; i++) {
-				canvas.drawText(String.valueOf(letters[i]), rect.left - border + scale / MAGIC_COEF, rect.top + border + (border - BORDER_SIZE) / 2 + scale * i, paint);
-				canvas.drawText(String.valueOf(i + 1), rect.left + border + scale * i, border - 1, paint);
-				canvas.drawText(String.valueOf(letters[i]), rect.right + border - scale / MAGIC_COEF - 1, rect.top + border + (border - BORDER_SIZE) / 2 + scale * i, paint);
-				canvas.drawText(String.valueOf(i + 1), rect.left + border + scale * i, rect.bottom + border, paint);
+				canvas.drawText(String.valueOf(letters[i]), rect.left - border + backgroundScale / MAGIC_COEF, rect.top + border + (border - BORDER_SIZE) / 2 + backgroundScale * i, paint);
+				canvas.drawText(String.valueOf(i + 1), rect.left + border + backgroundScale * i, border - 1, paint);
+				canvas.drawText(String.valueOf(letters[i]), rect.right + border - backgroundScale / MAGIC_COEF - 1, rect.top + border + (border - BORDER_SIZE) / 2 + backgroundScale * i, paint);
+				canvas.drawText(String.valueOf(i + 1), rect.left + border + backgroundScale * i, rect.bottom + border, paint);
 			}
 		}
 
@@ -108,8 +115,8 @@ public class BoardSurfaceHorz {
 		paint.setTextAlign(Paint.Align.CENTER);
 
 		for (int i = 0; i < 15; i++) {
-			canvas.drawLine(rect.left + border + scale * i, rect.top, rect.left + border + scale * i, rect.bottom, paint);
-			canvas.drawLine(rect.left, rect.top + border + scale * i, rect.right, rect.top + border + scale * i, paint);
+			canvas.drawLine(rect.left + border + backgroundScale * i, rect.top, rect.left + border + backgroundScale * i, rect.bottom, paint);
+			canvas.drawLine(rect.left, rect.top + border + backgroundScale * i, rect.right, rect.top + border + backgroundScale * i, paint);
 		}
 
 		for (int i = 0; i < 15; i++) {
@@ -123,33 +130,34 @@ public class BoardSurfaceHorz {
 					int r = bonus.getRow();
 					int c = bonus.getColumn();
 
-					final float radius = border - 2;
+					final float radius = border - 3;
 					paint.setColor(bonus.getType().getColor());
-					canvas.drawCircle(px + scale * r, px + scale * c, radius, paint);
-					canvas.drawCircle(py - scale * r, py - scale * c, radius, paint);
-					canvas.drawCircle(px + scale * r, py - scale * c, radius, paint);
-					canvas.drawCircle(py - scale * r, px + scale * c, radius, paint);
+					canvas.drawCircle(px + backgroundScale * r, px + backgroundScale * c, radius, paint);
+					canvas.drawCircle(py - backgroundScale * r, py - backgroundScale * c, radius, paint);
+					canvas.drawCircle(px + backgroundScale * r, py - backgroundScale * c, radius, paint);
+					canvas.drawCircle(py - backgroundScale * r, px + backgroundScale * c, radius, paint);
 
 					paint.setColor(Color.BLACK);
 
 					final String caption = bonusCaptions[bonus.getType().ordinal()];
-					canvas.drawText(caption, px + scale * r, px + 4 + scale * c, paint);
-					canvas.drawText(caption, py - scale * r, py + 5 - scale * c, paint);
-					canvas.drawText(caption, px + scale * r, py + 5 - scale * c, paint);
-					canvas.drawText(caption, py - scale * r, px + 4 + scale * c, paint);
+					canvas.drawText(caption, px + backgroundScale * r, px + 4 + backgroundScale * c, paint);
+					canvas.drawText(caption, py - backgroundScale * r, py + 5 - backgroundScale * c, paint);
+					canvas.drawText(caption, px + backgroundScale * r, py + 5 - backgroundScale * c, paint);
+					canvas.drawText(caption, py - backgroundScale * r, px + 4 + backgroundScale * c, paint);
 					paint.setAntiAlias(false);
 				} else {
 					paint.setColor(Color.WHITE);
-					canvas.drawLine((px + scale * i) - 2, (px + scale * j) - 1, (px + scale * i) + BORDER_SIZE, (px + scale * j) - 1, paint);
-					canvas.drawLine((px + scale * i) - 1, (px + scale * j) - 2, (px + scale * i) + 2, (px + scale * j) - 2, paint);
-					canvas.drawLine((px + scale * i) - 2, (px + scale * j) + 1, (px + scale * i) + BORDER_SIZE, (px + scale * j) + 1, paint);
-					canvas.drawLine((px + scale * i) - 1, (px + scale * j) + 2, (px + scale * i) + 2, (px + scale * j) + 2, paint);
+					canvas.drawLine((px + backgroundScale * i) - 2, (px + backgroundScale * j) - 1, (px + backgroundScale * i) + BORDER_SIZE, (px + backgroundScale * j) - 1, paint);
+					canvas.drawLine((px + backgroundScale * i) - 1, (px + backgroundScale * j) - 2, (px + backgroundScale * i) + 2, (px + backgroundScale * j) - 2, paint);
+					canvas.drawLine((px + backgroundScale * i) - 2, (px + backgroundScale * j) + 1, (px + backgroundScale * i) + BORDER_SIZE, (px + backgroundScale * j) + 1, paint);
+					canvas.drawLine((px + backgroundScale * i) - 1, (px + backgroundScale * j) + 2, (px + backgroundScale * i) + 2, (px + backgroundScale * j) + 2, paint);
 				}
 			}
 		}
 		paint.setAntiAlias(false);
+		canvas.restore();
 
-		handRegion.set(rect.right + 1, rect.top + 2, rect.right + 1 + scale, rect.top + 2 + scale * 7);
+		handRegion.set(rect.right + 7, rect.top + 2, rect.right + 7 + scale, rect.top + 2 + scale * 7);
 
 		paint.setARGB(0xFF, 0x55, 0x8b, 0xe7);
 		canvas.drawLine(handRegion.left - 1, handRegion.top - 1, handRegion.right + 2, handRegion.top - 1, paint);
@@ -192,11 +200,11 @@ public class BoardSurfaceHorz {
 				x = boardRegion.left + scale * x;
 				break;
 			case HAND:
-				y = handRegion.top;
-				x = handRegion.left + scale * x;
+				y = handRegion.top + scale * x;
+				x = handRegion.left;
 				break;
 		}
-		tileSurface.drawHighlighter(canvas, tile, x, y, scale);
+		tileSurface.drawHighlighter(canvas, tile, x - 1, y - 1, scale);
 	}
 
 	public void drawScribbleTile(Canvas canvas, ScribbleTile tile, Placement placement, boolean selected, boolean pinned) {
@@ -212,16 +220,25 @@ public class BoardSurfaceHorz {
 				x = handRegion.left;
 				break;
 		}
-		tileSurface.drawScribbleTile(canvas, tile, x, y, scale, selected, pinned);
+		tileSurface.drawScribbleTile(canvas, tile, x - 1, y - 1, scale, selected, pinned);
 	}
 
 	public Placement getPlacement(int x, int y) {
 		if (handRegion.contains(x, y)) {
-			return new Placement((y - handRegion.top) / scale, 0, Place.HAND);
+			final int x1 = (y - handRegion.top) / scale;
+			if (x1 < 0 || x1 > 6) {
+				return null;
+			}
+			return new Placement(x1, 0, Place.HAND);
 		}
 
 		if (boardRegion.contains(x, y)) {
-			return new Placement((x - boardRegion.left) / scale, (y - boardRegion.top) / scale, Place.BOARD);
+			final int x1 = (x - boardRegion.left) / scale;
+			final int y1 = (y - boardRegion.top) / scale;
+			if (x1 < 0 || y1 < 0 || x1 > 14 || y1 > 15) {
+				return null;
+			}
+			return new Placement(x1, y1, Place.BOARD);
 		}
 		return null;
 	}
