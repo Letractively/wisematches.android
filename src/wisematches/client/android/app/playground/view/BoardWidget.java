@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Point;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -119,6 +120,7 @@ public class BoardWidget extends FrameLayout implements ScribbleWidget {
 		}
 
 		if (!draggingHighlighter.isEmpty()) {
+			Log.d("wm", "Draw highlighter: " + draggingHighlighter);
 			boardSurface.drawHighlighter(canvas, draggingTile, draggingHighlighter);
 		}
 
@@ -279,8 +281,10 @@ public class BoardWidget extends FrameLayout implements ScribbleWidget {
 	}
 
 	private void processActionMove(Placement placement) {
-		if (draggingTile != null) {
+		if (draggingTile != null && placement != null) {
 			draggingHighlighter.set(placement);
+		} else {
+			draggingHighlighter.clear();
 		}
 	}
 
@@ -425,16 +429,18 @@ public class BoardWidget extends FrameLayout implements ScribbleWidget {
 			final int x = (int) event.getX();
 			final int y = (int) event.getY();
 			final Placement placement = boardSurface.getPlacement(x, y);
-			if (placement == null) {
-				return true;
-			}
 
 			switch (event.getAction()) {
 				case MotionEvent.ACTION_DOWN:
 					processActionDown(placement);
-					boardSurface.fillRelativePosition(placement, draggingOffset);
-					draggingOffset.set(x - draggingOffset.x, y - draggingOffset.y);
-					draggingPosition.set(x - draggingOffset.x, y - draggingOffset.y, Place.RELATIVE);
+					if (placement != null) {
+						boardSurface.fillRelativePosition(placement, draggingOffset);
+						draggingOffset.set(x - draggingOffset.x, y - draggingOffset.y);
+						draggingPosition.set(x - draggingOffset.x, y - draggingOffset.y, Place.RELATIVE);
+					} else {
+						draggingOffset.set(0, 0);
+						draggingPosition.clear();
+					}
 					break;
 				case MotionEvent.ACTION_MOVE:
 					processActionMove(placement);

@@ -38,12 +38,12 @@ public class PlayerWidget extends AbstractBoardWidget {
 		scribbleBoard = null;
 	}
 
-	private void initPlayers(ScribbleBoard scribbleBoard) {
+	private void initPlayers(ScribbleBoard board) {
 		final TableLayout viewById = (TableLayout) findViewById(R.id.scribbleBoardPlayers);
 
-		final ScribbleHand[] players = scribbleBoard.getPlayers();
+		final ScribbleHand[] players = board.getPlayers();
 		for (ScribbleHand player : players) {
-			final PlayerView playerView = new PlayerView(getContext(), player);
+			final PlayerView playerView = new PlayerView(getContext(), board, player);
 			playerViewMap.put(player, playerView);
 
 			viewById.addView(playerView.getInflate());
@@ -54,14 +54,14 @@ public class PlayerWidget extends AbstractBoardWidget {
 		@Override
 		public void gameStateChanged() {
 			for (PlayerView playerView : playerViewMap.values()) {
-				playerView.validate();
+				playerView.validate(scribbleBoard);
 			}
 		}
 
 		@Override
 		public void gameStateValidated() {
 			for (PlayerView playerView : playerViewMap.values()) {
-				playerView.validate();
+				playerView.validate(scribbleBoard);
 			}
 		}
 	}

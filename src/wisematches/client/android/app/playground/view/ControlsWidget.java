@@ -55,7 +55,7 @@ public class ControlsWidget extends FrameLayout implements ScribbleWidget {
 	private class TheSelectionListener implements SelectionListener {
 		@Override
 		public void onSelectionChanged(ScribbleWord word, ScribbleTile[] tiles) {
-			if (word != null) {
+			if (tiles != null && tiles.length != 0) {
 				clearSelection.setEnabled(true);
 			} else {
 				clearSelection.setEnabled(false);

@@ -20,10 +20,15 @@ public class TileSurface {
 	private final Matrix matrix = new Matrix();
 
 	private static final int DEFAULT_TILE_SIZE = 22;
-	private static final float TEXT_SCALE_FACTOR = 0.7f;
 
 	private final Paint textPaint = new Paint();
 	private final Paint bitmapPaint = new Paint(Paint.FILTER_BITMAP_FLAG);
+
+	private static final int[] textSize = new int[]{
+			1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 4, 4,
+			12, 13, 13, 14, 14, 15, 15, 15, 16, 16, 16, 16, 16, 16, 16,
+			15, 16, 17, 18, 18, 19, 20, 20, 21, 21, 22, 22, 23, 23, 24
+	};
 
 	public TileSurface(Resources resources) {
 		final Bitmap bitmap = android.graphics.BitmapFactory.decodeResource(resources, R.drawable.board_tiles);
@@ -72,10 +77,10 @@ public class TileSurface {
 		} else {
 			textPaint.setColor(Color.WHITE);
 		}
-		textPaint.setTextSize(scale * sx * TEXT_SCALE_FACTOR);
+		textPaint.setTextSize(textSize[scale]);
 		textPaint.setFakeBoldText(selected);
 
-		canvas.drawText(tile.getLetter(), x + scale / 2 + TEXT_SCALE_FACTOR, y + (scale - textPaint.ascent()) / 2 + TEXT_SCALE_FACTOR, textPaint);
+		canvas.drawText(tile.getLetter(), Math.round(x + scale / 2f) + 1, y + (scale - textPaint.ascent()) / 2f + 1, textPaint);
 	}
 
 	private Matrix matrix(int x, int y, float s) {
