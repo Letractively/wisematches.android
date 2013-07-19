@@ -166,8 +166,11 @@ public class ScribbleBoard implements BoardValidator {
 		Arrays.fill(handTiles, null);
 		System.arraycopy(tiles, 0, handTiles, 0, tiles.length);
 
+		final ScribbleMove lastMove = moves.get(moves.size() - 1);
 		for (ScribbleMove scribbleMove : changes.getMoves()) {
-			moves.add(scribbleMove);
+			if (scribbleMove.getNumber() > lastMove.getNumber()) {
+				registerGameMove(scribbleMove);
+			}
 		}
 
 		for (BoardStateListener stateListener : stateListeners) {

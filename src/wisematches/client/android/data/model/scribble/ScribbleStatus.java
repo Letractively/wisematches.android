@@ -80,7 +80,7 @@ public class ScribbleStatus implements Parcelable {
 		return 0;
 	}
 
-	public void validate(ScribbleStatus status) {
+	void validate(ScribbleStatus status) {
 		this.active = status.active;
 		this.spentTime = status.spentTime;
 		this.lastChange = status.lastChange;

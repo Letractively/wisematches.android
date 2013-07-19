@@ -47,7 +47,7 @@ public class ScribbleScore implements Parcelable {
 		return 0;
 	}
 
-	public void validate(ScribbleScore score) {
+	void validate(ScribbleScore score) {
 		this.points = score.points;
 		this.oldRating = score.oldRating;
 		this.newRating = score.newRating;
