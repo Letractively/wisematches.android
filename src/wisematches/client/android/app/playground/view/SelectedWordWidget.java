@@ -9,7 +9,7 @@ import wisematches.client.android.data.model.scribble.*;
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
  */
-public class SelectedWordWidget extends AbstractBoardWidget {
+public class SelectedWordWidget extends AbstractScribbleWidget {
 	private TextView pointsCalculationFld;
 	private SelectedWordView selectedTilesView;
 

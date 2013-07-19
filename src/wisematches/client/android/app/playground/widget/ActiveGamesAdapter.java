@@ -34,7 +34,7 @@ public class ActiveGamesAdapter extends ArrayAdapter<ScribbleDescriptor> {
 
 		holder.title.setText(value.getSettings().getTitle());
 		holder.number.setText(String.valueOf(value.getId()));
-		holder.elapsedTime.setText(String.valueOf(value.getRemainedTime().getText()));
+		holder.elapsedTime.setText(String.valueOf(value.getStatus().getRemainedTime().getText()));
 
 		final ScribbleHand[] players = value.getPlayers();
 		for (int index = 0; index < players.length; index++) {
@@ -42,10 +42,9 @@ public class ActiveGamesAdapter extends ArrayAdapter<ScribbleDescriptor> {
 			final TableRow row = (TableRow) holder.players.getChildAt(index);
 			row.setVisibility(View.VISIBLE);
 
-			if (value.getPlayerTurnIndex() == index) {
+			if (value.getStatus().getPlayerTurn() == hand.getPersonality().getId()) {
 				row.setBackgroundResource(R.drawable.player_state_active);
 			}
-
 
 			final PersonalityView player = (PersonalityView) row.findViewById(R.id.dashboardPlayerView);
 			player.setPersonality(hand.getPersonality());

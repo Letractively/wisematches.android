@@ -134,7 +134,7 @@
         <view
                 android:layout_width="0dp"
                 android:layout_height="fill_parent"
-                class="wisematches.client.android.app.playground.view.BoardWidget"
+                class="wisematches.client.android.app.playground.view.PlaygroundWidget"
                 android:id="@+id/scribbleBoardView"
                 android:layout_gravity="left|top"
                 android:background="@android:color/transparent"
@@ -386,7 +386,7 @@
                     <include
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
-                            layout="@layout/playground_board_dict"/>
+                            layout="@layout/playground_board_widget_dict"/>
                 </LinearLayout>
             </LinearLayout>
 

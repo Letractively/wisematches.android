@@ -1,5 +1,7 @@
 package wisematches.client.android.data.model.scribble;
 
+import wisematches.client.android.data.model.person.Personality;
+
 import java.util.Set;
 
 /**
@@ -13,4 +15,7 @@ public interface ScribbleController {
 	void makeTurn(ScribbleWord word, BoardValidator validator);
 
 	void exchange(Set<ScribbleTile> tiles, BoardValidator validator);
+
+
+	Personality getBoardViewer();
 }

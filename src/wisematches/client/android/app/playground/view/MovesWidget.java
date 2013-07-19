@@ -18,7 +18,7 @@ import java.util.ListIterator;
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
  */
-public class MovesWidget extends AbstractBoardWidget {
+public class MovesWidget extends AbstractScribbleWidget {
 	private TableLayout movesHistoryView;
 
 	private ScribbleBoard scribbleBoard;
@@ -26,7 +26,11 @@ public class MovesWidget extends AbstractBoardWidget {
 	private final TheOnClickListener clickListener = new TheOnClickListener();
 
 	public MovesWidget(Context context, AttributeSet attrs) {
-		super(context, attrs, R.layout.playground_board_widget_moves, "История ходов");
+		this(context, attrs, true);
+	}
+
+	public MovesWidget(Context context, AttributeSet attrs, boolean showTitle) {
+		super(context, attrs, R.layout.playground_board_widget_moves, "История ходов", showTitle);
 
 		movesHistoryView = (TableLayout) findViewById(R.id.scribbleBoardMovesHistory);
 	}
@@ -36,7 +40,7 @@ public class MovesWidget extends AbstractBoardWidget {
 		this.scribbleBoard = board;
 
 		final Context context = getContext();
-		final TableRow header = (TableRow) inflate(context, R.layout.playground_board_move, null);
+		final TableRow header = (TableRow) inflate(context, R.layout.playground_board_widget_moves_row, null);
 		int childCount = header.getChildCount();
 		for (int i = 0; i < childCount; i++) {
 			((TextView) header.getChildAt(i)).setTextAppearance(context, R.style.TextAppearance_WiseMatches_Move_Header);
@@ -62,7 +66,7 @@ public class MovesWidget extends AbstractBoardWidget {
 	private void registerMove(ScribbleMove move) {
 		final Context context = getContext();
 
-		final View row = inflate(context, R.layout.playground_board_move, null);
+		final View row = inflate(context, R.layout.playground_board_widget_moves_row, null);
 		row.setTag(move);
 		row.setOnClickListener(clickListener);
 
@@ -101,6 +105,7 @@ public class MovesWidget extends AbstractBoardWidget {
 			if (move instanceof ScribbleMove.Make) {
 				scribbleBoard.getSelectionModel().setSelection(((ScribbleMove.Make) move).getWord());
 			}
+			notifyWidgetActionDone();
 		}
 	}
 }

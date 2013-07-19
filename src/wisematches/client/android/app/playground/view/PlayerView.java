@@ -38,7 +38,7 @@ public class PlayerView {
 
 		final ScribbleHand hand = board.getPlayerTurn();
 		if (scribbleHand == hand) {
-			remainedTime.setText(String.valueOf(board.getRemainedTime().getText()));
+			remainedTime.setText(String.valueOf(board.getStatus().getRemainedTime().getText()));
 		} else {
 			remainedTime.setText("");
 		}

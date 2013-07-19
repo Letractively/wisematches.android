@@ -22,7 +22,7 @@ import java.util.TimerTask;
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
  */
-public class DictionaryWidget extends AbstractBoardWidget {
+public class DictionaryWidget extends AbstractScribbleWidget {
 	private Language language;
 
 	private Button dictionaryAction;
@@ -35,7 +35,7 @@ public class DictionaryWidget extends AbstractBoardWidget {
 	private final TheSelectionListener selectionListener = new TheSelectionListener();
 
 	public DictionaryWidget(Context context, AttributeSet attrs) {
-		super(context, attrs, R.layout.playground_board_dict, "Словарь");
+		super(context, attrs, R.layout.playground_board_widget_dict, "Словарь");
 
 		dictionaryField = (EditText) findViewById(R.id.scribbleBoardDictField);
 		dictionaryAction = (Button) findViewById(R.id.scribbleBoardDictAction);

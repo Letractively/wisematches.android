@@ -80,7 +80,7 @@ public class TileSurface {
 		textPaint.setTextSize(textSize[scale]);
 		textPaint.setFakeBoldText(selected);
 
-		canvas.drawText(tile.getLetter(), Math.round(x + scale / 2f) + 1, y + (scale - textPaint.ascent()) / 2f + 1, textPaint);
+		canvas.drawText(tile.getDrawable(), Math.round(x + scale / 2f) + 1, y + (scale - textPaint.ascent()) / 2f + 1, textPaint);
 	}
 
 	private Matrix matrix(int x, int y, float s) {

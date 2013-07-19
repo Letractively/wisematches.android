@@ -30,6 +30,7 @@ public class JSONRequestManager extends RequestManager implements DataRequestMan
 
 	public static final int REQUEST_TYPE_OPEN_GAME = requestInIndex++;
 	public static final int REQUEST_TYPE_CREATE_GAME = requestInIndex++;
+	public static final int REQUEST_TYPE_VALIDATE_GAME = requestInIndex++;
 
 	public static final int REQUEST_TYPE_ACTIVE_GAMES = requestInIndex++;
 	public static final int REQUEST_TYPE_WAITING_GAMES = requestInIndex++;
@@ -119,6 +120,13 @@ public class JSONRequestManager extends RequestManager implements DataRequestMan
 		execute(request, new TheRequestListener<>(response));
 	}
 
+	@Override
+	public void validateBoard(long boardId, boolean lastChangeTime, DataResponse<ScribbleChanges> response) {
+		final Request request = new Request(REQUEST_TYPE_VALIDATE_GAME);
+		request.put(ValidateBoardOperation.PARAM_BOARD_ID, boardId);
+		request.put(ValidateBoardOperation.PARAM_BOARD_ID, lastChangeTime);
+		execute(request, new TheRequestListener<>(response));
+	}
 
 	@Override
 	public void passTurn(long boardId, DataResponse<ScribbleChanges> response) {

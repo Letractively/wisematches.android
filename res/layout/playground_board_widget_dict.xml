@@ -48,7 +48,7 @@
     <ProgressBar
             style="@android:style/Widget.ProgressBar.Horizontal"
             android:layout_width="fill_parent"
-            android:layout_height="2dp"
+            android:layout_height="1dp"
             android:id="@+id/scribbleBoardDictProgress"
             android:layout_marginLeft="3dp"
             android:indeterminate="true"

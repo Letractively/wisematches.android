@@ -21,7 +21,7 @@ import static wisematches.client.android.app.playground.view.theme.BoardSurfaceH
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
  */
-public class BoardWidget extends FrameLayout implements ScribbleWidget {
+public class PlaygroundWidget extends FrameLayout implements ScribbleWidget {
 	private Bitmap boardBackground;
 	private BoardSurfaceHorz boardSurface;
 
@@ -42,7 +42,7 @@ public class BoardWidget extends FrameLayout implements ScribbleWidget {
 
 	private final TheSelectionListener selectionListener = new TheSelectionListener();
 
-	public BoardWidget(Context context, AttributeSet attrs) {
+	public PlaygroundWidget(Context context, AttributeSet attrs) {
 		super(context, attrs);
 
 		setWillNotDraw(false);

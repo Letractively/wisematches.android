@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
 import wisematches.client.android.R;
 import wisematches.client.android.WiseMatchesActivity;
 import wisematches.client.android.app.SignalProcessor;
@@ -111,8 +110,8 @@ public class WaitingGamesActivity extends WiseMatchesActivity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuFactory.addMenuItem(menu, 1, 1, MenuFactory.Type.CREATE_GAME, MenuItem.SHOW_AS_ACTION_ALWAYS);
-		return true;
+		MenuFactory.addMenuItem(menu, 1, 1, MenuFactory.Type.CREATE_GAME, MenuFactory.Visibility.ALWAYS);
+		return super.onCreateOptionsMenu(menu);
 	}
 
 	public static Intent createIntent(Context context) {

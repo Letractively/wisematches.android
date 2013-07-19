@@ -1,24 +1,15 @@
 package wisematches.client.android.data.model.scribble;
 
-import wisematches.client.android.data.model.Time;
+import wisematches.client.android.data.model.person.Personality;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
  */
 public class ScribbleBoard implements BoardValidator {
-	private Time spentTime;
-	private Time startedTime;
-	private Time finishedTime;
-	private Time remainedTime;
-
-	private ScribbleHand playerTurn;
-
 	private final long id;
+	private final ScribbleStatus status;
 	private final ScoreEngine scoreEngine;
 	private final ScribbleSettings settings;
 	private final ScribbleHand[] players;
@@ -39,11 +30,7 @@ public class ScribbleBoard implements BoardValidator {
 		id = snapshot.getDescriptor().getId();
 		final ScribbleDescriptor descriptor = snapshot.getDescriptor();
 
-		spentTime = descriptor.getSpentTime();
-		startedTime = descriptor.getStartedTime();
-		finishedTime = descriptor.getFinishedTime();
-		remainedTime = descriptor.getRemainedTime();
-
+		status = descriptor.getStatus();
 		players = descriptor.getPlayers();
 		settings = descriptor.getSettings();
 		scoreEngine = snapshot.getScoreEngine();
@@ -54,11 +41,6 @@ public class ScribbleBoard implements BoardValidator {
 
 		final ScribbleTile[] hd = snapshot.getHandTiles();
 		System.arraycopy(hd, 0, handTiles, 0, hd.length);
-
-		final int playerTurnIndex = snapshot.getDescriptor().getPlayerTurnIndex();
-		if (playerTurnIndex >= 0) {
-			playerTurn = players[playerTurnIndex];
-		}
 	}
 
 
@@ -98,6 +80,10 @@ public class ScribbleBoard implements BoardValidator {
 		return id;
 	}
 
+	public ScribbleStatus getStatus() {
+		return status;
+	}
+
 	public ScoreEngine getScoreEngine() {
 		return scoreEngine;
 	}
@@ -106,24 +92,22 @@ public class ScribbleBoard implements BoardValidator {
 		return settings;
 	}
 
-	public Time getSpentTime() {
-		return spentTime;
+	public Personality getBoardViewer() {
+		return controller.getBoardViewer();
 	}
 
-	public Time getStartedTime() {
-		return startedTime;
-	}
-
-	public Time getFinishedTime() {
-		return finishedTime;
-	}
-
-	public Time getRemainedTime() {
-		return remainedTime;
+	public boolean isViewerTurn() {
+		final Personality viewer = getBoardViewer();
+		final ScribbleHand playerTurn = getPlayerTurn();
+		return viewer != null && playerTurn != null && viewer.getId() == playerTurn.getPersonality().getId();
 	}
 
 	public ScribbleHand getPlayerTurn() {
-		return playerTurn;
+		final long playerTurn = status.getPlayerTurn();
+		if (playerTurn != 0) {
+			return getPlayer(playerTurn);
+		}
+		return null;
 	}
 
 	public ScribbleHand getPlayer(long id) {
@@ -171,7 +155,24 @@ public class ScribbleBoard implements BoardValidator {
 
 	@Override
 	public void validateBoard(ScribbleChanges changes) {
+		status.validate(changes.getStatus());
 
+		final ScribbleScore[] scores = changes.getScores();
+		for (int i = 0; i < players.length; i++) {
+			players[i].getScores().validate(scores[i]);
+		}
+
+		final ScribbleTile[] tiles = changes.getHandTiles();
+		Arrays.fill(handTiles, null);
+		System.arraycopy(tiles, 0, handTiles, 0, tiles.length);
+
+		for (ScribbleMove scribbleMove : changes.getMoves()) {
+			moves.add(scribbleMove);
+		}
+
+		for (BoardStateListener stateListener : stateListeners) {
+			stateListener.gameStateValidated();
+		}
 	}
 
 	public SelectionModel getSelectionModel() {
@@ -181,7 +182,6 @@ public class ScribbleBoard implements BoardValidator {
 	public ScoreCalculation calculateScore(ScribbleWord word) {
 		return scoreEngine.calculateScore(this, word);
 	}
-
 
 	private void registerGameMove(ScribbleMove move) {
 		moves.add(move);

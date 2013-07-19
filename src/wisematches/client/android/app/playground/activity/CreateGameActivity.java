@@ -14,7 +14,6 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
 import wisematches.client.android.R;
 import wisematches.client.android.WiseMatchesActivity;
 import wisematches.client.android.app.playground.MenuFactory;
@@ -161,7 +160,7 @@ public class CreateGameActivity extends WiseMatchesActivity implements ActionBar
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuFactory.addMenuItem(menu, 1, 1, MenuFactory.Type.JOIN_GAME, MenuItem.SHOW_AS_ACTION_ALWAYS);
+		MenuFactory.addMenuItem(menu, 1, 1, MenuFactory.Type.JOIN_GAME, MenuFactory.Visibility.ALWAYS);
 		return super.onCreateOptionsMenu(menu);
 	}
 
