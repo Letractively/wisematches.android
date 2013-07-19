@@ -13,6 +13,7 @@ import wisematches.client.android.data.model.scribble.ScribbleChanges;
 import wisematches.client.android.data.model.scribble.ScribbleTile;
 import wisematches.client.android.data.model.scribble.ScribbleWord;
 import wisematches.client.android.data.service.operation.JSONOperation;
+import wisematches.client.android.data.service.parser.scribble.ScribbleChangesParser;
 
 import java.io.UnsupportedEncodingException;
 
@@ -108,8 +109,6 @@ public class BoardActionOperation extends JSONOperation.Primitive<ScribbleChange
 
 	@Override
 	protected ScribbleChanges createResponse(Object data) throws JSONException {
-		// TODO: parse server response here
-
-		return new ScribbleChanges();
+		return ScribbleChangesParser.parse((JSONObject) data);
 	}
 }

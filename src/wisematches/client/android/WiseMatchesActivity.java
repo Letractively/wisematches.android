@@ -9,7 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import wisematches.client.android.app.account.activity.LoginActivity;
 import wisematches.client.android.app.playground.MenuFactory;
@@ -20,7 +21,7 @@ import wisematches.client.android.security.SecurityContext;
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
  */
-public abstract class WiseMatchesActivity extends SherlockActivity {
+public abstract class WiseMatchesActivity extends SherlockFragmentActivity {
 	private final String title;
 	private final int viewId;
 	private final boolean waitBeforeView;
@@ -64,6 +65,12 @@ public abstract class WiseMatchesActivity extends SherlockActivity {
 	}
 
 	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuFactory.createSystemMenu(menu);
+		return true;
+	}
+
+	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		return MenuFactory.startMenuActivity(this, item);
 	}
@@ -85,12 +92,10 @@ public abstract class WiseMatchesActivity extends SherlockActivity {
 	}
 
 	protected void showWaitingView() {
-//		final View progressBar = findViewById(R.id.commonLoadingProgress);
 		progressBar.setVisibility(View.VISIBLE);
 	}
 
 	protected void hideWaitingView() {
-//		final View progressBar = findViewById(R.id.commonLoadingProgress);
 		progressBar.setVisibility(View.GONE);
 	}
 

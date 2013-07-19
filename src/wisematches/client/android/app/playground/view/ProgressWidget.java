@@ -9,7 +9,7 @@ import wisematches.client.android.data.model.scribble.ScribbleBoard;
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
  */
-public class ProgressWidget extends AbstractBoardWidget {
+public class ProgressWidget extends AbstractScribbleWidget {
 	private ProgressView progressView;
 	private ScribbleBoard scribbleBoard;
 
@@ -36,12 +36,8 @@ public class ProgressWidget extends AbstractBoardWidget {
 
 	private class TheBoardStateListener implements BoardStateListener {
 		@Override
-		public void gameStateChanged() {
-			progressView.updateProgress(scribbleBoard);
-		}
-
-		@Override
 		public void gameStateValidated() {
+			progressView.updateProgress(scribbleBoard);
 		}
 	}
 }

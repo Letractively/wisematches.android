@@ -14,7 +14,7 @@ import java.util.Map;
 /**
  * @author Sergey Klimenko (smklimenko@gmail.com)
  */
-public class PlayerWidget extends AbstractBoardWidget {
+public class PlayerWidget extends AbstractScribbleWidget {
 	private ScribbleBoard scribbleBoard;
 
 	private final Map<ScribbleHand, PlayerView> playerViewMap = new HashMap<>();
@@ -51,13 +51,6 @@ public class PlayerWidget extends AbstractBoardWidget {
 	}
 
 	private class TheBoardStateListener implements BoardStateListener {
-		@Override
-		public void gameStateChanged() {
-			for (PlayerView playerView : playerViewMap.values()) {
-				playerView.validate(scribbleBoard);
-			}
-		}
-
 		@Override
 		public void gameStateValidated() {
 			for (PlayerView playerView : playerViewMap.values()) {

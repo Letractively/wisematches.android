@@ -3,13 +3,8 @@ package wisematches.client.android.data.service.parser.scribble;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import wisematches.client.android.data.model.Time;
 import wisematches.client.android.data.model.person.Personality;
-import wisematches.client.android.data.model.scribble.ScribbleDescriptor;
-import wisematches.client.android.data.model.scribble.ScribbleHand;
-import wisematches.client.android.data.model.scribble.ScribbleScore;
-import wisematches.client.android.data.model.scribble.ScribbleSettings;
-import wisematches.client.android.data.service.parser.TimeParser;
+import wisematches.client.android.data.model.scribble.*;
 import wisematches.client.android.data.service.parser.person.PersonalityParser;
 
 /**
@@ -18,17 +13,8 @@ import wisematches.client.android.data.service.parser.person.PersonalityParser;
 public class ScribbleDescriptorParser {
 	public static ScribbleDescriptor parse(JSONObject o) throws JSONException {
 		final long id = o.getLong("id");
+		final ScribbleStatus status = ScribbleStatusParser.parse(o);
 		final ScribbleSettings settings = ScribbleSettingsParser.parse(o.getJSONObject("settings"));
-		boolean active = o.getBoolean("active");
-		String resolution = o.getString("resolution");
-		Time spentTime = TimeParser.parse(o.optJSONObject("spentTime"));
-		Time startedTime = TimeParser.parse(o.optJSONObject("startedTime"));
-		Time finishedTime = TimeParser.parse(o.optJSONObject("finishedTime"));
-		Time remainedTime = TimeParser.parse(o.optJSONObject("remainedTime"));
-		long lastChange = o.getLong("lastChange");
-
-		int playerTurnIndex = -1;
-		long playerTurn = o.getLong("playerTurn");
 		JSONArray jsonPlayers = o.getJSONArray("players");
 		ScribbleHand[] hands = new ScribbleHand[jsonPlayers.length()];
 		for (int j = 0; j < jsonPlayers.length(); j++) {
@@ -36,12 +22,8 @@ public class ScribbleDescriptorParser {
 
 			final Personality parse = PersonalityParser.parse(po.getJSONObject("info"));
 			final ScribbleScore score = ScribbleScoreParser.parse(po.getJSONObject("score"));
-
 			hands[j] = new ScribbleHand(parse, score);
-			if (parse != null && parse.getId() == playerTurn) {
-				playerTurnIndex = j;
-			}
 		}
-		return new ScribbleDescriptor(id, settings, hands, active, resolution, playerTurnIndex, spentTime, startedTime, finishedTime, remainedTime, lastChange);
+		return new ScribbleDescriptor(id, settings, hands, status);
 	}
 }

@@ -7,10 +7,10 @@ import android.os.Parcelable;
  * @author Sergey Klimenko (smklimenko@gmail.com)
  */
 public class ScribbleScore implements Parcelable {
-	private final int points;
-	private final int oldRating;
-	private final int newRating;
-	private final boolean winner;
+	private int points;
+	private int oldRating;
+	private int newRating;
+	private boolean winner;
 
 	public ScribbleScore(int points, int oldRating, int newRating, boolean winner) {
 		this.points = points;
@@ -45,6 +45,13 @@ public class ScribbleScore implements Parcelable {
 	@Override
 	public int describeContents() {
 		return 0;
+	}
+
+	public void validate(ScribbleScore score) {
+		this.points = score.points;
+		this.oldRating = score.oldRating;
+		this.newRating = score.newRating;
+		this.winner = score.winner;
 	}
 
 	@Override

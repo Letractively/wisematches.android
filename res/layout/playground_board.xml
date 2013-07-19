@@ -37,10 +37,12 @@
                     android:layout_height="wrap_content"
                     class="wisematches.client.android.app.playground.view.SelectedWordWidget"/>
 
-            <view
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    class="wisematches.client.android.app.playground.view.MovesWidget"/>
+            <!--
+                        <view
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                class="wisematches.client.android.app.playground.view.MovesWidget"/>
+            -->
         </LinearLayout>
     </ScrollView>
 
@@ -58,7 +60,7 @@
     <view
             android:layout_width="0dp"
             android:layout_height="fill_parent"
-            class="wisematches.client.android.app.playground.view.BoardWidget"
+            class="wisematches.client.android.app.playground.view.PlaygroundWidget"
             android:id="@+id/scribbleBoardView"
             android:background="@android:color/transparent"
             android:layout_alignParentLeft="true"

@@ -9,18 +9,21 @@ import android.os.Parcelable;
 public class ScribbleTile implements Parcelable {
 	private final int cost;
 	private final int number;
-	private final String letter;
+	private final char letter;
+	private final String dravable;
 
 	public ScribbleTile(int cost, int number, String letter) {
 		this.cost = cost;
 		this.number = number;
-		this.letter = letter.toUpperCase();
+		this.letter = letter.charAt(0);
+		this.dravable = letter.toUpperCase();
 	}
 
 	public ScribbleTile(Parcel in) {
 		this.cost = in.readInt();
 		this.number = in.readInt();
-		this.letter = in.readString();
+		this.letter = (char) in.readInt();
+		this.dravable = String.valueOf(Character.toUpperCase(letter));
 	}
 
 	public int getCost() {
@@ -31,8 +34,12 @@ public class ScribbleTile implements Parcelable {
 		return number;
 	}
 
-	public String getLetter() {
+	public char getLetter() {
 		return letter;
+	}
+
+	public String getDrawable() {
+		return dravable;
 	}
 
 	public boolean isWildcard() {
@@ -72,7 +79,7 @@ public class ScribbleTile implements Parcelable {
 	public void writeToParcel(Parcel dest, int flags) {
 		dest.writeInt(cost);
 		dest.writeInt(number);
-		dest.writeString(letter);
+		dest.writeInt(letter);
 	}
 
 	public static final Parcelable.Creator<ScribbleTile> CREATOR = new Parcelable.Creator<ScribbleTile>() {

@@ -29,6 +29,8 @@ public interface DataRequestManager {
 
 	void openBoard(long boardId, DataResponse<ScribbleSnapshot> response);
 
+	void validateBoard(long id, boolean lastChangeTime, DataResponse<ScribbleChanges> response);
+
 	void passTurn(long boardId, DataResponse<ScribbleChanges> response);
 
 	void resignGame(long boardId, DataResponse<ScribbleChanges> response);
