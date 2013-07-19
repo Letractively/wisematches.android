@@ -29,7 +29,7 @@ public interface DataRequestManager {
 
 	void openBoard(long boardId, DataResponse<ScribbleSnapshot> response);
 
-	void validateBoard(long id, boolean lastChangeTime, DataResponse<ScribbleChanges> response);
+	void validateBoard(long id, long lastChange, DataResponse<ScribbleChanges> response);
 
 	void passTurn(long boardId, DataResponse<ScribbleChanges> response);
 

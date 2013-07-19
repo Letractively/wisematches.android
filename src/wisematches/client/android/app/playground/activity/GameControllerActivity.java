@@ -25,6 +25,7 @@ import java.util.TimerTask;
  * @author Sergey Klimenko (smklimenko@gmail.com)
  */
 public class GameControllerActivity extends WiseMatchesActivity implements ScribbleController {
+	private Timer timer;
 	private ScribbleBoard board;
 	private DataRequestManager requestManager;
 
@@ -39,8 +40,6 @@ public class GameControllerActivity extends WiseMatchesActivity implements Scrib
 	private DialogWidget movesHistoryDialog;
 
 	private final Set<MenuItem> widgetsMenuItems = new HashSet<>();
-
-	private Timer timer;
 
 	private static final String INTENT_EXTRA_BOARD_ID = "INTENT_EXTRA_BOARD_ID";
 
@@ -272,7 +271,7 @@ public class GameControllerActivity extends WiseMatchesActivity implements Scrib
 	private class BoardValidationTask extends TimerTask {
 		@Override
 		public void run() {
-			requestManager.validateBoard(board.getId(), false, new DataRequestManager.DataResponse<ScribbleChanges>() {
+			requestManager.validateBoard(board.getId(), board.getStatus().getLastChange(), new DataRequestManager.DataResponse<ScribbleChanges>() {
 				@Override
 				public void onSuccess(ScribbleChanges data) {
 					board.validateBoard(data);

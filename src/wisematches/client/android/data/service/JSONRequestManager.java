@@ -121,10 +121,10 @@ public class JSONRequestManager extends RequestManager implements DataRequestMan
 	}
 
 	@Override
-	public void validateBoard(long boardId, boolean lastChangeTime, DataResponse<ScribbleChanges> response) {
+	public void validateBoard(long boardId, long lastChange, DataResponse<ScribbleChanges> response) {
 		final Request request = new Request(REQUEST_TYPE_VALIDATE_GAME);
 		request.put(ValidateBoardOperation.PARAM_BOARD_ID, boardId);
-		request.put(ValidateBoardOperation.PARAM_BOARD_ID, lastChangeTime);
+		request.put(ValidateBoardOperation.PARAM_LAST_CHANGE, lastChange);
 		execute(request, new TheRequestListener<>(response));
 	}
 

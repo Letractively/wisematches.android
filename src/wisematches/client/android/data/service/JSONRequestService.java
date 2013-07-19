@@ -35,6 +35,7 @@ public class JSONRequestService extends RequestService {
 
 		operationMap.put(JSONRequestManager.REQUEST_TYPE_OPEN_GAME, new JSONResponseOperation(new OpenBoardOperation()));
 		operationMap.put(JSONRequestManager.REQUEST_TYPE_CREATE_GAME, new JSONResponseOperation(new CreateGameOperation()));
+		operationMap.put(JSONRequestManager.REQUEST_TYPE_VALIDATE_GAME, new JSONResponseOperation(new ValidateBoardOperation()));
 		operationMap.put(JSONRequestManager.REQUEST_TYPE_WAITING_GAMES, new JSONResponseOperation(new WaitingGamesOperation()));
 		operationMap.put(JSONRequestManager.REQUEST_TYPE_ACTIVE_GAMES, new JSONResponseOperation(new ActiveGamesOperation()));
 
